@@ -111,10 +111,10 @@ WSGI_APPLICATION = 'quotationSystemProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd18lt4vc1ppofs',
-        'USER': 'uhmxvyazzacovm',
-        'PASSWORD': '24e7953518c9b5fc27f83dfdf3996bee8721237f1a8047d83e0c4dd35f850d0f',
-        'HOST': 'ec2-3-217-113-25.compute-1.amazonaws.com',
+        'NAME': 'd5av4g58aseu1k',
+        'USER': 'vpauiudaerjigj',
+        'PASSWORD': 'ccd9c44c6d5dccb4321acc80f9679f68789345a2afef614c8d1e3e30e6d3b8b0',
+        'HOST': 'ec2-34-231-177-125.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -183,10 +183,10 @@ CLOUDINARY_STORAGE = {
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'mail.macrisrefrigeracion.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'macris.qr.app@gmail.com'
-EMAIL_HOST_PASSWORD = 'Macris123456*'
+EMAIL_HOST_USER = 'admin@macrisrefrigeracion.com'
+EMAIL_HOST_PASSWORD = 'Sancastel7'
 
 django_heroku.settings(locals())

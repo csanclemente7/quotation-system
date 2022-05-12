@@ -28,4 +28,23 @@ urlpatterns = [
     # URLS de usuario
     path('user/<int:pk>', views.UserDetailView.as_view()),
 
+    # URLS de item
+    path('item/<int:user>', views.ItemCreateView.as_view()), #ok
+    path('item/<int:user>/<int:pk>', views.ItemDetailView.as_view()), #ok
+    path('items/<int:user>', views.ItemListView.as_view()), #ok
+    path('item/<int:user>/<int:pk>/update', views.ItemUpdateView.as_view()), #ok
+    path('item/<int:user>/<int:pk>/delete', views.ItemDeleteView.as_view()), #ok
+
+    # URLS de cliente
+    path('client/<int:user>', views.ClientCreateView.as_view()), #ok
+    path('client/<int:user>/<int:pk>', views.ClientDetailView.as_view()), #ok
+    path('clients/<int:user>', views.ClientListView.as_view()), #ok
+
+    # URLS de cotización
+    path('quotation/<int:user>', views.QuotationCreateView.as_view()), #ok
+    path('quotation/<int:user>/<int:pk>', views.QuotationDetailView.as_view()), #ok
+    path('quotations/<int:user>', views.QuotationListView.as_view()), #ok
+    path('quotation/<int:user>/<int:pk>/update', views.QuotationUpdateView.as_view()),
+    path('quotation/<int:user>/<int:pk>/delete', views.QuotationDeleteView.as_view()),
+
 ]
