@@ -10,4 +10,4 @@ class Client(models.Model):
     phone = models.CharField('phone',max_length=100, default=None)
 
     def __str__(self):
-        return self.id + ' ' + self.name + ' ' + self.city + ' ' + self.address + ' ' + self.email + ' ' + self.phone
+        return str(self.id) + ' ' + str(self.name) + ' ' + str(self.city) + ' ' + str(self.address) + ' ' + str(self.email) + ' ' + str(self.phone)

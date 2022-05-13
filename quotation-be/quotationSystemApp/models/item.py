@@ -7,4 +7,4 @@ class Item(models.Model):
     price = models.FloatField('price', default=0)
 
     def __str__(self):
-        return self.id + ' ' + self.name + ' ' + self.price
+        return str(self.id) + ' ' + str(self.name) + ' ' + str(self.price)

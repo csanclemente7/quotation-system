@@ -47,4 +47,11 @@ urlpatterns = [
     path('quotation/<int:user>/<int:pk>/update', views.QuotationUpdateView.as_view()),
     path('quotation/<int:user>/<int:pk>/delete', views.QuotationDeleteView.as_view()),
 
+    # URLS de items de cotización
+    path('itemsQuotation/<int:user>', views.ItemsQuotationCreateView.as_view()),
+    path('itemsQuotation/<int:user>/<int:pk>', views.ItemsQuotationUpdateView.as_view()),
+    path('itemsQuotation/<int:user>/<int:pk>/delete', views.ItemsQuotationDeleteView.as_view()),
+    path('itemsQuotation/<int:user>/list', views.ItemsQuotationListView.as_view()),
+    path('itemsQuotation/<int:user>/<int:pk>/list', views.ItemsQuotationByQuotationListView.as_view()),
+
 ]

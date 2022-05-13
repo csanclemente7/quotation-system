@@ -5,18 +5,18 @@ from quotationSystemApp.models.quotation import Quotation, Item
 class QuotationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quotation
-        fields = ['id', 'item', 'quantity', 'price', 'total', 'client', 'date', 'time', 'iva', 'discount']
+        fields = [ 'client', 'iva', 'discount']
     def to_representation(self, obj):
         quotation = Quotation.objects.get(id=obj.id)
         return {
             'id': quotation.id,
-            'item': quotation.item.name,
-            'quantity': quotation.quantity,
-            'price': quotation.price,
-            'total': quotation.total,
             'client': quotation.client.name,
-            'date': quotation.date.strftime("%d/%m/%Y"),
-            'time': quotation.time.strftime("%H:%M"),
+            'date': quotation.dateTime.date().strftime('%d/%m/%Y'),
+            'time': quotation.dateTime.time().strftime('%H:%M'),
             'iva': quotation.iva,
-            'discount': quotation.discount
+            'discount': quotation.discount,
+            'subtotal': quotation.subtotal,
+            'totalDiscount': quotation.totalDiscount,
+            'totalIva': quotation.totalIva,
+            'total': quotation.total,
         }

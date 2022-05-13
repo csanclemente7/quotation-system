@@ -19,3 +19,10 @@ from .quotationViews import QuotationDetailView
 from .quotationViews import QuotationListView
 from .quotationViews import QuotationUpdateView
 from .quotationViews import QuotationDeleteView
+
+# ItemsQuotation views
+from .itemsQuotationViews import ItemsQuotationCreateView
+from .itemsQuotationViews import ItemsQuotationUpdateView
+from .itemsQuotationViews import ItemsQuotationDeleteView
+from .itemsQuotationViews import ItemsQuotationListView
+from .itemsQuotationViews import ItemsQuotationByQuotationListView
