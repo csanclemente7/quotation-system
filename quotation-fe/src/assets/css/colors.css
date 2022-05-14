@@ -1,0 +1,26 @@
+:root {
+  --color-primary: #007bbd;
+  --color-primary-light: #01afbc;
+  --color-primary-dark: #0060a1;
+
+  --color-secondary: #262626;
+  --color-secondary-dark: rgba(0, 0, 0, 0.226);
+
+  --text: #7e7e7e;
+  --text-light: #dadada;
+  --text-dark: #2b2b2b;
+  --white: #fff;
+
+  --color-tertiary: #2a7ae4;
+  --color-tertiary-light: #5d96e1;
+
+  --popup-background: #1a1a1a;
+
+  --color-success: #00b300;
+  --color-success-light: #00e600;
+  --error-color: #ff0000;
+  --warning-color: #ffa500;
+  --color-failure-light: #ff0000;
+
+  /* colors */
+}
