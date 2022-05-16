@@ -2,7 +2,7 @@
   <div class="home">
     <div class="home-data">
       <h1 class="home__subtitle">
-        <img src="../assets/img/home_img.png" alt="" />&nbsp; Quotation App
+        <img src="../assets/img/home_img.png" alt="" />&nbsp; App Cotizaciones
       </h1>
       <div class="input-container">
         <button v-on:click="loadQuotation()" class="button">
@@ -30,7 +30,6 @@
 <script>
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import swal from "sweetalert";
 export default {
   name: "Home",
   data: function () {
