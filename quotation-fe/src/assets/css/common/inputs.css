@@ -7,6 +7,12 @@
   margin-bottom: 1rem;
 }
 
+.header-form {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
 .input-container {
   font-weight: bold;
   position: relative;
@@ -21,10 +27,42 @@
   box-sizing: border-box;
   border-bottom: 1px solid var(--text-dark);
   color: var(--text-dark);
-  font-size: 1.125rem;
+  font-size: 1.02rem;
   padding: 1.375rem 0.5rem 0.5rem;
-  height: 3.25rem;
+  height: 1rem;
   width: 100%;
+}
+
+.row-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.item{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+}
+
+.total {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+}
+
+.quantity {
+  display: flex;
+  flex-direction: column;
+  width: 10%;
 }
 
 .placa {
@@ -143,4 +181,23 @@
   color: var(--warning-color);
   margin-top: 0.5rem;
   padding-left: 0.5rem;
+}
+
+/* Para mobiles */
+@media screen and (max-width: 768px) {
+  .row-form {
+    flex-direction: column;
+  }
+  .item {
+    width: 100%;
+  }
+  .price {
+    width: 100%;
+  }
+  .total {
+    width: 100%;
+  }
+  .quantity {
+    width: 100%;
+  }
 }
