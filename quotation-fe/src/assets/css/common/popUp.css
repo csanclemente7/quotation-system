@@ -25,15 +25,71 @@
   z-index: 2;
 }
 
+.popup img {
+  margin-top: 20px;
+  width: 80px;
+  margin-bottom: 5%;
+}
+
 .popup .popup_title {
-  color: var(--text-light);
-  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  color: var(--text);
 }
 
 .popup_close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   top: 0;
   right: 0;
   padding: 6px;
   cursor: pointer;
+}
+
+/* Para mobiles */
+@media only screen and (min-width: 0) {
+  .popup img {
+    width: 40px;
+  }
+
+  .popup .popup_title {
+    font-size: 25px;
+  }
+}
+
+/* Para tablets*/
+@media only screen and (min-width: 768px) {
+  .popup img {
+    width: 50px;
+  }
+
+  .popup .popup_title {
+    font-size: 50px;
+  }
+}
+
+/*Para escritorio*/
+@media only screen and (min-width: 922) {
+  .popup img {
+    width: 60px;
+  }
+
+  .popup .popup_title {
+    font-size: 50px;
+  }
+}
+
+/* para pantallas grandes */
+@media only screen and (min-width: 1200px) {
+  .popup img {
+    width: 70px;
+  }
+
+  .popup .popup_title {
+    font-size: 50px;
+  }
 }

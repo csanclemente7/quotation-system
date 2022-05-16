@@ -5,7 +5,7 @@
         <img src="../assets/img/home_img.png" alt="" />&nbsp; App Cotizaciones
       </h1>
       <div class="input-container">
-        <button v-on:click="loadQuotation()" class="button">
+        <button v-on:click="openPopUp('quotation')" class="button">
           Nueva Cotización
         </button>
       </div>
@@ -26,6 +26,70 @@
     <div></div>
     <div></div>
   </div>
+
+  <!-- POPUPS -->
+  <section class="popups_container">
+    <!--- pop up create quotation -->
+    <div class="popup" v-if="popUps.quotation">
+      <div class="popup_close" v-on:click="closePopUp('quotation')">
+        <svg
+          width="25"
+          height="25"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          stroke="red"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+          />
+        </svg>
+      </div>
+      <div class="create-report__errors">
+        <i
+          class="fa fa-exclamation-circle"
+          id="error-icon"
+          v-if="errors.error_message"
+        ></i>
+        <span v-if="!errors.error_createQuotation" class="text_success">{{
+          " " + success_message
+        }}</span>
+        <span v-if="errors.error_createQuotation" class="text_fail">{{
+          " " + errors.error_message
+        }}</span>
+      </div>
+
+      <h1 class="popup_title">
+        <img src="../assets/img/quotation_img.png" alt="" />&nbsp; Nueva
+        Cotización
+      </h1>
+
+      <!--- FORM -->
+      <form
+        v-on:submit.prevent="createQuotation"
+        class="formulario flex flex--column"
+      >
+        <!--- Placa -->
+        <div class="input-container">
+          <input
+            type="text"
+            name="cliente"
+            id="placa"
+            class="input cliente"
+            v-model="quotation.cliente"
+            maxlength="7"
+          />
+          <label class="input-label" for="cliente">Cliente</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+
+        <button class="button" type="submit">Generar</button>
+      </form>
+    </div>
+  </section>
 </template>
 <script>
 import axios from "axios";
@@ -39,6 +103,26 @@ export default {
       name: "",
       startLoader: false,
       tableRow: "",
+      success_message: "",
+
+      errors: {
+        error_createQuotation: false,
+        error_message: "",
+      },
+
+      popUps: {
+        quotation: false,
+      },
+
+      quotation: {
+        client: 1,
+        iva: "19",
+        discount: "",
+        subtotal: "",
+        totalDiscount: "",
+        totalIva: "",
+        total: "",
+      },
     };
   },
 
@@ -54,9 +138,6 @@ export default {
 
     // other methods
 
-    loadQuotation: function () {
-      this.$router.push("quotation");
-    },
     verifyToken: function () {
       this.startLoader = true;
       return axios
@@ -72,6 +153,14 @@ export default {
         .catch(() => {
           this.$emit("logOut");
         });
+    },
+
+    // pop ups
+    openPopUp: function (popUp, reporte) {
+      this.popUps[popUp] = true;
+    },
+    closePopUp: function (popUp) {
+      this.popUps[popUp] = false;
     },
   },
 
@@ -123,10 +212,10 @@ export default {
     font-size: 30px;
   }
   .home-data img {
-    width: 100px;
+    width: 80px;
   }
 }
-
+@import "../assets/css/common/popUp.css";
 @import "../assets/css/common/inputs.css";
 @import "../assets/css/common/button.css";
 @import "../assets/css/base/base.css";
