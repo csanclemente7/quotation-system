@@ -67,82 +67,29 @@
         Cotización
       </h1>
 
+      <!--- Placa -->
+      <div class="header-form">
+        <div class="input-container">
+          <input
+            type="text"
+            name="cliente"
+            id="placa"
+            class="input cliente"
+            v-model="quotation.cliente"
+            maxlength="7"
+          />
+          <label class="input-label" for="cliente">Cliente</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+      </div>
+
       <!--- FORM -->
       <form
-        v-on:submit.prevent="createQuotation"
+        v-on:submit.prevent="createQuotationItem"
         class="formulario flex flex--column"
+        id="form-quotation"
       >
-        <!--- Placa -->
-        <div class="header-form">
-          <div class="input-container">
-            <input
-              type="text"
-              name="cliente"
-              id="placa"
-              class="input cliente"
-              v-model="quotation.cliente"
-              maxlength="7"
-            />
-            <label class="input-label" for="cliente">Cliente</label>
-            <span class="input-message-error">Este campo no es valido</span>
-          </div>
-        </div>
-
-        <div class="row-form">
-          <div class="input-container item">
-            <input
-              type="text"
-              name="item"
-              id="placa"
-              class="input"
-              v-model="quotation.placa"
-              maxlength="7"
-            />
-            <label class="input-label" for="placa">Item</label>
-            <span class="input-message-error">Este campo no es valido</span>
-          </div>
-
-          <div class="input-container price">
-            <input
-              type="text"
-              name="price"
-              id="placa"
-              class="input"
-              v-model="quotation.placa"
-              maxlength="7"
-            />
-            <label class="input-label" for="placa">Precio</label>
-            <span class="input-message-error">Este campo no es valido</span>
-          </div>
-
-          <div class="input-container quantity">
-            <input
-              type="text"
-              name="quantity"
-              id="placa"
-              class="input"
-              v-model="quotation.placa"
-              maxlength="7"
-            />
-            <label class="input-label" for="placa">Cantidad</label>
-            <span class="input-message-error">Este campo no es valido</span>
-          </div>
-
-          <div class="input-container total">
-            <input
-              type="text"
-              name="total"
-              id="placa"
-              class="input"
-              v-model="quotation.placa"
-              maxlength="7"
-            />
-            <label class="input-label" for="placa">Total</label>
-            <span class="input-message-error">Este campo no es valido</span>
-          </div>
-        </div>
-
-        <button class="button" type="submit">Generar</button>
+        <!-- <button class="button" type="submit">Generar</button> -->
       </form>
     </div>
   </section>
@@ -160,6 +107,8 @@ export default {
       startLoader: false,
       tableRow: "",
       success_message: "",
+      counter: 0,
+      form: null,
 
       errors: {
         error_createQuotation: false,
@@ -171,7 +120,7 @@ export default {
       },
 
       quotation: {
-        client: 1,
+        client: "",
         iva: "19",
         discount: "",
         subtotal: "",
@@ -179,7 +128,13 @@ export default {
         totalIva: "",
         total: "",
       },
+
+      itemsQuotation: [],
     };
+  },
+
+  mounted() {
+    this.form = document.getElementById("form-quotation");
   },
 
   methods: {
@@ -214,9 +169,71 @@ export default {
     // pop ups
     openPopUp: function (popUp, reporte) {
       this.popUps[popUp] = true;
+      setTimeout(() => {
+        this.form = document.getElementById("form-quotation");
+        this.createRowForm(this.form, "item");
+        this.createRowForm(this.form, "price");
+        this.createRowForm(this.form, "quantity");
+        this.createRowForm(this.form, "total");
+      }, 100);
     },
     closePopUp: function (popUp) {
       this.popUps[popUp] = false;
+    },
+
+    // create elements in html
+
+    createRowForm: function (section, element) {
+      let itemQuotation = {
+        quotation: "",
+        item: "",
+        quantity: "",
+        total: "",
+      };
+
+      this.itemsQuotation.push(itemQuotation);
+
+      let indexOfItem = this.itemsQuotation.indexOf(itemQuotation);
+
+      let rowForm = document.createElement("div");
+      rowForm.classList.add("row-form");
+
+      let inputContainerItem = document.createElement("div");
+      inputContainerItem.classList.add("input-container");
+      inputContainerItem.classList.add("item");
+
+      let inputItem = document.createElement("input");
+      inputItem.setAttribute("type", "text");
+      inputItem.setAttribute("name", element);
+      inputItem.setAttribute("id", element);
+      inputItem.classList.add("input");
+      inputItem.setAttribute(
+        "v-model",
+        this.itemsQuotation[indexOfItem].element
+      );
+
+      let inputLabelItem = document.createElement("label");
+      inputLabelItem.setAttribute("for", element);
+      inputLabelItem.classList.add("input-label");
+      // capitalize first letter
+      inputLabelItem.innerHTML =
+        element.charAt(0).toUpperCase() + element.slice(1);
+
+      let inputSpanItem = document.createElement("span");
+      inputSpanItem.classList.add("input-message-error");
+
+      // append elements to inputContainerItem
+      inputContainerItem.appendChild(inputItem);
+      inputContainerItem.appendChild(inputLabelItem);
+      inputContainerItem.appendChild(inputSpanItem);
+
+      // append inputContainerItem to rowForm
+      rowForm.appendChild(inputContainerItem);
+
+      // append rowForm to section
+      section.appendChild(rowForm);
+
+      console.log(this.itemsQuotation);
     },
   },
 

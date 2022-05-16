@@ -10,7 +10,7 @@
 .header-form {
   display: flex;
   flex-direction: row;
-  width: 100%;
+  width: 80%;
 }
 
 .input-container {
@@ -41,7 +41,7 @@
   width: 100%;
 }
 
-.item{
+.item {
   display: flex;
   flex-direction: column;
   width: 50%;
