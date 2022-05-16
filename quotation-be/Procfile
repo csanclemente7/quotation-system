@@ -1,9 +1,1 @@
-<<<<<<< HEAD
-web: gunicorn QRSystemProject.wsgi
-=======
-<<<<<<< HEAD
-web: gunicorn QRSystemProject.wsgi
-=======
-web: gunicorn QRSystemProject.wsgi
->>>>>>> 00f6479e3669da30aff6f94d57b4bf1e720770dc
->>>>>>> f1a0d9ffde6c55051f0dbfb8e51e56cf86406c65
+web: gunicorn quotationSystemProject.wsgi

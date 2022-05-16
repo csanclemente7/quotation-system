@@ -150,7 +150,7 @@ export default {
     processSignUp: function () {
       this.startLoader = true;
       axios
-        .post("https://quotation-system-be.herokuapp.com/signup", this.user, {
+        .post("https://quotation-system-be.herokuapp.com/register", this.user, {
           headers: {},
         })
         .then((result) => {

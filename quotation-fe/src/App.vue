@@ -36,6 +36,21 @@ import axios from 'axios';
       <h2>Misión TIC 2022</h2>
     </div> -->
   </div>
+  <!-- LOADER -->
+  <div class="lds-spinner" v-if="startLoader">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
 </template>
 
 <script>
@@ -101,6 +116,7 @@ export default {
     },
 
     getUserData: async function () {
+      this.startLoader = true;
       if (
         localStorage.getItem("token_access") === null ||
         localStorage.getItem("token_refresh") === null
@@ -124,11 +140,13 @@ export default {
           this.name = response.data.name;
           localStorage.setItem("name", response.data.name);
           this.loadHome();
+          this.startLoader = false;
         })
         .catch((error) => {});
     },
 
     verifyToken: function () {
+      this.startLoader = true;
       return axios
         .post(
           "https://quotation-system-be.herokuapp.com/refresh",
@@ -137,6 +155,7 @@ export default {
         )
         .then((result) => {
           localStorage.setItem("token_access", result.data.access);
+          this.startLoader = false;
         })
         .catch(() => {
           this.$emit("logOut");
@@ -269,94 +288,6 @@ body :-ms-input-placeholder {
   }
 }
 
-/* loader in center of screen */
-
-.lds-spinner {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  margin-left: -32px;
-  margin-top: -32px;
-  width: 64px;
-  height: 64px;
-  z-index: 100;
-}
-
-.lds-spinner div {
-  transform-origin: 40px 40px;
-  animation: lds-spinner 1.2s linear infinite;
-}
-.lds-spinner div:after {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 3px;
-  left: 37px;
-  width: 6px;
-  height: 18px;
-  border-radius: 20%;
-  /* background: #000023e3; */
-  background: #007bbd;
-}
-.lds-spinner div:nth-child(1) {
-  transform: rotate(0deg);
-  animation-delay: -1.1s;
-}
-.lds-spinner div:nth-child(2) {
-  transform: rotate(30deg);
-  animation-delay: -1s;
-}
-.lds-spinner div:nth-child(3) {
-  transform: rotate(60deg);
-  animation-delay: -0.9s;
-}
-.lds-spinner div:nth-child(4) {
-  transform: rotate(90deg);
-  animation-delay: -0.8s;
-}
-.lds-spinner div:nth-child(5) {
-  transform: rotate(120deg);
-  animation-delay: -0.7s;
-}
-.lds-spinner div:nth-child(6) {
-  transform: rotate(150deg);
-  animation-delay: -0.6s;
-}
-.lds-spinner div:nth-child(7) {
-  transform: rotate(180deg);
-  animation-delay: -0.5s;
-}
-.lds-spinner div:nth-child(8) {
-  transform: rotate(210deg);
-  animation-delay: -0.4s;
-}
-.lds-spinner div:nth-child(9) {
-  transform: rotate(240deg);
-  animation-delay: -0.3s;
-}
-.lds-spinner div:nth-child(10) {
-  transform: rotate(270deg);
-  animation-delay: -0.2s;
-}
-.lds-spinner div:nth-child(11) {
-  transform: rotate(300deg);
-  animation-delay: -0.1s;
-}
-.lds-spinner div:nth-child(12) {
-  transform: rotate(330deg);
-  animation-delay: 0s;
-}
-@keyframes lds-spinner {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-/* end loader */
-
 /* class input if intem exist */
 .itemExist {
   border: 1.5px solid red !important;
@@ -378,4 +309,5 @@ body :-ms-input-placeholder {
 }
 
 @import "./assets/css/common/reqStatus.css";
+@import "./assets/css/common/loader.css";
 </style>
