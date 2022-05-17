@@ -132,6 +132,7 @@
               class="input"
               v-model="itemQuotation.price"
               v-on:input="setTotalItemQuotation"
+              :disabled="itemQuotation.item === ''"
             />
             <label class="input-label" for="price">Precio</label>
             <span class="input-message-error">Este campo no es valido</span>

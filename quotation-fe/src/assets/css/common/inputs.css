@@ -61,12 +61,6 @@
   width: 45%;
 }
 
-.price {
-  display: flex;
-  flex-direction: column;
-  width: 20%;
-}
-
 .total {
   display: flex;
   flex-direction: column;
@@ -74,6 +68,16 @@
 }
 
 .total input:disabled {
+  background: var(--disabled-color);
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+}
+
+.price input:disabled {
   background: var(--disabled-color);
 }
 
