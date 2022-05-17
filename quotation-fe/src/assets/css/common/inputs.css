@@ -24,9 +24,10 @@
 }
 
 .input-container .editbtn {
+  padding: 0.5rem;
   position: absolute;
   top: 50%;
-  right: 11%;
+  right: 0%;
   transform: translateY(-50%);
   border: none;
   font-size: 1.5rem;
