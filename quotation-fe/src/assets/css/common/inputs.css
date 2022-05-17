@@ -23,6 +23,20 @@
   box-sizing: border-box;
 }
 
+.input-container .editbtn {
+  padding: 0.5rem;
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  transform: translateY(-50%);
+  border: none;
+  font-size: 1.5rem;
+  background: var(--page-content-blockColor);
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: var(--color-tertiary);
+}
+
 .input {
   box-sizing: border-box;
   border-bottom: 1px solid var(--text-dark);
@@ -39,6 +53,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .item {
@@ -47,22 +62,34 @@
   width: 45%;
 }
 
-.price {
-  display: flex;
-  flex-direction: column;
-  width: 20%;
-}
-
 .total {
   display: flex;
   flex-direction: column;
   width: 20%;
 }
 
+.total input:disabled {
+  background: var(--disabled-color);
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+}
+
+.price input:disabled {
+  background: var(--disabled-color);
+}
+
 .quantity {
   display: flex;
   flex-direction: column;
   width: 15%;
+}
+
+.quantity input:disabled {
+  background: var(--disabled-color);
 }
 
 .input::placeholder {
