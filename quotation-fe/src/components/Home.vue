@@ -235,7 +235,6 @@ export default {
     // pop ups
     openPopUp: function (popUp, reporte) {
       this.popUps[popUp] = true;
-      this.createItemQuotation();
     },
     closePopUp: function (popUp) {
       this.popUps[popUp] = false;
@@ -257,6 +256,7 @@ export default {
     this.verifyAuth();
     this.name = localStorage.getItem("name") || "";
     this.is_admin = JSON.parse(localStorage.getItem("isAdmin")) || false;
+    this.createItemQuotation();
   },
 };
 </script>
