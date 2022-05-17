@@ -259,7 +259,9 @@ export default {
     this.verifyAuth();
     this.name = localStorage.getItem("name") || "";
     this.is_admin = JSON.parse(localStorage.getItem("isAdmin")) || false;
-    this.createItemQuotation();
+    for (let i = 0; i < 5; i++) {
+      this.createItemQuotation();
+    }
   },
 };
 </script>
