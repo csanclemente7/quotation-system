@@ -90,72 +90,6 @@
         id="form-quotation"
       >
         <!-- <button class="button" type="submit">Generar</button> -->
-
-        <div
-          class="row-form"
-          v-for="(itemQuotation, index) in itemsQuotation"
-          :key="index"
-        >
-          <div class="input-container item">
-            <input
-              type="text"
-              name="item"
-              id="item"
-              class="input"
-              v-model="itemQuotation.item"
-            />
-            <label class="input-label" for="item">Item</label>
-            <span class="input-message-error">Este campo no es valido</span>
-          </div>
-          <div class="input-container price">
-            <input
-              type="text"
-              name="price"
-              id="price"
-              class="input"
-              v-model="itemQuotation.price"
-            />
-            <label class="input-label" for="price">Precio</label>
-            <span class="input-message-error">Este campo no es valido</span>
-          </div>
-
-          <div class="input-container quantity">
-            <input
-              type="text"
-              name="quantity"
-              id="quantity"
-              class="input"
-              v-model="itemQuotation.quantity"
-            />
-            <label class="input-label" for="quantity">Cantidad</label>
-            <span class="input-message-error">Este campo no es valido</span>
-          </div>
-
-          <div class="input-container total">
-            <input
-              type="text"
-              name="total"
-              id="total"
-              class="input"
-              v-model="itemQuotation.total"
-            />
-            <label class="input-label" for="total">Total</label>
-            <span class="input-message-error">Este campo no es valido</span>
-          </div>
-        </div>
-
-        <!-- BOTON AGREGAR ITEM -->
-        <button
-          class="button add-item"
-          v-on:click="createItemQuotation"
-          type="button"
-        >
-          <i class="fas fa-plus"></i>
-        </button>
-
-        <div class="input-container">
-          <button class="button" type="submit">Generar</button>
-        </div>
       </form>
     </div>
   </section>
@@ -235,13 +169,16 @@ export default {
     // pop ups
     openPopUp: function (popUp, reporte) {
       this.popUps[popUp] = true;
-      this.createItemQuotation();
+      setTimeout(() => {
+        this.form = document.getElementById("form-quotation");
+        this.createRowForm(this.form);
+      }, 100);
     },
     closePopUp: function (popUp) {
       this.popUps[popUp] = false;
     },
 
-    createItemQuotation: function () {
+    createRowForm: function (form) {
       let itemQuotation = {
         quotation: "",
         item: "",
@@ -250,6 +187,50 @@ export default {
         total: "",
       };
       this.itemsQuotation.push(itemQuotation);
+      let indexOfItem = this.itemsQuotation.indexOf(itemQuotation);
+      let rowForm = document.createElement("div");
+      rowForm.classList.add("row-form");
+
+      this.createRowInput(form, "item", indexOfItem, rowForm);
+      this.createRowInput(form, "price", indexOfItem, rowForm);
+      this.createRowInput(form, "quantity", indexOfItem, rowForm);
+      this.createRowInput(form, "total", indexOfItem, rowForm);
+
+      console.log(this.itemsQuotation);
+    },
+
+    // create elements in html
+
+    createRowInput: function (form, element, indexOfItem, rowForm) {
+      let inputContainerItem = document.createElement("div");
+      inputContainerItem.classList.add("input-container");
+      inputContainerItem.classList.add(element);
+
+      let inputItem = document.createElement("input");
+      inputItem.setAttribute("type", "text");
+      inputItem.setAttribute("name", element);
+      inputItem.setAttribute("id", element);
+      inputItem.classList.add("input");
+      let inputLabelItem = document.createElement("label");
+      inputLabelItem.setAttribute("for", element);
+      inputLabelItem.classList.add("input-label");
+      // capitalize first letter
+      inputLabelItem.innerHTML =
+        element.charAt(0).toUpperCase() + element.slice(1);
+
+      let inputSpanItem = document.createElement("span");
+      inputSpanItem.classList.add("input-message-error");
+
+      // append elements to inputContainerItem
+      inputContainerItem.appendChild(inputItem);
+      inputContainerItem.appendChild(inputLabelItem);
+      inputContainerItem.appendChild(inputSpanItem);
+
+      // append inputContainerItem to rowForm
+      rowForm.appendChild(inputContainerItem);
+
+      // append rowForm to form
+      form.appendChild(rowForm);
     },
   },
 

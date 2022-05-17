@@ -23,6 +23,16 @@
   background-color: var(--color-secondary-dark);
 }
 
+.add-item {
+  width: 100%;
+  max-width: 90%;
+}
+
+.add-item i {
+  font-size: 1.5rem;
+  color: var(--text-light);
+}
+
 .delete-button {
   background-color: var(--popup-background);
   color: var(--error-color);

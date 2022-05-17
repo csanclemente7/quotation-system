@@ -5,8 +5,12 @@ import axios from 'axios';
 
     <div class="header" id="header" v-if="is_auth">
       <nav>
-        <button v-if="is_auth" v-on:click="loadHome">Inicio</button>
-        <button v-if="is_auth" v-on:click="logOut">Cerrar Sesión</button>
+        <button v-if="is_auth && !startLoader" v-on:click="loadHome">
+          Inicio
+        </button>
+        <button v-if="is_auth && !startLoader" v-on:click="logOut">
+          Cerrar Sesión
+        </button>
         <button v-if="is_auth && is_admin" v-on:click="loadSignUp">
           Nuevo Usuario
         </button>
