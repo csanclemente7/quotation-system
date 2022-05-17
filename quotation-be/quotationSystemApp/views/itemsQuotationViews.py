@@ -146,8 +146,7 @@ class ItemsQuotationByQuotationListView(generics.ListAPIView):
 
 # calcular total itemsQuotation
 def setTotalItemsQuotation(requestData):
-        item = Item.objects.get(id= requestData['item'])
-        price = item.price
+        price = requestData['price']
         quantity = requestData['quantity']
         total = int(price) * int(quantity)
         requestData['total'] = total

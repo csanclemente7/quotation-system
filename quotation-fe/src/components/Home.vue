@@ -31,23 +31,26 @@
   <section class="popups_container">
     <!--- pop up create quotation -->
     <div class="popup" v-if="popUps.quotation">
-      <div class="popup_close" v-on:click="closePopUp('quotation')">
-        <svg
-          width="25"
-          height="25"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          stroke="red"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.5"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-          />
-        </svg>
+      <div class="popup-close-container">
+        <div class="popup_close" v-on:click="closePopUp('quotation')">
+          <svg
+            width="25"
+            height="25"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="red"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </div>
       </div>
+
       <div class="create-report__errors">
         <i
           class="fa fa-exclamation-circle"
