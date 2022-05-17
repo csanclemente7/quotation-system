@@ -166,6 +166,9 @@
 <script>
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import { itemServices } from "../service/item-service";
+import { quotationServices } from "../service/quotation-service";
+
 export default {
   name: "Home",
   data: function () {
@@ -197,6 +200,10 @@ export default {
         totalIva: "",
         total: "",
       },
+
+      items: [],
+
+      quotations: [],
 
       itemsQuotation: [],
     };
@@ -260,6 +267,14 @@ export default {
     this.name = localStorage.getItem("name") || "";
     this.is_admin = JSON.parse(localStorage.getItem("isAdmin")) || false;
     this.createItemQuotation();
+
+    itemServices.getItemsList().then((result) => {
+      this.items = result;
+    });
+
+    quotationServices.getQuotationsList().then((result) => {
+      this.quotations = result;
+    });
   },
 };
 </script>
