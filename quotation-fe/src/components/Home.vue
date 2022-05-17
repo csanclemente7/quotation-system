@@ -275,6 +275,9 @@ export default {
     quotationServices.getQuotationsList().then((result) => {
       this.quotations = result;
     });
+    for (let i = 0; i < 5; i++) {
+      this.createItemQuotation();
+    }
   },
 };
 </script>
