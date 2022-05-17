@@ -105,9 +105,23 @@
               name="item"
               id="item"
               class="input"
-              v-model="itemQuotation.item"
+              v-model="itemQuotation.name"
+              v-on:focus="openPopUpSuggestions(index)"
+              autocomplete="off"
             />
+
             <label class="input-label" for="item">Item</label>
+            <button
+              class="editbtn"
+              type="submit"
+              aria-label="submit form"
+              v-if="itemQuotation.item != ''"
+              v-on:click="editItemName"
+            >
+              <!-- edit icon -->
+              <li class="fa fa-edit"></li>
+            </button>
+
             <span class="input-message-error">Este campo no es valido</span>
           </div>
           <div class="input-container price">
@@ -117,6 +131,7 @@
               id="price"
               class="input"
               v-model="itemQuotation.price"
+              v-on:input="setTotalItemQuotation"
             />
             <label class="input-label" for="price">Precio</label>
             <span class="input-message-error">Este campo no es valido</span>
@@ -129,6 +144,8 @@
               id="quantity"
               class="input"
               v-model="itemQuotation.quantity"
+              v-on:input="setTotalItemQuotation"
+              :disabled="itemQuotation.price === ''"
             />
             <label class="input-label" for="quantity">Cantidad</label>
             <span class="input-message-error">Este campo no es valido</span>
@@ -141,6 +158,7 @@
               id="total"
               class="input"
               v-model="itemQuotation.total"
+              disabled
             />
             <label class="input-label" for="total">Total</label>
             <span class="input-message-error">Este campo no es valido</span>
@@ -160,6 +178,63 @@
           <button class="button" type="submit">Generar</button>
         </div>
       </form>
+    </div>
+
+    <!--- pop up suggestions -->
+    <div class="popup popup-suggestions" v-if="popUps.suggestions">
+      <div class="popup-close-container">
+        <div class="popup_close" v-on:click="closePopUp('suggestions')">
+          <svg
+            width="25"
+            height="25"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="red"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div class="input-container suggestion-container">
+        <input
+          type="text"
+          name="suggestion"
+          id="suggestion"
+          class="input"
+          v-model="suggestion"
+          v-on:focus="openPopUp('suggestions')"
+          v-on:input="filterItems(suggestion)"
+          autocomplete="off"
+        />
+        <label class="input-label" for="suggestion"> Buscar Item </label>
+        <span class="input-message-error">Este campo no es valido</span>
+
+        <div
+          class="suggestion"
+          v-for="(item, index) in suggestions"
+          :key="index"
+        >
+          <li
+            v-on:click="setItemSuggestion(item.id, item.name, item.price)"
+            class="suggestion-item"
+          >
+            <div class="suggestion-content">
+              <i class="fas fa-plus">&nbsp;</i>
+
+              {{ item.name }}
+              <p class="seggestion-price">
+                &nbsp;&nbsp;$ {{ priceToString(item.price) }}
+              </p>
+            </div>
+          </li>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -181,6 +256,8 @@ export default {
       success_message: "",
       counter: 0,
       form: null,
+      suggestions: "",
+      indexSuggestion: 0,
 
       errors: {
         error_createQuotation: false,
@@ -189,6 +266,7 @@ export default {
 
       popUps: {
         quotation: false,
+        suggestions: false,
       },
 
       quotation: {
@@ -202,6 +280,8 @@ export default {
       },
 
       items: [],
+
+      suggestions: [],
 
       quotations: [],
 
@@ -243,9 +323,55 @@ export default {
     },
 
     // pop ups
-    openPopUp: function (popUp, reporte) {
+    openPopUp: function (popUp) {
       this.popUps[popUp] = true;
     },
+
+    openPopUpSuggestions: function (index) {
+      this.popUps.suggestions = true;
+      setTimeout(() => {
+        let input = document.getElementById("suggestion");
+        input.focus();
+      }, 100);
+      this.indexSuggestion = index;
+      /* this.setItem(index); */
+    },
+
+    filterItems: function (suggestion) {
+      let items = this.items;
+      let filteredItems = items.filter((item) => {
+        return item.name.toLowerCase().includes(suggestion.toLowerCase());
+      });
+      this.suggestions = filteredItems;
+
+      if (suggestion === "") {
+        this.suggestions = [];
+      }
+    },
+
+    setItemSuggestion: function (id, name, price) {
+      this.itemsQuotation[this.indexSuggestion].item = id;
+      this.itemsQuotation[this.indexSuggestion].name = name;
+      this.itemsQuotation[this.indexSuggestion].price = price;
+
+      this.popUps.suggestions = false;
+      this.suggestions = [];
+      this.suggestion = "";
+    },
+
+    setTotalItemQuotation: function () {
+      let price = this.itemsQuotation[this.indexSuggestion].price;
+      let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
+      this.itemsQuotation[this.indexSuggestion].total = quantity * price;
+    },
+
+    editItemName: function (e) {
+      let button = e.target;
+      let input = button.parentElement.parentElement.querySelector("input");
+      input.focus();
+      this.popUps.suggestions = false;
+    },
+
     closePopUp: function (popUp) {
       this.popUps[popUp] = false;
     },
@@ -254,11 +380,17 @@ export default {
       let itemQuotation = {
         quotation: "",
         item: "",
+        name: "",
         price: "",
         quantity: "",
         total: "",
       };
       this.itemsQuotation.push(itemQuotation);
+    },
+    priceToString: function (price) {
+      if (price != null && price != undefined) {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      }
     },
   },
 
@@ -275,7 +407,7 @@ export default {
     quotationServices.getQuotationsList().then((result) => {
       this.quotations = result;
     });
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 2; i++) {
       this.createItemQuotation();
     }
   },
@@ -328,5 +460,6 @@ export default {
 @import "../assets/css/common/popUp.css";
 @import "../assets/css/common/inputs.css";
 @import "../assets/css/common/button.css";
+@import "../assets/css/common/suggestion.css";
 @import "../assets/css/base/base.css";
 </style>
