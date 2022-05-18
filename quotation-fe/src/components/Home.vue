@@ -532,6 +532,16 @@
         <div class="input-container">
           <button class="button" type="submit">Actualizar Cotización</button>
         </div>
+
+        <div class="input-container">
+          <button
+            class="button delete-button"
+            type="button"
+            v-on:click="processDeleteQuotation(idQuotationToUpdate)"
+          >
+            Eliminar Cotización
+          </button>
+        </div>
       </form>
     </div>
 
@@ -952,6 +962,8 @@ export default {
 
       itemsQuotation: [],
 
+      idQuotationToUpdate: "",
+
       itemsQuotationUpdate: [],
     };
   },
@@ -1004,6 +1016,8 @@ export default {
       this.popUps[popUp] = true;
     },
     openPopUpUpdateQuotation: function (popUp, quotation) {
+      this.idQuotationToUpdate = quotation.id;
+      console.log(this.idQuotationToUpdate);
       this.popUps[popUp] = true;
       this.quotationUpdate = quotation;
       let itemQuotationUpdate = {
@@ -1318,6 +1332,16 @@ export default {
             this.quotations = result;
           });
         }, 100);
+      });
+    },
+
+    processDeleteQuotation: function (id) {
+      quotationServices.deleteQuotation(id).then((result) => {
+        this.closePopUp("updateQuotation");
+        quotationServices.getQuotationsList().then((result) => {
+          this.quotations = result;
+          console.log(result);
+        });
       });
     },
 
