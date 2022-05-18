@@ -242,6 +242,19 @@
             <label class="input-label" for="total">Total</label>
             <span class="input-message-error">Este campo no es valido</span>
           </div>
+
+          <!-- delete button -->
+          <div class="input-container delete">
+            <button
+              class="delete-button"
+              type="button"
+              aria-label="submit form"
+              v-on:click="deleteItemQuotation(index)"
+            >
+              <!-- delete icon -->
+              <li class="fa fa-trash"></li>
+            </button>
+          </div>
         </div>
 
         <!-- BOTON AGREGAR ITEM -->
@@ -466,6 +479,19 @@
             />
             <label class="input-label" for="total">Total</label>
             <span class="input-message-error">Este campo no es valido</span>
+          </div>
+
+          <!-- delete button -->
+          <div class="input-container delete">
+            <button
+              class="delete-button"
+              type="button"
+              aria-label="submit form"
+              v-on:click="deleteItemQuotationUpdate(itemQuotationUpdate, index)"
+            >
+              <!-- delete icon -->
+              <li class="fa fa-trash"></li>
+            </button>
           </div>
         </div>
         <!-- BOTON AGREGAR ITEM -->
@@ -1162,6 +1188,21 @@ export default {
       };
       this.itemsQuotationUpdate.push(itemQuotation);
     },
+
+    deleteItemQuotation: function (index) {
+      this.itemsQuotation.splice(index, 1);
+      this.getResults();
+    },
+
+    deleteItemQuotationUpdate: function (itemQuotationUpdate, index) {
+      this.itemsQuotationUpdate.splice(index, 1);
+      this.getResultsUpdate();
+      let itemId = itemQuotationUpdate.id;
+
+      itemQuotationServices.deleteItemQuotation(itemId).then((response) => {
+        console.log(response);
+      });
+    },
     priceToString: function (price) {
       if (price != null && price != undefined) {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -1177,6 +1218,14 @@ export default {
           name: "",
           price: "",
         };
+      });
+    },
+
+    processDeleteItem: function (id) {
+      itemServices.deleteItem(id).then((result) => {
+        itemServices.getItemsList().then((result) => {
+          this.items = result;
+        });
       });
     },
 
