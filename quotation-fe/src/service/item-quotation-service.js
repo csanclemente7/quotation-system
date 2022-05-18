@@ -22,7 +22,17 @@ const createItemQuotation = (itemQuotation) =>
     })
     .then((response) => response.data);
 
+const updateItemQuotation = (itemQuotation) =>
+  axios
+    .put(`/itemsQuotation/${getUser()}/${itemQuotation.id}`, itemQuotation, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    })
+    .then((response) => response.data);
+
 // export functions
 export const itemQuotationServices = {
   createItemQuotation,
+  updateItemQuotation,
 };

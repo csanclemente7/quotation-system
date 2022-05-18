@@ -59,30 +59,31 @@ class QuotationListView(generics.ListAPIView):
         return queryset.order_by('id')
 
 class QuotationUpdateView(generics.UpdateAPIView):
-    queryset = Quotation.objects.all()
-    serializer_class = QuotationSerializer
+    queryset           = Quotation.objects.all()
+    serializer_class   = QuotationSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
-        token = self.request.META.get('HTTP_AUTHORIZATION')[7:]
+        token        = self.request.META.get('HTTP_AUTHORIZATION')[7:]
         tokenBackend = TokenBackend(algorithm=settings.SIMPLE_JWT['ALGORITHM'])
-        valid_data = tokenBackend.decode(token, verify=False)
-
+        valid_data   = tokenBackend.decode(token,verify=False)
+        
         if valid_data['user_id'] != self.kwargs['user']:
-            stringResponse = {'detail': 'Unauthorized Request'}
+            stringResponse = {'detail':'Unauthorized Request'}
             return Response(stringResponse, status=status.HTTP_401_UNAUTHORIZED)
         return super().get_object()
 
     def put(self, request, *args, **kwargs):
-        token = self.request.META.get('HTTP_AUTHORIZATION')[7:]
+        token        = request.META.get('HTTP_AUTHORIZATION')[7:]
         tokenBackend = TokenBackend(algorithm=settings.SIMPLE_JWT['ALGORITHM'])
-        valid_data = tokenBackend.decode(token, verify=False)
+        valid_data   = tokenBackend.decode(token,verify=False)
 
         if valid_data['user_id'] != self.kwargs['user']:
-
-            stringResponse = {'detail': 'Unauthorized Request'}
+            stringResponse = {'detail':'Unauthorized Request'}
             return Response(stringResponse, status=status.HTTP_401_UNAUTHORIZED)
         return super().put(request, *args, **kwargs)
+
+        
 
 class QuotationDeleteView(generics.DestroyAPIView):
     queryset = Quotation.objects.all()
