@@ -610,6 +610,8 @@ export default {
         input.focus();
       }, 100);
       this.indexSuggestion = index;
+      this.itemsQuotation[index].quantity = "";
+      this.itemsQuotation[index].total = "";
     },
 
     openPopUpClientes: function (index) {
@@ -653,6 +655,8 @@ export default {
       this.popUps.suggestions = false;
       this.suggestions = [];
       this.suggestion = "";
+
+      this.setTotalItemQuotation;
     },
 
     setClientSuggestion: function (id, name, phone) {
