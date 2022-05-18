@@ -260,11 +260,11 @@
                 <td>${{ priceToString(quotationResults.subtotal) }}</td>
               </tr>
               <tr>
-                <td>Iva</td>
+                <td>Iva {{ quotation.iva }}%</td>
                 <td>${{ priceToString(quotationResults.totalIva) }}</td>
               </tr>
-              <tr v-if="quotationResults.discount > 0">
-                <td>Descuento</td>
+              <tr v-if="quotation.discount > 0">
+                <td>Descuento {{ quotation.discount }}%</td>
                 <td>${{ priceToString(quotationResults.totalDiscount) }}</td>
               </tr>
               <tr>
