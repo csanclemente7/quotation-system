@@ -1046,8 +1046,9 @@ export default {
       let price = this.itemsQuotation[this.indexSuggestion].price;
       let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
       this.itemsQuotation[this.indexSuggestion].total = quantity * price;
-
-      this.getResults();
+      if (price != undefined && quantity != undefined) {
+        this.getResults();
+      }
     },
 
     setTotalItemQuotationUpdate: function () {
