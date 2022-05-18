@@ -1345,6 +1345,7 @@ export default {
         dangerMode: true,
       }).then((willDelete) => {
         if (willDelete) {
+          // si el usuario acepta eliminar el registro
           quotationServices.deleteQuotation(id).then((result) => {
             this.closePopUp("updateQuotation");
             quotationServices.getQuotationsList().then((result) => {
