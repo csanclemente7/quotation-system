@@ -33,7 +33,7 @@
           >
             <td>{{ quotation.id }}</td>
             <td>{{ quotation.date }}</td>
-            <td>{{ quotation.client }}</td>
+            <td>{{ quotation.client_name }}</td>
             <td>${{ priceToString(quotation.total) }}</td>
           </tr>
         </tbody>
