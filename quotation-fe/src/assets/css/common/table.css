@@ -9,11 +9,15 @@ table.custom-responsiva {
 }
 
 .custom-responsiva tr {
+  background-color: rgb(132, 134, 136);
+}
+
+.custom-responsiva td {
   cursor: pointer;
 }
 
 .custom-responsiva th {
-  background: #333 !important;
+  background: rgb(51, 51, 51) !important;
   color: white !important;
   font-weight: bold !important;
 }

@@ -2,8 +2,12 @@
   <main class="login">
     <!-- SECTION LOGIN HEADER -->
     <section class="login__header">
-      <img src="../assets/img/logo_img.png" alt="" class="login__img" />
-      <h2 class="login__title">Lavadero App</h2>
+      <img
+        src="../assets/img/Logo_macris_blanco.png"
+        alt=""
+        class="login__img"
+      />
+      <h2 class="login__title">Cotizaciones</h2>
       <h1 class="login__subtitle">Inicio de Sesión</h1>
     </section>
 
