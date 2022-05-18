@@ -320,7 +320,7 @@
       </div>
 
       <h1 class="popup_title">
-        <img src="../assets/img/quotation_img.png" alt="" />&nbsp; Nueva
+        <img src="../assets/img/quotation_img.png" alt="" />&nbsp; Actualizar
         Cotización
       </h1>
 
