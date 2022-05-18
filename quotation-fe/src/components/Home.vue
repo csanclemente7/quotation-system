@@ -1210,12 +1210,22 @@ export default {
     },
 
     deleteItemQuotationUpdate: function (itemQuotationUpdate, index) {
-      this.itemsQuotationUpdate.splice(index, 1);
-      this.getResultsUpdate();
-      let itemId = itemQuotationUpdate.id;
+      swal({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, no podrás recuperar este registro",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.itemsQuotationUpdate.splice(index, 1);
+          this.getResultsUpdate();
+          let itemId = itemQuotationUpdate.id;
 
-      itemQuotationServices.deleteItemQuotation(itemId).then((response) => {
-        console.log(response);
+          itemQuotationServices.deleteItemQuotation(itemId).then((response) => {
+            console.log(response);
+          });
+        }
       });
     },
     priceToString: function (price) {
