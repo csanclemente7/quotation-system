@@ -1065,6 +1065,7 @@ export default {
       let input = button.parentElement.parentElement.querySelector("input");
       input.focus();
       this.popUps.suggestions = false;
+      this.popUps.suggestionsUpdate = false;
     },
 
     editClientName: function (e) {
