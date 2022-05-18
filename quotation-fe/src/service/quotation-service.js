@@ -33,8 +33,19 @@ const createQuotation = (quotation) =>
     })
     .then((response) => response.data);
 
+// update quotation
+const updateQuotation = (quotation) =>
+  axios
+    .put(`/quotation/${getUser()}/${quotation.id}/update`, quotation, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    })
+    .then((response) => response.data);
+
 // export functions
 export const quotationServices = {
   getQuotationsList,
   createQuotation,
+  updateQuotation,
 };

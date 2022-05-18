@@ -13,7 +13,8 @@ class QuotationSerializer(serializers.ModelSerializer):
         itemsQuotation = ItemsQuotation.objects.filter(quotation_id=quotation.id)
         return {
             'id': quotation.id,
-            'client': quotation.client.name,
+            'client': quotation.client.id,
+            'client_name': quotation.client.name,
             'date': quotation.dateTime.date().strftime('%d/%m/%Y'),
             'time': quotation.dateTime.time().strftime('%H:%M'),
             'iva': quotation.iva,

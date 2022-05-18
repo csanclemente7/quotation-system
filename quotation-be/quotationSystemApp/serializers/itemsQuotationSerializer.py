@@ -11,8 +11,8 @@ class ItemsQuotationSerializer(serializers.ModelSerializer):
         itemsQuotation = ItemsQuotation.objects.get(id=obj.id)
         return {
             'id': itemsQuotation.id,
-            'quotationId': itemsQuotation.quotation.id,
-            'itemId': itemsQuotation.item.id,
+            'quotation': itemsQuotation.quotation.id,
+            'item': itemsQuotation.item.id,
             'name': itemsQuotation.item.name,
             'price': itemsQuotation.item.price,
             'quantity': itemsQuotation.quantity,

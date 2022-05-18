@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <!-- TABLE -->
+      <!--  QUOTATIONS TABLE -->
       <table class="custom-responsiva">
         <thead>
           <tr>
@@ -29,7 +29,7 @@
             v-for="quotation in quotations"
             :key="quotation"
             id="table_row"
-            v-on:click="openPopUp('updateReporte', reporte)"
+            v-on:click="openPopUpUpdateQuotation('updateQuotation', quotation)"
           >
             <td>{{ quotation.id }}</td>
             <td>{{ quotation.date }}</td>
@@ -58,7 +58,7 @@
 
   <!-- POPUPS -->
   <section class="popups_container">
-    <!--- pop up create quotation -->
+    <!--- POPUP CREATE QUOTATION -->
     <div class="popup" v-if="popUps.quotation">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('quotation')">
@@ -138,6 +138,7 @@
               name="iva"
               id="iva"
               class="input"
+              v-on:input="setTotalItemQuotation"
               v-model="quotation.iva"
               maxlength="7"
               required
@@ -153,6 +154,7 @@
               name="descuento"
               id="descuento"
               class="input"
+              v-on:input="setTotalItemQuotation"
               v-model="quotation.discount"
               maxlength="7"
               required
@@ -259,13 +261,13 @@
                 <td>Subtotal</td>
                 <td>${{ priceToString(quotationResults.subtotal) }}</td>
               </tr>
-              <tr>
-                <td>Iva {{ quotation.iva }}%</td>
-                <td>${{ priceToString(quotationResults.totalIva) }}</td>
-              </tr>
               <tr v-if="quotation.discount > 0">
                 <td>Descuento {{ quotation.discount }}%</td>
                 <td>${{ priceToString(quotationResults.totalDiscount) }}</td>
+              </tr>
+              <tr>
+                <td>Iva {{ quotation.iva }}%</td>
+                <td>${{ priceToString(quotationResults.totalIva) }}</td>
               </tr>
               <tr>
                 <td>Total</td>
@@ -277,6 +279,232 @@
 
         <div class="input-container">
           <button class="button" type="submit">Generar Cotización</button>
+        </div>
+      </form>
+    </div>
+
+    <!--- POPUP UPDATE QUOTATION -->
+    <div class="popup popup-update-quotation" v-if="popUps.updateQuotation">
+      <div class="popup-close-container">
+        <div class="popup_close" v-on:click="closePopUp('updateQuotation')">
+          <svg
+            width="25"
+            height="25"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="red"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div class="create-report__errors">
+        <i
+          class="fa fa-exclamation-circle"
+          id="error-icon"
+          v-if="errors.error_message"
+        ></i>
+        <span v-if="!errors.error_createQuotation" class="text_success">{{
+          " " + success_message
+        }}</span>
+        <span v-if="errors.error_createQuotation" class="text_fail">{{
+          " " + errors.error_message
+        }}</span>
+      </div>
+
+      <h1 class="popup_title">
+        <img src="../assets/img/quotation_img.png" alt="" />&nbsp; Nueva
+        Cotización
+      </h1>
+
+      <!--- FORM -->
+      <form
+        v-on:submit.prevent="processUpdateQuotation"
+        class="formulario flex flex--column"
+        id="form-quotation"
+      >
+        <div class="header-form">
+          <!--- Cliente -->
+          <div class="input-container client">
+            <input
+              type="text"
+              name="cliente"
+              id="cliente"
+              class="input"
+              v-model="quotationUpdate.client_name"
+              v-on:focus="openPopUpClientes(index)"
+              autoComplete="off"
+              required
+            />
+            <label class="input-label" for="cliente">Cliente</label>
+            <button
+              class="editbtn"
+              type="button"
+              aria-label="submit form"
+              v-if="quotationUpdate.client_name != ''"
+              v-on:click="editClientName"
+            >
+              <!-- edit icon -->
+              <li class="fa fa-edit"></li>
+            </button>
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
+          <!--- Iva -->
+          <div class="input-container iva">
+            <input
+              type="text"
+              name="iva"
+              id="iva"
+              class="input"
+              v-on:input="setTotalItemQuotationUpdate"
+              v-model="quotationUpdate.iva"
+              maxlength="7"
+              required
+            />
+            <label class="input-label" for="iva">% Iva</label>
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
+
+          <!--- Descuento -->
+          <div class="input-container descuento">
+            <input
+              type="text"
+              name="descuento"
+              id="descuento"
+              class="input"
+              v-on:input="setTotalItemQuotationUpdate"
+              v-model="quotationUpdate.discount"
+              maxlength="7"
+              required
+            />
+            <label class="input-label" for="descuento">% Descuento</label>
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
+        </div>
+        <div
+          class="row-form"
+          v-for="(itemQuotationUpdate, index) in itemsQuotationUpdate"
+          :key="index"
+        >
+          <div class="input-container item">
+            <input
+              type="text"
+              name="item"
+              id="item"
+              class="input"
+              v-model="itemQuotationUpdate.name"
+              v-on:focus="openPopUpSuggestions(index)"
+              autocomplete="off"
+              required
+            />
+
+            <label class="input-label" for="item">Item</label>
+            <button
+              class="editbtn"
+              type="button"
+              aria-label="submit form"
+              v-if="itemQuotationUpdate.item != ''"
+              v-on:click="editItemName"
+            >
+              <!-- edit icon -->
+              <li class="fa fa-edit"></li>
+            </button>
+
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
+          <div class="input-container price">
+            <input
+              type="text"
+              name="price"
+              id="price"
+              class="input"
+              v-model="itemQuotationUpdate.price"
+              v-on:focus="setIndexSuggestion(index)"
+              v-on:input="setTotalItemQuotationUpdate"
+              :disabled="itemQuotationUpdate.item === ''"
+              autocomplete="off"
+              required
+            />
+            <label class="input-label" for="price">Precio</label>
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
+
+          <div class="input-container quantity">
+            <input
+              type="text"
+              name="quantity"
+              id="quantity"
+              class="input"
+              v-model="itemQuotationUpdate.quantity"
+              v-on:focus="setIndexSuggestion(index)"
+              v-on:input="setTotalItemQuotationUpdate"
+              :disabled="itemQuotationUpdate.price === ''"
+              autocomplete="off"
+              required
+            />
+            <label class="input-label" for="quantity">Cantidad</label>
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
+
+          <div class="input-container total">
+            <input
+              type="text"
+              name="total"
+              id="total"
+              class="input"
+              v-model="itemQuotationUpdate.total"
+              autocomplete="off"
+              required
+              disabled
+            />
+            <label class="input-label" for="total">Total</label>
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
+        </div>
+        <!-- BOTON AGREGAR ITEM -->
+        <button
+          class="button add-item"
+          v-on:click="createItemQuotation"
+          type="button"
+        >
+          <i class="fas fa-plus"></i>
+        </button>
+
+        <!-- totales -->
+        <div class="table-results">
+          <table class="table-totals custom-responsiva">
+            <tbody>
+              <tr>
+                <td>Subtotal</td>
+                <td>${{ priceToString(quotationUpdateResults.subtotal) }}</td>
+              </tr>
+              <tr v-if="quotationUpdate.discount > 0">
+                <td>Descuento {{ quotationUpdate.discount }}%</td>
+                <td>
+                  ${{ priceToString(quotationUpdateResults.totalDiscount) }}
+                </td>
+              </tr>
+              <tr>
+                <td>Iva {{ quotationUpdate.iva }}%</td>
+                <td>${{ priceToString(quotationUpdateResults.totalIva) }}</td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td>${{ priceToString(quotationUpdateResults.total) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="input-container">
+          <button class="button" type="submit">Actualizar Cotización</button>
         </div>
       </form>
     </div>
@@ -528,6 +756,7 @@ export default {
         quotation: false,
         suggestions: false,
         item: false,
+        updateQuotation: false,
       },
 
       quotation: {
@@ -541,7 +770,28 @@ export default {
         totalIva: "0",
         total: "0",
       },
+
+      quotationUpdate: {
+        id: "",
+        client: "",
+        client_name: "",
+        client_phone: "",
+        iva: "19",
+        discount: "0",
+        subtotal: "0",
+        totalDiscount: "0",
+        totalIva: "0",
+        total: "0",
+      },
+
       quotationResults: {
+        subtotal: "0",
+        totalDiscount: "0",
+        totalIva: "0",
+        total: "0",
+      },
+
+      quotationUpdateResults: {
         subtotal: "0",
         totalDiscount: "0",
         totalIva: "0",
@@ -562,6 +812,8 @@ export default {
       quotations: [],
 
       itemsQuotation: [],
+
+      itemsQuotationUpdate: [],
     };
   },
 
@@ -601,6 +853,35 @@ export default {
     // pop ups
     openPopUp: function (popUp) {
       this.popUps[popUp] = true;
+    },
+
+    openPopUpUpdateQuotation: function (popUp, quotation) {
+      this.popUps[popUp] = true;
+      this.quotationUpdate = quotation;
+      let itemQuotationUpdate = {
+        quotation: "",
+        item: "",
+        name: "",
+        price: "",
+        quantity: "",
+        total: "0",
+      };
+      this.itemsQuotationUpdate = [];
+
+      this.itemsQuotationUpdate = quotation.quotationItems.map((item) => {
+        return Object.assign({
+          id: item.id,
+          quotation: quotation.id,
+          item: item.item_id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          total: item.total,
+        });
+      });
+      console.log(this.itemsQuotationUpdate);
+
+      this.getResultsUpdate();
     },
 
     openPopUpSuggestions: function (index) {
@@ -679,6 +960,14 @@ export default {
       this.itemsQuotation[this.indexSuggestion].total = quantity * price;
 
       this.getResults();
+    },
+
+    setTotalItemQuotationUpdate: function () {
+      let price = this.itemsQuotationUpdate[this.indexSuggestion].price;
+      let quantity = this.itemsQuotationUpdate[this.indexSuggestion].quantity;
+      this.itemsQuotationUpdate[this.indexSuggestion].total = quantity * price;
+
+      this.getResultsUpdate();
     },
 
     editItemName: function (e) {
@@ -774,6 +1063,43 @@ export default {
       });
     },
 
+    processUpdateQuotation: function () {
+      quotationServices.updateQuotation(this.quotationUpdate).then((result) => {
+        this.errors.error_createQuotation = false;
+        this.quotationUpdate = {
+          client: "",
+          client_name: "",
+          client_phone: "",
+          iva: "19",
+          discount: "0",
+          subtotal: "0",
+          totalDiscount: "0",
+          totalIva: "0",
+          total: "0",
+        };
+        let quotationId = result.id;
+        for (let i = 0; i < this.itemsQuotationUpdate.length; i++) {
+          let itemQuotation = this.itemsQuotationUpdate[i];
+          itemQuotation.quotation = quotationId;
+          itemQuotationServices
+            .updateItemQuotation(itemQuotation)
+            .then((result) => {
+              console.log("Item quotation updated");
+              this.itemsQuotationUpdate = [];
+              for (let i = 0; i < 2; i++) {
+                this.createItemQuotation();
+              }
+              this.errors.error_createQuotation = false;
+            });
+        }
+        this.errors.error_createQuotation = false;
+        this.closePopUp("updateQuotation");
+        quotationServices.getQuotationsList().then((result) => {
+          this.quotations = result;
+        });
+      });
+    },
+
     // generar totales
     getResults: function () {
       let subtotal = 0;
@@ -786,12 +1112,12 @@ export default {
 
       for (let i = 0; i < this.itemsQuotation.length; i++) {
         let itemQuotation = this.itemsQuotation[i];
-        subtotal += itemQuotation.total;
+        subtotal += itemQuotation.total * itemQuotation.quantity;
       }
 
       totalDiscount = subtotal * (discount / 100);
 
-      totalIva = subtotal * (iva / 100);
+      totalIva = (subtotal - totalDiscount) * (iva / 100);
 
       total = subtotal - totalDiscount + totalIva;
 
@@ -801,6 +1127,35 @@ export default {
       this.quotationResults.total = total;
 
       console.log(this.quotationResults);
+    },
+
+    // generar totales Actualizados
+    getResultsUpdate: function () {
+      let subtotal = 0;
+      let totalDiscount = 0;
+      let totalIva = 0;
+      let total = 0;
+
+      let iva = this.quotationUpdate.iva;
+      let discount = this.quotationUpdate.discount;
+
+      for (let i = 0; i < this.itemsQuotationUpdate.length; i++) {
+        let itemQuotation = this.itemsQuotationUpdate[i];
+        subtotal += itemQuotation.total * itemQuotation.quantity;
+      }
+
+      totalDiscount = subtotal * (discount / 100);
+
+      totalIva = (subtotal - totalDiscount) * (iva / 100);
+
+      total = subtotal - totalDiscount + totalIva;
+
+      this.quotationUpdateResults.subtotal = subtotal;
+      this.quotationUpdateResults.totalDiscount = totalDiscount;
+      this.quotationUpdateResults.totalIva = totalIva;
+      this.quotationUpdateResults.total = total;
+
+      console.log(this.quotationUpdateResults);
     },
   },
 
