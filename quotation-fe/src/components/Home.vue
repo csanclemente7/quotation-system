@@ -400,7 +400,7 @@
               id="item"
               class="input"
               v-model="itemQuotationUpdate.name"
-              v-on:focus="openPopUpSuggestions(index)"
+              v-on:focus="openPopUpSuggestionsUpdate(index)"
               autocomplete="off"
               required
             />
@@ -426,7 +426,7 @@
               id="price"
               class="input"
               v-model="itemQuotationUpdate.price"
-              v-on:focus="setIndexSuggestion(index)"
+              v-on:focus="setIndexSuggestionUpdate(index)"
               v-on:input="setTotalItemQuotationUpdate"
               :disabled="itemQuotationUpdate.item === ''"
               autocomplete="off"
@@ -443,7 +443,7 @@
               id="quantity"
               class="input"
               v-model="itemQuotationUpdate.quantity"
-              v-on:focus="setIndexSuggestion(index)"
+              v-on:focus="setIndexSuggestionUpdate(index)"
               v-on:input="setTotalItemQuotationUpdate"
               :disabled="itemQuotationUpdate.price === ''"
               autocomplete="off"
@@ -471,7 +471,7 @@
         <!-- BOTON AGREGAR ITEM -->
         <button
           class="button add-item"
-          v-on:click="createItemQuotation"
+          v-on:click="createItemQuotationUpdate"
           type="button"
         >
           <i class="fas fa-plus"></i>
@@ -663,6 +663,63 @@
       </div>
     </div>
 
+    <!--- pop up suggestions update -->
+    <div class="popup popup-suggestions" v-if="popUps.suggestionsUpdate">
+      <div class="popup-close-container">
+        <div class="popup_close" v-on:click="closePopUp('suggestionsUpdate')">
+          <svg
+            width="25"
+            height="25"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="red"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div class="input-container suggestion-container">
+        <input
+          type="text"
+          name="suggestion"
+          id="suggestion"
+          class="input"
+          v-model="suggestionUpdate"
+          v-on:focus="openPopUp('suggestionsUpdate')"
+          v-on:input="filterItems(suggestionUpdate)"
+          autocomplete="off"
+        />
+        <label class="input-label" for="suggestionUpdate"> Buscar Item </label>
+        <span class="input-message-error">Este campo no es valido</span>
+
+        <div
+          class="suggestion"
+          v-for="(item, index) in suggestions"
+          :key="index"
+        >
+          <li
+            v-on:click="setItemSuggestionUpdate(item.id, item.name, item.price)"
+            class="suggestion-item"
+          >
+            <div class="suggestion-content">
+              <i class="fas fa-plus">&nbsp;</i>
+
+              {{ item.name }}
+              <p class="seggestion-price">
+                &nbsp;&nbsp;$ {{ priceToString(item.price) }}
+              </p>
+            </div>
+          </li>
+        </div>
+      </div>
+    </div>
+
     <!--- pop up clientes -->
     <div class="popup popup-clientes" v-if="popUps.clientes">
       <div class="popup-close-container">
@@ -744,7 +801,9 @@ export default {
       counter: 0,
       form: null,
       suggestions: "",
+      suggestionUpdate: "",
       indexSuggestion: 0,
+      indexSuggestionUpdate: 0,
 
       errors: {
         error_createQuotation: false,
@@ -755,6 +814,7 @@ export default {
         clientes: false,
         quotation: false,
         suggestions: false,
+        suggestionsUpdate: false,
         item: false,
         updateQuotation: false,
       },
@@ -808,6 +868,8 @@ export default {
       items: [],
 
       suggestions: [],
+
+      suggestionsUpdate: [],
 
       quotations: [],
 
@@ -894,6 +956,16 @@ export default {
       this.itemsQuotation[index].quantity = "";
       this.itemsQuotation[index].total = "";
     },
+    openPopUpSuggestionsUpdate: function (index) {
+      this.popUps.suggestionsUpdate = true;
+      setTimeout(() => {
+        let input = document.getElementById("suggestion");
+        input.focus();
+      }, 100);
+      this.indexSuggestionUpdate = index;
+      this.itemsQuotationUpdate[index].quantity = "";
+      this.itemsQuotationUpdate[index].total = "";
+    },
 
     openPopUpClientes: function (index) {
       this.popUps.clientes = true;
@@ -940,6 +1012,18 @@ export default {
       this.setTotalItemQuotation;
     },
 
+    setItemSuggestionUpdate: function (id, name, price) {
+      this.itemsQuotationUpdate[this.indexSuggestionUpdate].item = id;
+      this.itemsQuotationUpdate[this.indexSuggestionUpdate].name = name;
+      this.itemsQuotationUpdate[this.indexSuggestionUpdate].price = price;
+
+      this.popUps.suggestionsUpdate = false;
+      this.suggestions = [];
+      this.suggestionUpdate = "";
+
+      this.setTotalItemQuotationUpdate;
+    },
+
     setClientSuggestion: function (id, name, phone) {
       this.quotation.client = id;
       this.quotation.client_name = name;
@@ -954,6 +1038,10 @@ export default {
       this.indexSuggestion = index;
     },
 
+    setIndexSuggestionUpdate: function (index) {
+      this.indexSuggestionUpdate = index;
+    },
+
     setTotalItemQuotation: function () {
       let price = this.itemsQuotation[this.indexSuggestion].price;
       let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
@@ -963,9 +1051,11 @@ export default {
     },
 
     setTotalItemQuotationUpdate: function () {
-      let price = this.itemsQuotationUpdate[this.indexSuggestion].price;
-      let quantity = this.itemsQuotationUpdate[this.indexSuggestion].quantity;
-      this.itemsQuotationUpdate[this.indexSuggestion].total = quantity * price;
+      let price = this.itemsQuotationUpdate[this.indexSuggestionUpdate].price;
+      let quantity =
+        this.itemsQuotationUpdate[this.indexSuggestionUpdate].quantity;
+      this.itemsQuotationUpdate[this.indexSuggestionUpdate].total =
+        quantity * price;
 
       this.getResultsUpdate();
     },
@@ -998,6 +1088,17 @@ export default {
         total: "",
       };
       this.itemsQuotation.push(itemQuotation);
+    },
+    createItemQuotationUpdate: function () {
+      let itemQuotation = {
+        quotation: "",
+        item: "",
+        name: "",
+        price: "",
+        quantity: "",
+        total: "",
+      };
+      this.itemsQuotationUpdate.push(itemQuotation);
     },
     priceToString: function (price) {
       if (price != null && price != undefined) {
@@ -1079,24 +1180,33 @@ export default {
         };
         let quotationId = result.id;
         for (let i = 0; i < this.itemsQuotationUpdate.length; i++) {
-          let itemQuotation = this.itemsQuotationUpdate[i];
-          itemQuotation.quotation = quotationId;
-          itemQuotationServices
-            .updateItemQuotation(itemQuotation)
-            .then((result) => {
-              console.log("Item quotation updated");
-              this.itemsQuotationUpdate = [];
-              for (let i = 0; i < 2; i++) {
-                this.createItemQuotation();
-              }
-              this.errors.error_createQuotation = false;
-            });
+          if (this.itemsQuotationUpdate[i].id === undefined) {
+            let itemQuotation = this.itemsQuotationUpdate[i];
+            itemQuotation.quotation = quotationId;
+            itemQuotationServices
+              .createItemQuotation(itemQuotation)
+              .then((result) => {
+                console.log("Item quotation created");
+                this.errors.error_createQuotation = false;
+              });
+          } else {
+            let itemQuotation = this.itemsQuotationUpdate[i];
+            itemQuotation.quotation = quotationId;
+            itemQuotationServices
+              .updateItemQuotation(itemQuotation)
+              .then((result) => {
+                console.log("Item quotation updated");
+                this.errors.error_createQuotation = false;
+              });
+          }
         }
         this.errors.error_createQuotation = false;
         this.closePopUp("updateQuotation");
-        quotationServices.getQuotationsList().then((result) => {
-          this.quotations = result;
-        });
+        setTimeout(() => {
+          quotationServices.getQuotationsList().then((result) => {
+            this.quotations = result;
+          });
+        }, 100);
       });
     },
 
