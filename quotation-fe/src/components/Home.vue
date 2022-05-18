@@ -867,7 +867,7 @@
 </template>
 <script>
 import axios from "axios";
-import jwt_decode from "jwt-decode";
+import swal from "sweetalert";
 import { itemServices } from "../service/item-service";
 import { quotationServices } from "../service/quotation-service";
 import { clientServices } from "../service/client-service";
@@ -1337,12 +1337,22 @@ export default {
     },
 
     processDeleteQuotation: function (id) {
-      quotationServices.deleteQuotation(id).then((result) => {
-        this.closePopUp("updateQuotation");
-        quotationServices.getQuotationsList().then((result) => {
-          this.quotations = result;
-          console.log(result);
-        });
+      swal({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, no podrás recuperar este registro",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          quotationServices.deleteQuotation(id).then((result) => {
+            this.closePopUp("updateQuotation");
+            quotationServices.getQuotationsList().then((result) => {
+              this.quotations = result;
+              console.log(result);
+            });
+          });
+        }
       });
     },
 
