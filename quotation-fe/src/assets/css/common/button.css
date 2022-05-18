@@ -18,6 +18,11 @@
   cursor: pointer;
 }
 
+.blue{
+  background: radial-gradient(ellipse, var(--color-primary), var(--color-primary-dark));
+  border: 0px solid var(--color-primary);
+}
+
 .button:hover {
   cursor: pointer;
   background-color: var(--color-secondary-dark);

@@ -5,9 +5,15 @@
         <img src="../assets/img/home_img.png" alt="" />&nbsp; App Cotizaciones
       </h1>
       <div class="input-container">
-        <button v-on:click="openPopUp('quotation')" class="button">
+        <button v-on:click="openPopUp('quotation')" class="button blue">
           Nueva Cotización
         </button>
+
+        <div class="input-container">
+          <button v-on:click="openPopUp('quotation')" class="button">
+            Insumos
+          </button>
+        </div>
       </div>
     </div>
   </div>
