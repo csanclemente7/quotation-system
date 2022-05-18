@@ -2,6 +2,12 @@
   margin-top: 1rem;
   width: 90%;
 }
+
+.item-create-form {
+  margin-top: 1rem;
+  width: 60%;
+}
+
 .form__label {
   font-size: 1.125rem;
   margin-bottom: 1rem;
@@ -72,9 +78,24 @@
   background: var(--disabled-color);
 }
 
+.name {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+}
+
+.item-create-form .name{
+  width: 80%;
+}
+
 .price {
   display: flex;
   flex-direction: column;
+  width: 20%;
+}
+
+
+.item-create-form .price{
   width: 20%;
 }
 

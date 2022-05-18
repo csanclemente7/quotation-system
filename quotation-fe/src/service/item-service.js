@@ -23,7 +23,18 @@ const getItemsList = () =>
     })
     .then((response) => response.data);
 
+// Create item
+const createItem = (item) =>
+  axios
+    .post(`/item/${getUser()}`, item, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    })
+    .then((response) => response.data);
+
 // export functions
 export const itemServices = {
   getItemsList,
+  createItem,
 };
