@@ -6,7 +6,7 @@ from django.utils import timezone
 class Quotation(models.Model):
     id = models.BigAutoField(primary_key=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    dateTime = models.DateTimeField(default=timezone.localtime)
+    dateTime = models.DateTimeField(default= timezone.localdate())
     iva = models.IntegerField('iva', default=19)
     discount = models.IntegerField('discount', default=0)
     subtotal = models.FloatField('subtotal', default=0)
