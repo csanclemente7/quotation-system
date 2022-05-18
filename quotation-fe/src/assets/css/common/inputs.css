@@ -270,6 +270,9 @@
 
   .row-form {
     flex-direction: column;
+    border: 1px solid var(--light-border-color);
+    margin: 5px;
+    padding: 5px;
   }
   .item {
     width: 100%;
