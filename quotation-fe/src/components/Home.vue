@@ -727,7 +727,6 @@ export default {
     // methods for the form
     processCreateQuotation: function () {
       quotationServices.createQuotation(this.quotation).then((result) => {
-        alert("Quotation created");
         this.errors.error_createQuotation = false;
         this.quotation = {
           client: "",
