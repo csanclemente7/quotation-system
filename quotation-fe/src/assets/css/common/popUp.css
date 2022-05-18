@@ -38,6 +38,12 @@
   z-index: 3;
 }
 
+.popup-item-update {
+  width: 50%;
+  position: absolute;
+  z-index: 3;
+}
+
 .popup img {
   margin-top: 20px;
   width: 80px;

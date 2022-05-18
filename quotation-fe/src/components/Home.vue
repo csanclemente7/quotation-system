@@ -368,7 +368,7 @@
             v-for="item in items"
             :key="item"
             id="table_row"
-            v-on:click="openPopUp('updateReporte', reporte)"
+            v-on:click="openPopUpItemUpdate('itemUpdate', item)"
           >
             <td>{{ item.name }}</td>
             <td>${{ priceToString(item.price) }}</td>
@@ -493,6 +493,54 @@
         </div>
       </div>
     </div>
+
+    <!--- pop up itemUpdate -->
+    <div class="popup popup-item-update" v-if="popUps.itemUpdate">
+      <div class="popup-close-container">
+        <div class="popup_close" v-on:click="closePopUp('itemUpdate')">
+          <svg
+            width="25"
+            height="25"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="red"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </div>
+      </div>
+      <form action="">
+        <div class="input-container suggestion-container">
+          <input
+            type="text"
+            name="item"
+            id="itemUpdateName"
+            class="input"
+            v-model="itemToUpdate.name"
+            v-on:input="itemToUpdate.name"
+          />
+          <label class="input-label" for="suggestion"> Item </label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <input
+          type="text"
+          name="price"
+          id="itemUpdatePrice"
+          class="input"
+          v-model="itemToUpdate.price"
+          v-on:input="itemToUpdate.price"
+        />
+        <label class="input-label" for="suggestion"> Precio </label>
+        <span class="input-message-error">Este campo no es valido</span>
+        <button class="button" type="submit">Actualizar</button>
+      </form>
+    </div>
   </section>
 </template>
 <script>
@@ -528,6 +576,7 @@ export default {
         quotation: false,
         suggestions: false,
         item: false,
+        itemUpdate: false,
       },
 
       quotation: {
@@ -554,6 +603,8 @@ export default {
         name: "",
         price: "",
       },
+
+      itemToUpdate: {},
 
       items: [],
 
@@ -600,6 +651,16 @@ export default {
 
     // pop ups
     openPopUp: function (popUp) {
+      this.popUps[popUp] = true;
+    },
+
+    openPopUpItemUpdate: function (popUp, item) {
+      if (item != null) {
+        this.itemToUpdate = {
+          name: item.name,
+          price: item.price,
+        };
+      }
       this.popUps[popUp] = true;
     },
 
