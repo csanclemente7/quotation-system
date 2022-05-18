@@ -22,40 +22,19 @@
             <th>Fecha</th>
             <th>Cliente</th>
             <th>Valor</th>
-            <th>Estado</th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="reporte in reportes"
-            :key="reporte"
+            v-for="quotation in quotations"
+            :key="quotation"
             id="table_row"
             v-on:click="openPopUp('updateReporte', reporte)"
           >
-            <td v-if="showAll">{{ reporte.fecha }}</td>
-            <td>{{ reporte.placa }}</td>
-            <td>{{ reporte.tipo_vehiculo }}</td>
-            <td>{{ reporte.servicio }}</td>
-            <td v-if="reporte.auxiliar != 'Pendiente'">
-              {{ reporte.auxiliar }}
-            </td>
-            <td v-if="reporte.auxiliar === 'Pendiente'" class="pendiente">
-              <li class="fa fa-exclamation-triangle"></li>
-            </td>
-
-            <td v-if="reporte.valor != ''">
-              ${{ priceToString(reporte.valor) }}
-            </td>
-            <td v-if="reporte.valor === ''" class="pendiente">
-              <div><li class="fa fa-exclamation-triangle"></li></div>
-            </td>
-            <td v-if="reporte.pagado || reporte.nequi" class="pagado">
-              <li class="fa fa-check" v-if="!reporte.nequi"></li>
-              <p v-if="reporte.nequi">Nequi</p>
-            </td>
-            <td v-if="!reporte.pagado && !reporte.nequi" class="debe">
-              <li class="fa fa-exclamation-triangle"></li>
-            </td>
+            <td>{{ quotation.id }}</td>
+            <td>{{ quotation.date }}</td>
+            <td>{{ quotation.client }}</td>
+            <td>${{ priceToString(quotation.total) }}</td>
           </tr>
         </tbody>
       </table>
@@ -278,19 +257,19 @@
             <tbody>
               <tr>
                 <td>Subtotal</td>
-                <td>${{ quotationResults.subtotal }}</td>
+                <td>${{ priceToString(quotationResults.subtotal) }}</td>
               </tr>
               <tr>
                 <td>Iva</td>
-                <td>${{ quotationResults.totalIva }}</td>
+                <td>${{ priceToString(quotationResults.totalIva) }}</td>
               </tr>
               <tr v-if="quotationResults.discount > 0">
                 <td>Descuento</td>
-                <td>${{ quotationResults.totalDiscount }}</td>
+                <td>${{ priceToString(quotationResults.totalDiscount) }}</td>
               </tr>
               <tr>
                 <td>Total</td>
-                <td>${{ quotationResults.total }}</td>
+                <td>${{ priceToString(quotationResults.total) }}</td>
               </tr>
             </tbody>
           </table>
@@ -777,7 +756,12 @@ export default {
               this.errors.error_createQuotation = false;
             });
         }
+
         this.errors.error_createQuotation = false;
+        this.closePopUp("quotation");
+        quotationServices.getQuotationsList().then((result) => {
+          this.quotations = result;
+        });
       });
     },
 
