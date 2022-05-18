@@ -44,13 +44,16 @@
 
 .delete-button {
   background-color: var(--popup-background);
-  color: var(--error-color);
   border: none;
+  color: var(--error-color);
   cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .delete-button span {
-  color: var(--white) !important;
+  color: var(--link-red-light);
+
   font-size: 1.2rem !important;
   font-weight: 100 !important;
 }

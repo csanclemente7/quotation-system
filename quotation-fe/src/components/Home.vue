@@ -539,6 +539,7 @@
             type="button"
             v-on:click="processDeleteQuotation(idQuotationToUpdate)"
           >
+            <i class="fas fa-trash"></i>
             Eliminar Cotización
           </button>
         </div>
