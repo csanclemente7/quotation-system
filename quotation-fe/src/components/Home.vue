@@ -228,6 +228,30 @@
           <i class="fas fa-plus"></i>
         </button>
 
+        <!-- totales -->
+        <div class="table-results">
+          <table class="table-totals custom-responsiva">
+            <tbody>
+              <tr>
+                <td>Subtotal</td>
+                <td>${{ quotationResults.subtotal }}</td>
+              </tr>
+              <tr>
+                <td>Iva</td>
+                <td>${{ quotationResults.totalIva }}</td>
+              </tr>
+              <tr v-if="quotationResults.discount > 0">
+                <td>Descuento</td>
+                <td>${{ quotationResults.totalDiscount }}</td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td>${{ quotationResults.total }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <div class="input-container">
           <button class="button" type="submit">Generar Cotización</button>
         </div>
@@ -396,6 +420,12 @@ export default {
         totalIva: "0",
         total: "0",
       },
+      quotationResults: {
+        subtotal: "0",
+        totalDiscount: "0",
+        totalIva: "0",
+        total: "0",
+      },
 
       clients: [],
 
@@ -517,6 +547,8 @@ export default {
       let price = this.itemsQuotation[this.indexSuggestion].price;
       let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
       this.itemsQuotation[this.indexSuggestion].total = quantity * price;
+
+      this.getResults();
     },
 
     editItemName: function (e) {
@@ -579,6 +611,9 @@ export default {
             .then((result) => {
               console.log("Item quotation created");
               this.itemsQuotation = [];
+              for (let i = 0; i < 2; i++) {
+                this.createItemQuotation();
+              }
               this.errors.error_createQuotation = false;
             });
         }
@@ -590,6 +625,35 @@ export default {
       this.itemsQuotation.forEach((itemQuotation) => {
         console.log(itemQuotation);
       });
+    },
+
+    // generar totales
+    getResults: function () {
+      let subtotal = 0;
+      let totalDiscount = 0;
+      let totalIva = 0;
+      let total = 0;
+
+      let iva = this.quotation.iva;
+      let discount = this.quotation.discount;
+
+      for (let i = 0; i < this.itemsQuotation.length; i++) {
+        let itemQuotation = this.itemsQuotation[i];
+        subtotal += itemQuotation.total;
+      }
+
+      totalDiscount = subtotal * (discount / 100);
+
+      totalIva = subtotal * (iva / 100);
+
+      total = subtotal - totalDiscount + totalIva;
+
+      this.quotationResults.subtotal = subtotal;
+      this.quotationResults.totalDiscount = totalDiscount;
+      this.quotationResults.totalIva = totalIva;
+      this.quotationResults.total = total;
+
+      console.log(this.quotationResults);
     },
   },
 
@@ -666,4 +730,6 @@ export default {
 @import "../assets/css/common/button.css";
 @import "../assets/css/common/suggestion.css";
 @import "../assets/css/base/base.css";
+@import "../assets/css/common/table.css";
+@import "../assets/css/common/tableResults.css";
 </style>
