@@ -13,20 +13,10 @@ const getUser = () => {
   return jwt_decode(getToken()).user_id.toString();
 };
 
-// get list of quotations
-const getQuotationsList = () =>
+// get list of items
+const getClientsList = () =>
   axios
-    .get(`/quotations/${getUser()}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    })
-    .then((response) => response.data);
-
-// create quotation
-const createQuotation = (quotation) =>
-  axios
-    .post(`/quotation/${getUser()}`, quotation, {
+    .get(`/clients/${getUser()}`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
@@ -34,7 +24,6 @@ const createQuotation = (quotation) =>
     .then((response) => response.data);
 
 // export functions
-export const quotationServices = {
-  getQuotationsList,
-  createQuotation,
+export const clientServices = {
+  getClientsList,
 };

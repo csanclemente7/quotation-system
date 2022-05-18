@@ -70,30 +70,68 @@
         Cotización
       </h1>
 
-      <!--- Placa -->
-      <div class="header-form">
-        <div class="input-container">
-          <input
-            type="text"
-            name="cliente"
-            id="placa"
-            class="input cliente"
-            v-model="quotation.cliente"
-            maxlength="7"
-          />
-          <label class="input-label" for="cliente">Cliente</label>
-          <span class="input-message-error">Este campo no es valido</span>
-        </div>
-      </div>
-
       <!--- FORM -->
       <form
-        v-on:submit.prevent="createQuotationItem"
+        v-on:submit.prevent="processCreateQuotation"
         class="formulario flex flex--column"
         id="form-quotation"
       >
-        <!-- <button class="button" type="submit">Generar</button> -->
+        <div class="header-form">
+          <!--- Cliente -->
+          <div class="input-container client">
+            <input
+              type="text"
+              name="cliente"
+              id="cliente"
+              class="input"
+              v-model="quotation.client_name"
+              v-on:focus="openPopUpClientes(index)"
+              autoComplete="off"
+              required
+            />
+            <label class="input-label" for="cliente">Cliente</label>
+            <button
+              class="editbtn"
+              type="button"
+              aria-label="submit form"
+              v-if="quotation.client_name != ''"
+              v-on:click="editClientName"
+            >
+              <!-- edit icon -->
+              <li class="fa fa-edit"></li>
+            </button>
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
+          <!--- Iva -->
+          <div class="input-container iva">
+            <input
+              type="text"
+              name="iva"
+              id="iva"
+              class="input"
+              v-model="quotation.iva"
+              maxlength="7"
+              required
+            />
+            <label class="input-label" for="iva">% Iva</label>
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
 
+          <!--- Descuento -->
+          <div class="input-container descuento">
+            <input
+              type="text"
+              name="descuento"
+              id="descuento"
+              class="input"
+              v-model="quotation.discount"
+              maxlength="7"
+              required
+            />
+            <label class="input-label" for="descuento">% Descuento</label>
+            <span class="input-message-error">Este campo no es valido</span>
+          </div>
+        </div>
         <div
           class="row-form"
           v-for="(itemQuotation, index) in itemsQuotation"
@@ -108,12 +146,13 @@
               v-model="itemQuotation.name"
               v-on:focus="openPopUpSuggestions(index)"
               autocomplete="off"
+              required
             />
 
             <label class="input-label" for="item">Item</label>
             <button
               class="editbtn"
-              type="submit"
+              type="button"
               aria-label="submit form"
               v-if="itemQuotation.item != ''"
               v-on:click="editItemName"
@@ -131,8 +170,11 @@
               id="price"
               class="input"
               v-model="itemQuotation.price"
+              v-on:focus="setIndexSuggestion(index)"
               v-on:input="setTotalItemQuotation"
               :disabled="itemQuotation.item === ''"
+              autocomplete="off"
+              required
             />
             <label class="input-label" for="price">Precio</label>
             <span class="input-message-error">Este campo no es valido</span>
@@ -145,8 +187,11 @@
               id="quantity"
               class="input"
               v-model="itemQuotation.quantity"
+              v-on:focus="setIndexSuggestion(index)"
               v-on:input="setTotalItemQuotation"
               :disabled="itemQuotation.price === ''"
+              autocomplete="off"
+              required
             />
             <label class="input-label" for="quantity">Cantidad</label>
             <span class="input-message-error">Este campo no es valido</span>
@@ -159,6 +204,8 @@
               id="total"
               class="input"
               v-model="itemQuotation.total"
+              autocomplete="off"
+              required
               disabled
             />
             <label class="input-label" for="total">Total</label>
@@ -176,7 +223,7 @@
         </button>
 
         <div class="input-container">
-          <button class="button" type="submit">Generar</button>
+          <button class="button" type="submit">Generar Cotización</button>
         </div>
       </form>
     </div>
@@ -237,6 +284,65 @@
         </div>
       </div>
     </div>
+
+    <!--- pop up clientes -->
+    <div class="popup popup-clientes" v-if="popUps.clientes">
+      <div class="popup-close-container">
+        <div class="popup_close" v-on:click="closePopUp('clientes')">
+          <svg
+            width="25"
+            height="25"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="red"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div class="input-container suggestion-container">
+        <input
+          type="text"
+          name="suggestion"
+          id="suggestion"
+          class="input"
+          v-model="suggestion"
+          v-on:focus="openPopUp('clientes')"
+          v-on:input="filterClients(suggestion)"
+          autocomplete="off"
+        />
+        <label class="input-label" for="suggestion"> Buscar Cliente </label>
+        <span class="input-message-error">Este campo no es valido</span>
+
+        <div
+          class="suggestion"
+          v-for="(client, index) in suggestions"
+          :key="index"
+        >
+          <li
+            v-on:click="
+              setClientSuggestion(client.id, client.name, client.phone)
+            "
+            class="suggestion-item"
+          >
+            <div class="suggestion-content">
+              <i class="fas fa-plus">&nbsp;</i>
+
+              {{ client.name }}
+              <p class="seggestion-price">
+                &nbsp;&nbsp;Tel: {{ client.phone }}
+              </p>
+            </div>
+          </li>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 <script>
@@ -244,6 +350,8 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { itemServices } from "../service/item-service";
 import { quotationServices } from "../service/quotation-service";
+import { clientServices } from "../service/client-service";
+import { itemQuotationServices } from "../service/item-quotation-service";
 
 export default {
   name: "Home",
@@ -266,19 +374,24 @@ export default {
       },
 
       popUps: {
+        clientes: false,
         quotation: false,
         suggestions: false,
       },
 
       quotation: {
         client: "",
+        client_name: "",
+        client_phone: "",
         iva: "19",
-        discount: "",
-        subtotal: "",
-        totalDiscount: "",
-        totalIva: "",
-        total: "",
+        discount: "0",
+        subtotal: "0",
+        totalDiscount: "0",
+        totalIva: "0",
+        total: "0",
       },
+
+      clients: [],
 
       items: [],
 
@@ -335,7 +448,15 @@ export default {
         input.focus();
       }, 100);
       this.indexSuggestion = index;
-      /* this.setItem(index); */
+    },
+
+    openPopUpClientes: function (index) {
+      this.popUps.clientes = true;
+      setTimeout(() => {
+        let input = document.getElementById("suggestion");
+        input.focus();
+      }, 100);
+      this.indexSuggestion = index;
     },
 
     filterItems: function (suggestion) {
@@ -344,6 +465,18 @@ export default {
         return item.name.toLowerCase().includes(suggestion.toLowerCase());
       });
       this.suggestions = filteredItems;
+
+      if (suggestion === "") {
+        this.suggestions = [];
+      }
+    },
+
+    filterClients: function (suggestion) {
+      let clients = this.clients;
+      let filteredClients = clients.filter((client) => {
+        return client.name.toLowerCase().includes(suggestion.toLowerCase());
+      });
+      this.suggestions = filteredClients;
 
       if (suggestion === "") {
         this.suggestions = [];
@@ -360,6 +493,20 @@ export default {
       this.suggestion = "";
     },
 
+    setClientSuggestion: function (id, name, phone) {
+      this.quotation.client = id;
+      this.quotation.client_name = name;
+      this.quotation.client_phone = phone;
+
+      this.popUps.clientes = false;
+      this.suggestions = [];
+      this.suggestion = "";
+    },
+
+    setIndexSuggestion: function (index) {
+      this.indexSuggestion = index;
+    },
+
     setTotalItemQuotation: function () {
       let price = this.itemsQuotation[this.indexSuggestion].price;
       let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
@@ -371,6 +518,13 @@ export default {
       let input = button.parentElement.parentElement.querySelector("input");
       input.focus();
       this.popUps.suggestions = false;
+    },
+
+    editClientName: function (e) {
+      let button = e.target;
+      let input = button.parentElement.parentElement.querySelector("input");
+      input.focus();
+      this.popUps.clientes = false;
     },
 
     closePopUp: function (popUp) {
@@ -393,6 +547,44 @@ export default {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
       }
     },
+    // methods for the form
+    processCreateQuotation: function () {
+      quotationServices.createQuotation(this.quotation).then((result) => {
+        alert("Quotation created");
+        this.errors.error_createQuotation = false;
+        this.quotation = {
+          client: "",
+          client_name: "",
+          client_phone: "",
+          iva: "19",
+          discount: "0",
+          subtotal: "0",
+          totalDiscount: "0",
+          totalIva: "0",
+          total: "0",
+        };
+        let quotationId = result.id;
+
+        for (let i = 0; i < this.itemsQuotation.length; i++) {
+          let itemQuotation = this.itemsQuotation[i];
+          itemQuotation.quotation = quotationId;
+          itemQuotationServices
+            .createItemQuotation(itemQuotation)
+            .then((result) => {
+              console.log("Item quotation created");
+              this.itemsQuotation = [];
+              this.errors.error_createQuotation = false;
+            });
+        }
+        this.errors.error_createQuotation = false;
+      });
+    },
+
+    processCreateItemsQuotation: function () {
+      this.itemsQuotation.forEach((itemQuotation) => {
+        console.log(itemQuotation);
+      });
+    },
   },
 
   created: function () {
@@ -408,7 +600,12 @@ export default {
     quotationServices.getQuotationsList().then((result) => {
       this.quotations = result;
     });
-    for (let i = 0; i < 2; i++) {
+
+    clientServices.getClientsList().then((result) => {
+      this.clients = result;
+    });
+
+    for (let i = 0; i < 1; i++) {
       this.createItemQuotation();
     }
   },

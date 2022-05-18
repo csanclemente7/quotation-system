@@ -32,6 +32,12 @@
   z-index: 3;
 }
 
+.popup-clientes {
+  width: 50%;
+  position: absolute;
+  z-index: 3;
+}
+
 .popup img {
   margin-top: 20px;
   width: 80px;
