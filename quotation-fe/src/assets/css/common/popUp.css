@@ -81,6 +81,14 @@
     width: 40px;
   }
 
+  .popup {
+    width: 80%;
+  }
+
+  .popup-clientes {
+    width: 80%;
+  }
+
   .popup .popup_title {
     font-size: 25px;
   }

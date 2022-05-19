@@ -101,7 +101,7 @@
 .quantity {
   display: flex;
   flex-direction: column;
-  width: 15%;
+  width: 18%;
 }
 
 .quantity input:disabled {
@@ -121,7 +121,7 @@
 .delete {
   display: flex;
   flex-direction: column;
-  width: 5%;
+  width: 0%;
 }
 
 /** css del formulario de crear item  **/
@@ -321,6 +321,26 @@
     width: 100%;
   }
   .quantity {
+    width: 100%;
+  }
+
+  .client-name {
+    width: 100%;
+  }
+
+  .client-city {
+    width: 100%;
+  }
+
+  .client-address {
+    width: 100%;
+  }
+
+  .client-email {
+    width: 100%;
+  }
+
+  .client-phone {
     width: 100%;
   }
 }
