@@ -1701,9 +1701,9 @@ export default {
             (quotation = pdfData, index) => [
               /*         index + 1, */
               `${quotation[index].name}`,
-              `${quotation[index].price}`,
+              `$ ${this.priceToString(quotation[index].price)}`,
               `${quotation[index].quantity}`,
-              `${quotation[index].total}`,
+              `$ ${this.priceToString(quotation[index].total)}`,
             ]
           ),
           invTotalLabel: "Subtotal:",
