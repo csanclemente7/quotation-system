@@ -43,9 +43,19 @@ const updateQuotation = (quotation) =>
     })
     .then((response) => response.data);
 
+const deleteQuotation = (quotationId) =>
+  axios
+    .delete(`/quotation/${getUser()}/${quotationId}/delete`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    })
+    .then((response) => response.data);
+
 // export functions
 export const quotationServices = {
   getQuotationsList,
   createQuotation,
   updateQuotation,
+  deleteQuotation,
 };

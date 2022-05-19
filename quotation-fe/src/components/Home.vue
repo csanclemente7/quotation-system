@@ -242,6 +242,19 @@
             <label class="input-label" for="total">Total</label>
             <span class="input-message-error">Este campo no es valido</span>
           </div>
+
+          <!-- delete button -->
+          <div class="input-container delete">
+            <button
+              class="delete-button"
+              type="button"
+              aria-label="submit form"
+              v-on:click="deleteItemQuotation(index)"
+            >
+              <!-- delete icon -->
+              <li class="fa fa-trash"></li>
+            </button>
+          </div>
         </div>
 
         <!-- BOTON AGREGAR ITEM -->
@@ -467,6 +480,19 @@
             <label class="input-label" for="total">Total</label>
             <span class="input-message-error">Este campo no es valido</span>
           </div>
+
+          <!-- delete button -->
+          <div class="input-container delete">
+            <button
+              class="delete-button"
+              type="button"
+              aria-label="submit form"
+              v-on:click="deleteItemQuotationUpdate(itemQuotationUpdate, index)"
+            >
+              <!-- delete icon -->
+              <li class="fa fa-trash"></li>
+            </button>
+          </div>
         </div>
         <!-- BOTON AGREGAR ITEM -->
         <button
@@ -505,6 +531,17 @@
 
         <div class="input-container">
           <button class="button" type="submit">Actualizar Cotización</button>
+        </div>
+
+        <div class="input-container">
+          <button
+            class="button delete-button"
+            type="button"
+            v-on:click="processDeleteQuotation(idQuotationToUpdate)"
+          >
+            <i class="fas fa-trash"></i>
+            Eliminar Cotización
+          </button>
         </div>
       </form>
     </div>
@@ -832,7 +869,7 @@
 </template>
 <script>
 import axios from "axios";
-import jwt_decode from "jwt-decode";
+import swal from "sweetalert";
 import { itemServices } from "../service/item-service";
 import { quotationServices } from "../service/quotation-service";
 import { clientServices } from "../service/client-service";
@@ -929,6 +966,8 @@ export default {
 
       itemsQuotation: [],
 
+      idQuotationToUpdate: "",
+
       itemsQuotationUpdate: [],
     };
   },
@@ -982,6 +1021,8 @@ export default {
       this.popUps[popUp] = true;
     },
     openPopUpUpdateQuotation: function (popUp, quotation) {
+      this.idQuotationToUpdate = quotation.id;
+      console.log(this.idQuotationToUpdate);
       this.popUps[popUp] = true;
       this.quotationUpdate = quotation;
       let itemQuotationUpdate = {
@@ -1166,6 +1207,31 @@ export default {
       };
       this.itemsQuotationUpdate.push(itemQuotation);
     },
+
+    deleteItemQuotation: function (index) {
+      this.itemsQuotation.splice(index, 1);
+      this.getResults();
+    },
+
+    deleteItemQuotationUpdate: function (itemQuotationUpdate, index) {
+      swal({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, no podrás recuperar este registro",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.itemsQuotationUpdate.splice(index, 1);
+          this.getResultsUpdate();
+          let itemId = itemQuotationUpdate.id;
+
+          itemQuotationServices.deleteItemQuotation(itemId).then((response) => {
+            console.log(response);
+          });
+        }
+      });
+    },
     priceToString: function (price) {
       if (price != null && price != undefined) {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -1181,6 +1247,14 @@ export default {
           name: "",
           price: "",
         };
+      });
+    },
+
+    processDeleteItem: function (id) {
+      itemServices.deleteItem(id).then((result) => {
+        itemServices.getItemsList().then((result) => {
+          this.items = result;
+        });
       });
     },
 
@@ -1273,6 +1347,27 @@ export default {
             this.quotations = result;
           });
         }, 100);
+      });
+    },
+
+    processDeleteQuotation: function (id) {
+      swal({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, no podrás recuperar este registro",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          // si el usuario acepta eliminar el registro
+          quotationServices.deleteQuotation(id).then((result) => {
+            this.closePopUp("updateQuotation");
+            quotationServices.getQuotationsList().then((result) => {
+              this.quotations = result;
+              console.log(result);
+            });
+          });
+        }
       });
     },
 

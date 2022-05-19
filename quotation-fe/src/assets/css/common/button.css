@@ -18,8 +18,12 @@
   cursor: pointer;
 }
 
-.blue{
-  background: radial-gradient(ellipse, var(--color-primary), var(--color-primary-dark));
+.blue {
+  background: radial-gradient(
+    ellipse,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
   border: 0px solid var(--color-primary);
 }
 
@@ -40,11 +44,16 @@
 
 .delete-button {
   background-color: var(--popup-background);
+  border: none;
   color: var(--error-color);
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .delete-button span {
-  color: var(--white) !important;
+  color: var(--link-red-light);
+
   font-size: 1.2rem !important;
   font-weight: 100 !important;
 }

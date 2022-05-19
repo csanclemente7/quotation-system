@@ -66,6 +66,7 @@
   width: 100%;
 }
 
+/** css del formulario de crear cotización */
 .row-form {
   display: flex;
   flex-direction: row;
@@ -75,40 +76,21 @@
   flex-wrap: wrap;
 }
 
+/* .name {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+} */
+
 .item {
   display: flex;
   flex-direction: column;
-  width: 45%;
-}
-
-.total {
-  display: flex;
-  flex-direction: column;
-  width: 20%;
-}
-
-.total input:disabled {
-  background: var(--disabled-color);
-}
-
-.name {
-  display: flex;
-  flex-direction: column;
-  width: 45%;
-}
-
-.item-create-form .name{
-  width: 80%;
+  width: 40%;
 }
 
 .price {
   display: flex;
   flex-direction: column;
-  width: 20%;
-}
-
-
-.item-create-form .price{
   width: 20%;
 }
 
@@ -125,6 +107,34 @@
 .quantity input:disabled {
   background: var(--disabled-color);
 }
+
+.total {
+  display: flex;
+  flex-direction: column;
+  width: 19%;
+}
+
+.total input:disabled {
+  background: var(--disabled-color);
+}
+
+.delete {
+  display: flex;
+  flex-direction: column;
+  width: 5%;
+}
+
+/** css del formulario de crear item  **/
+
+.item-create-form .name {
+  width: 80%;
+}
+
+.item-create-form .price {
+  width: 20%;
+}
+
+/** css otras cosas */
 
 .input::placeholder {
   visibility: hidden;
@@ -260,6 +270,9 @@
 
   .row-form {
     flex-direction: column;
+    border: 1px solid var(--light-border-color);
+    margin: 5px;
+    padding: 5px;
   }
   .item {
     width: 100%;
