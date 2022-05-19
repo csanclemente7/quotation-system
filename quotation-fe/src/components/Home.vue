@@ -546,7 +546,7 @@
       </form>
     </div>
 
-    <!--- pop up create item -->
+    <!--- POP UP CREATE ITEM -->
     <div class="popup" v-if="popUps.item">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('item')">
@@ -643,7 +643,7 @@
     </div>
     <!--- finish pop up create item -->
 
-    <!--- pop up suggestions -->
+    <!--- POP UP SUGGESTIONS -->
     <div class="popup popup-suggestions" v-if="popUps.suggestions">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('suggestions')">
@@ -700,7 +700,7 @@
       </div>
     </div>
 
-    <!--- pop up suggestions update -->
+    <!--- POP UP SUGGESTIONS UPDATE QUOTATION -->
     <div class="popup popup-suggestions" v-if="popUps.suggestionsUpdate">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('suggestionsUpdate')">
@@ -757,7 +757,7 @@
       </div>
     </div>
 
-    <!--- pop up clientes -->
+    <!--- POP UP CLIENTES -->
     <div class="popup popup-clientes" v-if="popUps.clientes">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('clientes')">
@@ -789,7 +789,9 @@
           v-on:input="filterClients(suggestion)"
           autocomplete="off"
         />
-        <label class="input-label" for="suggestion"> Buscar Cliente </label>
+        <label class="input-label" for="suggestion">
+          Buscar Cliente Existente</label
+        >
         <span class="input-message-error">Este campo no es valido</span>
 
         <div
@@ -813,10 +815,91 @@
             </div>
           </li>
         </div>
+        <div class="link-container" v-on:click="newClient = !newClient">
+          <i class="fas fa-plus" v-if="!newClient">&nbsp;</i>
+          <i class="fas fa-minus" v-if="newClient">&nbsp;</i>
+          <a> Agregar Nuevo Cliente </a>
+        </div>
       </div>
+
+      <form
+        class="client-form"
+        v-if="newClient"
+        v-on:submit.prevent="processCreateClient"
+      >
+        <div class="client-form-title">
+          <h2>Agregar Nuevo Cliente</h2>
+        </div>
+        <div class="input-container client-name">
+          <input
+            type="text"
+            name="name"
+            id="name"
+            class="input"
+            v-model="client.name"
+            autocomplete="off"
+          />
+          <label class="input-label" for="name">Nombre</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <div class="input-container client-city">
+          <input
+            type="text"
+            name="city"
+            id="city"
+            class="input"
+            v-model="client.city"
+            autocomplete="off"
+          />
+          <label class="input-label" for="phone">Ciudad</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <div class="input-container client-address">
+          <input
+            type="text"
+            name="address"
+            id="address"
+            class="input"
+            v-model="client.address"
+            autocomplete="off"
+          />
+          <label class="input-label" for="email">Dirección</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <div class="input-container client-email">
+          <input
+            type="text"
+            name="email"
+            id="email"
+            class="input"
+            v-model="client.email"
+            autocomplete="off"
+          />
+          <label class="input-label" for="address">Email</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <div class="input-container client-phone">
+          <input
+            type="text"
+            name="phone"
+            id="phone"
+            class="input"
+            v-model="client.phone"
+            autocomplete="off"
+          />
+          <label class="input-label" for="phone">Teléfono</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+
+        <div class="button-container">
+          <button class="button button-add-client" type="submit">
+            Agregar
+          </button>
+        </div>
+      </form>
     </div>
 
-    <!--- pop up itemUpdate -->
+    <!--- POP UP UPDATE ITEM -->
     <div class="popup popup-item-update" v-if="popUps.itemUpdate">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('itemUpdate')">
@@ -891,6 +974,7 @@ export default {
       suggestionUpdate: "",
       indexSuggestion: 0,
       indexSuggestionUpdate: 0,
+      newClient: false,
 
       errors: {
         error_createQuotation: false,
@@ -947,6 +1031,14 @@ export default {
       },
 
       clients: [],
+
+      client: {
+        name: "",
+        city: "",
+        address: "",
+        email: "",
+        phone: "",
+      },
 
       item: {
         id: "",
@@ -1370,6 +1462,22 @@ export default {
       });
     },
 
+    processCreateClient: function () {
+      clientServices.createClient(this.client).then((result) => {
+        clientServices.getClientsList().then((result) => {
+          this.clients = result;
+        });
+        this.client = {
+          name: "",
+          phone: "",
+        };
+        this.newClient = false;
+        this.quotation.client = result.id;
+        this.quotation.client_name = result.name;
+        this.closePopUp("clientes");
+      });
+    },
+
     // generar totales
     getResults: function () {
       let subtotal = 0;
@@ -1514,6 +1622,7 @@ export default {
 @import "../assets/css/common/popUp.css";
 @import "../assets/css/common/inputs.css";
 @import "../assets/css/common/button.css";
+@import "../assets/css/common/links.css";
 @import "../assets/css/common/suggestion.css";
 @import "../assets/css/base/base.css";
 @import "../assets/css/common/table.css";

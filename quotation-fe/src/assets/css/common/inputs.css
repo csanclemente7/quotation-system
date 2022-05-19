@@ -134,6 +134,43 @@
   width: 20%;
 }
 
+/** css de formulario cliente */
+.client-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 2%;
+  flex-wrap: wrap;
+  padding: 5%;
+}
+
+.client-form-title {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  text-align: center;
+}
+
+.client-name {
+  width: 42%;
+}
+
+.client-city {
+  width: 42%;
+}
+
+.client-address {
+  width: 42%;
+}
+
+.client-email {
+  width: 42%;
+}
+
+.client-phone {
+  width: 42%;
+}
 /** css otras cosas */
 
 .input::placeholder {

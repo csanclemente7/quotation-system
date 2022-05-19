@@ -1,8 +1,10 @@
 .link-container {
-  width: 80%;
+  width: 100%;
   display: flex;
   gap: 0.4rem;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
 }
 
 .link-container a {

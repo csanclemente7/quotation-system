@@ -18,6 +18,17 @@
   cursor: pointer;
 }
 
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.button-add-client {
+  width: 40%;
+}
+
 .blue {
   background: radial-gradient(
     ellipse,
