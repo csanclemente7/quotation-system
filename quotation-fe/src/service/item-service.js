@@ -35,7 +35,7 @@ const createItem = (item) =>
 
 // Update item
 const updateItem = (item) =>
-  axios.put(`/item/${getUser()}/${item}/update`, item, {
+  axios.put(`/item/${getUser()}/${item.id}/update`, item, {
     headers: {
       Authorization: `Bearer ${getToken()}`,
     },

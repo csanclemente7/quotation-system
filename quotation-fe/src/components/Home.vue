@@ -845,7 +845,6 @@
             id="itemUpdateName"
             class="input"
             v-model="itemToUpdate.name"
-            v-on:input="itemToUpdate.name"
           />
           <label class="input-label" for="suggestion"> Item </label>
           <span class="input-message-error">Este campo no es valido</span>
@@ -856,7 +855,6 @@
           id="itemUpdatePrice"
           class="input"
           v-model="itemToUpdate.price"
-          v-on:input="itemToUpdate.price"
         />
         <label class="input-label" for="suggestion"> Precio </label>
         <span class="input-message-error">Este campo no es valido</span>
@@ -954,7 +952,11 @@ export default {
         price: "",
       },
 
-      itemToUpdate: {},
+      itemToUpdate: {
+        id: "",
+        name: "",
+        price: "",
+      },
 
       items: [],
 
@@ -1011,13 +1013,8 @@ export default {
     },
 
     openPopUpItemUpdate: function (popUp, item) {
-      if (item != null) {
-        this.itemToUpdate = {
-          id: item.id,
-          name: item.name,
-          price: item.price,
-        };
-      }
+      this.itemToUpdate = item;
+      console.log(this.itemToUpdate);
       this.popUps[popUp] = true;
     },
     openPopUpUpdateQuotation: function (popUp, quotation) {
@@ -1430,14 +1427,15 @@ export default {
     },
 
     processUpdateItem: function () {
-      itemServices.updateItem(this.itemToUpdate.id).then((result) => {
+      itemServices.updateItem(this.itemToUpdate).then((result) => {
         this.errors.error_createItem = false;
-        this.item = {
+        this.itemToUpdate = {
           name: "",
           price: "",
         };
         itemServices.getItemsList().then((result) => {
           this.items = result;
+          this.openPopUp("item");
         });
       });
     },
