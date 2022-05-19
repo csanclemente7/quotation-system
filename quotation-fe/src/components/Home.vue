@@ -291,7 +291,16 @@
         </div>
 
         <div class="input-container">
-          <button class="button" type="submit">Generar Cotización</button>
+          <button class="button" type="submit" v-on:click="ejecutarDescarga">
+            Generar Cotización
+          </button>
+          <button class="button" type="button" v-on:click="ejecutarDescarga">
+            Generar Cotización
+          </button>
+          <div class="lds-ripple" v-if="downloadExecute">
+            <div></div>
+            <div></div>
+          </div>
         </div>
       </form>
     </div>
@@ -801,7 +810,14 @@
         >
           <li
             v-on:click="
-              setClientSuggestion(client.id, client.name, client.phone)
+              setClientSuggestion(
+                client.id,
+                client.name,
+                client.phone,
+                client.email,
+                client.address,
+                client.city
+              )
             "
             class="suggestion-item"
           >
@@ -957,11 +973,23 @@ import { itemServices } from "../service/item-service";
 import { quotationServices } from "../service/quotation-service";
 import { clientServices } from "../service/client-service";
 import { itemQuotationServices } from "../service/item-quotation-service";
+import jsPDFInvoiceTemplate, {
+  OutputType,
+  jsPDF,
+} from "jspdf-invoice-template";
 
 export default {
   name: "Home",
   data: function () {
     return {
+      companyData: {
+        companyName: "Macris Refrigeración & Aire s.a.s",
+        companyAddress: "Calle 3 Nro. 6-20",
+        companyPhone: "(+57) 099-988-988",
+        companyEmail: "info@macrisrefrigeracion.com",
+        companyWebSite: "www.macrisrefrigeracion.com",
+      },
+
       email: localStorage.getItem("email") || "none",
       is_admin: false,
       name: "",
@@ -975,6 +1003,9 @@ export default {
       indexSuggestion: 0,
       indexSuggestionUpdate: 0,
       newClient: false,
+      downloadExecuted: false,
+      props: {},
+      pdfObject: {},
 
       errors: {
         error_createQuotation: false,
@@ -995,6 +1026,9 @@ export default {
         client: "",
         client_name: "",
         client_phone: "",
+        client_city: "",
+        client_address: "",
+        client_email: "",
         iva: "19",
         discount: "0",
         subtotal: "0",
@@ -1008,6 +1042,9 @@ export default {
         client: "",
         client_name: "",
         client_phone: "",
+        client_city: "",
+        client_address: "",
+        client_email: "",
         iva: "19",
         discount: "0",
         subtotal: "0",
@@ -1220,10 +1257,14 @@ export default {
       this.setTotalItemQuotationUpdate;
     },
 
-    setClientSuggestion: function (id, name, phone) {
+    setClientSuggestion: function (id, name, phone, email, address, city) {
+      console.log(this.quotation);
       this.quotation.client = id;
       this.quotation.client_name = name;
       this.quotation.client_phone = phone;
+      this.quotation.client_email = email;
+      this.quotation.client_address = address;
+      this.quotation.client_city = city;
 
       this.popUps.clientes = false;
       this.suggestions = [];
@@ -1241,7 +1282,7 @@ export default {
     setTotalItemQuotation: function () {
       let price = this.itemsQuotation[this.indexSuggestion].price;
       let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
-      this.itemsQuotation[this.indexSuggestion].total = quantity * price;
+      this.itemsQuotation[this.indexSuggestion].total = price * quantity;
       if (price != undefined && quantity != undefined) {
         this.getResults();
       }
@@ -1252,7 +1293,7 @@ export default {
       let quantity =
         this.itemsQuotationUpdate[this.indexSuggestionUpdate].quantity;
       this.itemsQuotationUpdate[this.indexSuggestionUpdate].total =
-        quantity * price;
+        price * quantity;
 
       this.getResultsUpdate();
     },
@@ -1356,6 +1397,10 @@ export default {
         this.quotation = {
           client: "",
           client_name: "",
+          client_phone: "",
+          client_city: "",
+          client_address: "",
+          client_email: "",
           client_phone: "",
           iva: "19",
           discount: "0",
@@ -1490,7 +1535,7 @@ export default {
 
       for (let i = 0; i < this.itemsQuotation.length; i++) {
         let itemQuotation = this.itemsQuotation[i];
-        subtotal += itemQuotation.total * itemQuotation.quantity;
+        subtotal += itemQuotation.total;
       }
 
       totalDiscount = subtotal * (discount / 100);
@@ -1505,6 +1550,7 @@ export default {
       this.quotationResults.total = total;
 
       console.log(this.quotationResults);
+      this.setProps();
     },
 
     // generar totales Actualizados
@@ -1519,7 +1565,7 @@ export default {
 
       for (let i = 0; i < this.itemsQuotationUpdate.length; i++) {
         let itemQuotation = this.itemsQuotationUpdate[i];
-        subtotal += itemQuotation.total * itemQuotation.quantity;
+        subtotal += itemQuotation.total;
       }
 
       totalDiscount = subtotal * (discount / 100);
@@ -1548,6 +1594,133 @@ export default {
           this.items = result;
         });
       });
+    },
+
+    // PDF DOWNLOADER
+
+    generatePdf: function () {
+      this.pdfObject = jsPDFInvoiceTemplate(this.props);
+
+      console.log("Object created", this.pdfObject);
+    },
+
+    ejecutarDescarga: function () {
+      this.generatePdf();
+      this.downloadExecute = true;
+    },
+
+    setProps: function () {
+      let pdfData = this.itemsQuotation;
+      let quotation = this.quotation;
+      let quotationResults = this.quotationResults;
+
+      let dateToday = new Date().toLocaleDateString();
+      this.props = {
+        outputType: OutputType.Save,
+        returnJsPDFDocObject: true,
+        fileName: "Invoice 2021",
+        orientationLandscape: false,
+        compress: true,
+        logo: {
+          src: "https://i.ibb.co/z6qmdxq/logo.png",
+          width: 53.33, //aspect ratio = width/height
+          height: 26.66,
+          margin: {
+            top: 0, //negative or positive num, from the current position
+            left: 20, //negative or positive num, from the current position
+          },
+        },
+        business: {
+          name: this.companyData.companyName,
+          address: this.companyData.companyAddress,
+          phone: this.companyData.companyPhone,
+          email: this.companyData.companyEmail,
+          /* email_1: "info@example.al", */
+          website: this.companyData.companyWebsite,
+        },
+        contact: {
+          label: "Invoice issued for:",
+          name: quotation.client_name,
+          address: `Direccion: ${quotation.client_address}`,
+          phone: `Teléfono: (+57) ${quotation.client_phone}`,
+          email: `Email: ${quotation.client_email}`,
+          otherInfo: "",
+        },
+        invoice: {
+          label: "Invoice #: ",
+          num: 19,
+          invDate: "Payment Date: 01/01/2021 18:12",
+          invGenDate: "Invoice Date: 02/02/2021 10:17",
+          headerBorder: false,
+          tableBodyBorder: false,
+          header: [
+            {
+              title: "Item",
+              style: {
+                width: 80,
+              },
+            },
+            {
+              title: "Precio",
+              style: {
+                width: 40,
+              },
+            },
+            {
+              title: "Cantidad",
+              style: {
+                width: 40,
+              },
+            },
+            {
+              title: "Total",
+              style: {
+                width: 40,
+              },
+            },
+          ],
+          table: Array.from(
+            Array(pdfData.length),
+            (quotation = pdfData, index) => [
+              /*         index + 1, */
+              `${quotation[index].name}`,
+              `${quotation[index].price}`,
+              `${quotation[index].quantity}`,
+              `${quotation[index].total}`,
+            ]
+          ),
+          invTotalLabel: "Subtotal:",
+          invTotal: `$ ${this.priceToString(quotationResults.subtotal)}`,
+          invCurrency: "",
+          row1: {
+            col1: "Descuento:\nIva:",
+            col2: `$ ${this.priceToString(
+              quotationResults.totalDiscount
+            )}\n$ ${this.priceToString(quotationResults.totalIva)}`,
+            col3: `${quotation.discount}%\n${quotation.iva}%`,
+            style: {
+              fontSize: 10, //optional, default 12
+            },
+          },
+          row2: {
+            col1: "\nTotal:",
+            col2: `\n$ ${this.priceToString(quotationResults.total)}`,
+            col3: "",
+            style: {
+              fontSize: 10, //optional, default 12
+            },
+          },
+
+          invDescLabel: "Invoice Note",
+          invDesc:
+            "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary.",
+        },
+        footer: {
+          text: "The invoice is created on a computer and is valid without the signature and stamp.",
+        },
+        pageEnable: true,
+        pageLabel: "Page ",
+      };
     },
   },
 
@@ -1619,6 +1792,7 @@ export default {
     width: 80px;
   }
 }
+
 @import "../assets/css/common/popUp.css";
 @import "../assets/css/common/inputs.css";
 @import "../assets/css/common/button.css";
@@ -1627,4 +1801,5 @@ export default {
 @import "../assets/css/base/base.css";
 @import "../assets/css/common/table.css";
 @import "../assets/css/common/tableResults.css";
+@import "../assets/css/common/lds-ripple.css";
 </style>

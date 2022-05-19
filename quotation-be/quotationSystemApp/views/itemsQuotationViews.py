@@ -164,7 +164,7 @@ def setTotalQuotation(requestData):
     totalIva = 0
     totalItemsQuotation = 0
     for itemQuotation in itemsQuotationByQuotation:
-        subTotalItemsQuotation += itemQuotation.total * itemQuotation.quantity
+        subTotalItemsQuotation += itemQuotation.total
     totalDiscount = subTotalItemsQuotation * (discount/100)
     totalIva = (subTotalItemsQuotation - totalDiscount) * (iva/100)
     totalItemsQuotation = subTotalItemsQuotation - totalDiscount + totalIva
