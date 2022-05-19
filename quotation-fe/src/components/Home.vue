@@ -291,7 +291,10 @@
         </div>
 
         <div class="input-container">
-          <button class="button" type="submit">Generar Cotización</button>
+          <button class="button" type="submit">
+            <i class="fas fa-download"></i>
+            &nbsp;Generar Cotización
+          </button>
           <div class="lds-ripple" v-if="downloadExecute">
             <div></div>
             <div></div>
@@ -534,7 +537,10 @@
         </div>
 
         <div class="input-container">
-          <button class="button" type="submit">Actualizar Cotización</button>
+          <button class="button" type="submit">
+            <i class="fas fa-download"></i>
+            &nbsp;Actualizar Cotización
+          </button>
         </div>
 
         <div class="input-container">
