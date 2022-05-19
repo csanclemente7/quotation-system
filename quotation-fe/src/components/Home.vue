@@ -291,9 +291,7 @@
         </div>
 
         <div class="input-container">
-          <button class="button" type="submit" v-on:click="ejecutarDescarga">
-            Generar Cotización
-          </button>
+          <button class="button" type="submit">Generar Cotización</button>
           <div class="lds-ripple" v-if="downloadExecute">
             <div></div>
             <div></div>
@@ -1394,6 +1392,7 @@ export default {
     // methods for the form
     processCreateQuotation: function () {
       quotationServices.createQuotation(this.quotation).then((result) => {
+        this.ejecutarDescarga();
         this.errors.error_createQuotation = false;
         this.quotation = {
           client: "",
@@ -1443,6 +1442,7 @@ export default {
 
     processUpdateQuotation: function () {
       quotationServices.updateQuotation(this.quotationUpdate).then((result) => {
+        this.ejecutarDescarga();
         this.errors.error_createQuotation = false;
         this.quotationUpdate = {
           client: "",
@@ -1551,7 +1551,7 @@ export default {
       this.quotationResults.total = total;
 
       console.log(this.quotationResults);
-      this.setProps();
+      this.setProps("quotation");
     },
 
     // generar totales Actualizados
@@ -1581,6 +1581,7 @@ export default {
       this.quotationUpdateResults.total = total;
 
       console.log(this.quotationUpdateResults);
+      this.setProps("quotationUpdate");
     },
 
     processUpdateItem: function () {
@@ -1610,10 +1611,19 @@ export default {
       this.downloadExecute = true;
     },
 
-    setProps: function () {
-      let pdfData = this.itemsQuotation;
-      let quotation = this.quotation;
-      let quotationResults = this.quotationResults;
+    setProps: function (typeQuotation) {
+      let pdfData = [];
+      let quotation = {};
+      let quotationResults = {};
+      if (typeQuotation === "quotation") {
+        pdfData = this.itemsQuotation;
+        quotation = this.quotation;
+        quotationResults = this.quotationResults;
+      } else if (typeQuotation === "quotationUpdate") {
+        pdfData = this.itemsQuotationUpdate;
+        quotation = this.quotationUpdate;
+        quotationResults = this.quotationUpdateResults;
+      }
 
       let dateToday = new Date().toLocaleDateString();
       this.props = {
