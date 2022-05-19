@@ -988,7 +988,7 @@ export default {
         companyAddress: "Calle 3 Nro. 6-20",
         companyPhone: "(+57) 099-988-988",
         companyEmail: "info@macrisrefrigeracion.com",
-        companyWebSite: "www.macrisrefrigeracion.com",
+        companyWebsite: "www.macrisrefrigeracion.com",
       },
 
       email: localStorage.getItem("email") || "none",
@@ -1652,8 +1652,8 @@ export default {
           address: this.companyData.companyAddress,
           phone: this.companyData.companyPhone,
           email: this.companyData.companyEmail,
-          /* email_1: "info@example.al", */
           website: this.companyData.companyWebsite,
+          /* email_1: "info@example.al", */
         },
         contact: {
           label: "Invoice issued for:",
