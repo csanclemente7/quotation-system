@@ -33,8 +33,17 @@ const createItem = (item) =>
     })
     .then((response) => response.data);
 
+// Update item
+const updateItem = (item) =>
+  axios.put(`/item/${getUser()}/${item}/update`, item, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
+
 // export functions
 export const itemServices = {
   getItemsList,
   createItem,
+  updateItem,
 };

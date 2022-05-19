@@ -823,7 +823,9 @@
         />
         <label class="input-label" for="suggestion"> Precio </label>
         <span class="input-message-error">Este campo no es valido</span>
-        <button class="button" type="submit">Actualizar</button>
+        <button v-on:click="processUpdateItem" class="button" type="submit">
+          Actualizar
+        </button>
       </form>
     </div>
   </section>
@@ -910,6 +912,7 @@ export default {
       clients: [],
 
       item: {
+        id: "",
         name: "",
         price: "",
       },
@@ -971,6 +974,7 @@ export default {
     openPopUpItemUpdate: function (popUp, item) {
       if (item != null) {
         this.itemToUpdate = {
+          id: item.id,
           name: item.name,
           price: item.price,
         };
@@ -1328,6 +1332,19 @@ export default {
       this.quotationUpdateResults.total = total;
 
       console.log(this.quotationUpdateResults);
+    },
+
+    processUpdateItem: function () {
+      itemServices.updateItem(this.itemToUpdate.id).then((result) => {
+        this.errors.error_createItem = false;
+        this.item = {
+          name: "",
+          price: "",
+        };
+        itemServices.getItemsList().then((result) => {
+          this.items = result;
+        });
+      });
     },
   },
 
