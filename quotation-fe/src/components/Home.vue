@@ -837,7 +837,11 @@
           </svg>
         </div>
       </div>
-      <form action="">
+      <form
+        action=""
+        class="form-container"
+        v-on:submit.prevent="processUpdateItem"
+      >
         <div class="input-container suggestion-container">
           <input
             type="text"
@@ -858,9 +862,7 @@
         />
         <label class="input-label" for="suggestion"> Precio </label>
         <span class="input-message-error">Este campo no es valido</span>
-        <button v-on:click="processUpdateItem" class="button" type="submit">
-          Actualizar
-        </button>
+        <button class="button" type="submit">Actualizar</button>
       </form>
     </div>
   </section>
@@ -1433,9 +1435,9 @@ export default {
           name: "",
           price: "",
         };
+        this.closePopUp("itemUpdate");
         itemServices.getItemsList().then((result) => {
           this.items = result;
-          this.openPopUp("item");
         });
       });
     },
