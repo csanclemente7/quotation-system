@@ -294,9 +294,6 @@
           <button class="button" type="submit" v-on:click="ejecutarDescarga">
             Generar Cotización
           </button>
-          <button class="button" type="button" v-on:click="ejecutarDescarga">
-            Generar Cotización
-          </button>
           <div class="lds-ripple" v-if="downloadExecute">
             <div></div>
             <div></div>
@@ -1280,22 +1277,26 @@ export default {
     },
 
     setTotalItemQuotation: function () {
-      let price = this.itemsQuotation[this.indexSuggestion].price;
-      let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
-      this.itemsQuotation[this.indexSuggestion].total = price * quantity;
-      if (price != undefined && quantity != undefined) {
-        this.getResults();
+      if (this.indexSuggestion != undefined) {
+        let price = this.itemsQuotation[this.indexSuggestion].price;
+        let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
+        this.itemsQuotation[this.indexSuggestion].total = price * quantity;
+        if (price != undefined && quantity != undefined) {
+          this.getResults();
+        }
       }
     },
 
     setTotalItemQuotationUpdate: function () {
-      let price = this.itemsQuotationUpdate[this.indexSuggestionUpdate].price;
-      let quantity =
-        this.itemsQuotationUpdate[this.indexSuggestionUpdate].quantity;
-      this.itemsQuotationUpdate[this.indexSuggestionUpdate].total =
-        price * quantity;
+      if (this.indexSuggestionUpdate != undefined) {
+        let price = this.itemsQuotationUpdate[this.indexSuggestionUpdate].price;
+        let quantity =
+          this.itemsQuotationUpdate[this.indexSuggestionUpdate].quantity;
+        this.itemsQuotationUpdate[this.indexSuggestionUpdate].total =
+          price * quantity;
 
-      this.getResultsUpdate();
+        this.getResultsUpdate();
+      }
     },
 
     editItemName: function (e) {
