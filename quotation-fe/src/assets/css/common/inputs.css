@@ -1,6 +1,8 @@
 .formulario {
   margin-top: 1rem;
   width: 90%;
+  display: flex;
+  align-items: center;
 }
 
 .item-create-form {
@@ -16,20 +18,32 @@
 .header-form {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   width: 90%;
   gap: 5%;
 }
 
 .client {
-  width: 50%;
+  width: 40%;
 }
 
 .iva {
-  width: 25%;
+  width: 12.4%;
 }
 
-.discount {
-  width: 25%;
+.descuento {
+  width: 12.4%;
+}
+
+.add-items-manually {
+  width: 20%;
+  margin-bottom: 1.5rem !important;
+}
+.add-items-manually button {
+  font-size: 1.125rem;
+  background-color: none;
+  border: none;
 }
 
 .input-container {

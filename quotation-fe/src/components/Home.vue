@@ -134,7 +134,7 @@
           <!--- Iva -->
           <div class="input-container iva">
             <input
-              type="text"
+              type="number"
               name="iva"
               id="iva"
               class="input"
@@ -150,7 +150,7 @@
           <!--- Descuento -->
           <div class="input-container descuento">
             <input
-              type="text"
+              type="number"
               name="descuento"
               id="descuento"
               class="input"
@@ -161,6 +161,19 @@
             />
             <label class="input-label" for="descuento">% Descuento</label>
             <span class="input-message-error">Este campo no es valido</span>
+          </div>
+
+          <!-- button set items -->
+          <div class="input-container add-items-manually">
+            <button
+              class="button"
+              type="button"
+              aria-label="submit form"
+              v-on:click="setItemsQuotationManually('quotation')"
+            >
+              <i class="fas fa-plus"></i>
+              &nbsp;Agregar Items
+            </button>
           </div>
         </div>
         <div
@@ -196,7 +209,7 @@
           </div>
           <div class="input-container price">
             <input
-              type="text"
+              type="number"
               name="price"
               id="price"
               class="input"
@@ -213,7 +226,7 @@
 
           <div class="input-container quantity">
             <input
-              type="text"
+              type="number"
               name="quantity"
               id="quantity"
               class="input"
@@ -406,6 +419,19 @@
             />
             <label class="input-label" for="descuento">% Descuento</label>
             <span class="input-message-error">Este campo no es valido</span>
+          </div>
+
+          <!-- button set items -->
+          <div class="input-container add-items-manually">
+            <button
+              class="button"
+              type="button"
+              aria-label="submit form"
+              v-on:click="setItemsQuotationManually('quotationUpdate')"
+            >
+              <i class="fas fa-plus"></i>
+              &nbsp;Agregar Items
+            </button>
           </div>
         </div>
         <div
@@ -1146,12 +1172,10 @@ export default {
 
     openPopUpItemUpdate: function (popUp, item) {
       this.itemToUpdate = item;
-      console.log(this.itemToUpdate);
       this.popUps[popUp] = true;
     },
     openPopUpUpdateQuotation: function (popUp, quotation) {
       this.idQuotationToUpdate = quotation.id;
-      console.log(this.idQuotationToUpdate);
       this.popUps[popUp] = true;
       this.quotationUpdate = quotation;
       let itemQuotationUpdate = {
@@ -1175,7 +1199,6 @@ export default {
           total: item.total,
         });
       });
-      console.log(this.itemsQuotationUpdate);
 
       this.getResultsUpdate();
     },
@@ -1259,7 +1282,6 @@ export default {
     },
 
     setClientSuggestion: function (id, name, phone, email, address, city) {
-      console.log(this.quotation);
       this.quotation.client = id;
       this.quotation.client_name = name;
       this.quotation.client_phone = phone;
@@ -1440,12 +1462,6 @@ export default {
       });
     },
 
-    processCreateItemsQuotation: function () {
-      this.itemsQuotation.forEach((itemQuotation) => {
-        console.log(itemQuotation);
-      });
-    },
-
     processUpdateQuotation: function () {
       quotationServices.updateQuotation(this.quotationUpdate).then((result) => {
         this.ejecutarDescarga();
@@ -1556,7 +1572,6 @@ export default {
       this.quotationResults.totalIva = totalIva;
       this.quotationResults.total = total;
 
-      console.log(this.quotationResults);
       this.setProps("quotation");
     },
 
@@ -1586,7 +1601,6 @@ export default {
       this.quotationUpdateResults.totalIva = totalIva;
       this.quotationUpdateResults.total = total;
 
-      console.log(this.quotationUpdateResults);
       this.setProps("quotationUpdate");
     },
 
@@ -1630,12 +1644,20 @@ export default {
         quotation = this.quotationUpdate;
         quotationResults = this.quotationUpdateResults;
       }
-
-      let dateToday = new Date().toLocaleDateString();
+      // date aaaa-mm-dd
+      let dateToday = new Date();
+      let date =
+        dateToday.getFullYear() +
+        "-" +
+        (dateToday.getMonth() + 1) +
+        "-" +
+        dateToday.getDate();
       this.props = {
         outputType: OutputType.Save,
         returnJsPDFDocObject: true,
-        fileName: "Invoice 2021",
+        fileName: `cotización-${quotation.client_name}-${this.dateToString(
+          date
+        )}`,
         orientationLandscape: false,
         compress: true,
         logo: {
@@ -1664,10 +1686,10 @@ export default {
           otherInfo: "",
         },
         invoice: {
-          label: "Invoice #: ",
-          num: 19,
-          invDate: "Payment Date: 01/01/2021 18:12",
-          invGenDate: "Invoice Date: 02/02/2021 10:17",
+          label: "Cotización #: ",
+          num: quotation.id,
+          invDate: `Fecha ${this.dateToString(date)}`,
+          /* invGenDate: "Invoice Date: 02/02/2021 10:17", */
           headerBorder: false,
           tableBodyBorder: false,
           header: [
@@ -1738,6 +1760,45 @@ export default {
         pageEnable: true,
         pageLabel: "Page ",
       };
+    },
+    setItemsQuotationManually: function (type) {
+      swal("¿ Cuantos items desea agregar ?", {
+        content: "input",
+      }).then((value) => {
+        if (isNaN(value)) {
+          swal("No se puede agregar un valor no numerico", "", "error");
+
+          return;
+        } else if (value > 50) {
+          swal("No se puede agregar mas de 50 items", "", "error");
+          return;
+        } else if (value < 1) {
+          swal("No se puede agregar menos de 1 item", "", "error");
+          return;
+        } else {
+        }
+        if (type === "quotation") {
+          for (let i = 0; i < parseInt(value); i++) {
+            this.createItemQuotation();
+          }
+        } else if (type === "quotationUpdate") {
+          for (let i = 0; i < parseInt(value); i++) {
+            this.createItemQuotationUpdate();
+          }
+        }
+      });
+    },
+    // convert date AAAA-MM-DD to DD/MM/AAAA
+    dateToString: function (date) {
+      date = date.toString();
+      if (date != null && date != undefined) {
+        let dateArray = date.split("-").reverse();
+        dateArray[1] =
+          dateArray[1].length == 1 ? "0" + dateArray[1] : dateArray[1];
+        dateArray[2] =
+          dateArray[2].length == 1 ? "0" + dateArray[2] : dateArray[2];
+        return dateArray.join("/");
+      }
     },
   },
 
