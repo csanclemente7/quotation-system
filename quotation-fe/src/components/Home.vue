@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <!-- loader -->
+    <div class="dot-elastic"></div>
     <div class="home-data">
       <h1 class="home__subtitle">
         <img src="../assets/img/logo.png" alt="" />&nbsp; App Cotizaciones
@@ -41,7 +43,7 @@
     </div>
   </div>
   <!-- LOADER -->
-  <div class="lds-spinner" v-if="startLoader">
+  <div class="lds-spinner" v-if="startLoader || !totalInitialDataResults === 3">
     <div></div>
     <div></div>
     <div></div>
@@ -1031,6 +1033,7 @@ export default {
       indexSuggestionUpdate: 0,
       newClient: false,
       downloadExecuted: false,
+      totalInitialDataResults: 0,
       props: {},
       pdfObject: {},
 
@@ -1398,9 +1401,11 @@ export default {
     },
 
     processCreateItem: function () {
+      this.startLoader = true;
       itemServices.createItem(this.item).then((result) => {
         itemServices.getItemsList().then((result) => {
           this.items = result;
+          this.startLoader = false;
         });
         this.item = {
           name: "",
@@ -1410,15 +1415,18 @@ export default {
     },
 
     processDeleteItem: function (id) {
+      this.startLoader = true;
       itemServices.deleteItem(id).then((result) => {
         itemServices.getItemsList().then((result) => {
           this.items = result;
+          this.startLoader = false;
         });
       });
     },
 
     // methods for the form
     processCreateQuotation: function () {
+      this.startLoader = true;
       quotationServices.createQuotation(this.quotation).then((result) => {
         this.ejecutarDescarga();
         this.errors.error_createQuotation = false;
@@ -1458,11 +1466,13 @@ export default {
         this.closePopUp("quotation");
         quotationServices.getQuotationsList().then((result) => {
           this.quotations = result;
+          this.startLoader = false;
         });
       });
     },
 
     processUpdateQuotation: function () {
+      this.startLoader = true;
       quotationServices.updateQuotation(this.quotationUpdate).then((result) => {
         this.ejecutarDescarga();
         this.errors.error_createQuotation = false;
@@ -1504,12 +1514,14 @@ export default {
         setTimeout(() => {
           quotationServices.getQuotationsList().then((result) => {
             this.quotations = result;
+            this.startLoader = false;
           });
         }, 100);
       });
     },
 
     processDeleteQuotation: function (id) {
+      this.startLoader = true;
       swal({
         title: "¿Estás seguro?",
         text: "Una vez eliminado, no podrás recuperar este registro",
@@ -1524,6 +1536,7 @@ export default {
             quotationServices.getQuotationsList().then((result) => {
               this.quotations = result;
               console.log(result);
+              this.startLoader = false;
             });
           });
         }
@@ -1531,6 +1544,7 @@ export default {
     },
 
     processCreateClient: function () {
+      this.startLoader = true;
       clientServices.createClient(this.client).then((result) => {
         clientServices.getClientsList().then((result) => {
           this.clients = result;
@@ -1543,6 +1557,7 @@ export default {
         this.quotation.client = result.id;
         this.quotation.client_name = result.name;
         this.closePopUp("clientes");
+        this.startLoader = false;
       });
     },
 
@@ -1605,6 +1620,7 @@ export default {
     },
 
     processUpdateItem: function () {
+      this.startLoader = true;
       itemServices.updateItem(this.itemToUpdate).then((result) => {
         this.errors.error_createItem = false;
         this.itemToUpdate = {
@@ -1614,6 +1630,7 @@ export default {
         this.closePopUp("itemUpdate");
         itemServices.getItemsList().then((result) => {
           this.items = result;
+          this.startLoader = false;
         });
       });
     },
@@ -1764,7 +1781,9 @@ export default {
     setItemsQuotationManually: function (type) {
       swal("¿ Cuantos items desea agregar ?", {
         content: "input",
+        buttons: ["Cancelar", "Aceptar"],
       }).then((value) => {
+        console.log("value", value);
         if (isNaN(value)) {
           swal("No se puede agregar un valor no numerico", "", "error");
 
@@ -1772,18 +1791,20 @@ export default {
         } else if (value > 50) {
           swal("No se puede agregar mas de 50 items", "", "error");
           return;
-        } else if (value < 1) {
+        } else if (value < 1 && value !== "" && value !== null) {
           swal("No se puede agregar menos de 1 item", "", "error");
           return;
+        } else if (value == null) {
+          return;
         } else {
-        }
-        if (type === "quotation") {
-          for (let i = 0; i < parseInt(value); i++) {
-            this.createItemQuotation();
-          }
-        } else if (type === "quotationUpdate") {
-          for (let i = 0; i < parseInt(value); i++) {
-            this.createItemQuotationUpdate();
+          if (type === "quotation") {
+            for (let i = 0; i < parseInt(value); i++) {
+              this.createItemQuotation();
+            }
+          } else if (type === "quotationUpdate") {
+            for (let i = 0; i < parseInt(value); i++) {
+              this.createItemQuotationUpdate();
+            }
           }
         }
       });
@@ -1800,6 +1821,22 @@ export default {
         return dateArray.join("/");
       }
     },
+    getInitialData: function () {
+      itemServices.getItemsList().then((result) => {
+        this.items = result;
+        this.totalInitialDataResults += 1;
+      });
+
+      quotationServices.getQuotationsList().then((result) => {
+        this.quotations = result;
+        this.totalInitialDataResults += 1;
+      });
+
+      clientServices.getClientsList().then((result) => {
+        this.clients = result;
+        this.totalInitialDataResults += 1;
+      });
+    },
   },
 
   created: function () {
@@ -1808,17 +1845,7 @@ export default {
     this.is_admin = JSON.parse(localStorage.getItem("isAdmin")) || false;
     this.createItemQuotation();
 
-    itemServices.getItemsList().then((result) => {
-      this.items = result;
-    });
-
-    quotationServices.getQuotationsList().then((result) => {
-      this.quotations = result;
-    });
-
-    clientServices.getClientsList().then((result) => {
-      this.clients = result;
-    });
+    this.getInitialData();
 
     for (let i = 0; i < 1; i++) {
       this.createItemQuotation();
