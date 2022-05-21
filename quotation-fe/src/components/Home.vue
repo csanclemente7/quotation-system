@@ -1749,11 +1749,11 @@ export default {
           invTotal: `$ ${this.priceToString(quotationResults.subtotal)}`,
           invCurrency: "",
           row1: {
-            col1: "Descuento:\nIva:",
+            col1: `Descuento (${quotation.discount}%) :\nIva (${quotation.iva}%) :`,
             col2: `$ ${this.priceToString(
               quotationResults.totalDiscount
             )}\n$ ${this.priceToString(quotationResults.totalIva)}`,
-            col3: `${quotation.discount}%\n${quotation.iva}%`,
+            col3: "",
             style: {
               fontSize: 10, //optional, default 12
             },
