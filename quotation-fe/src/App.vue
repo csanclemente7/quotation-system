@@ -84,6 +84,7 @@ export default {
       if (this.is_auth == false) {
         this.$router.push({ name: "logIn" });
       } else {
+        this.$router.push({ name: "home" });
         this.getUserData();
       }
     },
