@@ -730,15 +730,17 @@
           <label class="input-label" for="suggestion"> Item </label>
           <span class="input-message-error">Este campo no es valido</span>
         </div>
-        <input
-          type="text"
-          name="price"
-          id="itemUpdatePrice"
-          class="input"
-          v-model="itemToUpdate.price"
-        />
-        <label class="input-label" for="suggestion"> Precio </label>
-        <span class="input-message-error">Este campo no es valido</span>
+        <div class="input-container suggestion-container">
+          <input
+            type="text"
+            name="price"
+            id="itemUpdatePrice"
+            class="input"
+            v-model="itemToUpdate.price"
+          />
+          <label class="input-label" for="suggestion"> Precio </label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
         <button class="button" type="submit">Actualizar</button>
       </form>
     </div>

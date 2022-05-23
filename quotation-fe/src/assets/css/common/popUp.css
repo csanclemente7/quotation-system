@@ -16,10 +16,10 @@
   justify-content: center;
   align-items: center;
   position: inherit;
-  background-image: url(../../img/im_back.jpeg), linear-gradient(to bottom, rgba(2, 2, 32, 0.525) 0%, rgba(2, 2, 32, 0.525) 50%);
+  background-image: url(../../img/im_back.jpeg);
   background-position: center;
   background-repeat: no-repeat;
-  border: 0px solid #ffffffbc;
+  border: 0.1px solid #ffffff09;
   width: 80%;
   height: auto;
   padding: 0 0 10px 0;
@@ -31,7 +31,10 @@
 
 
 .popup-suggestions {
-  width: 50%;
+  background-color: rgba(2, 2, 32, 0.525);
+  backdrop-filter: blur(30px);
+  background-image: none;
+  width: 35% !important;
   position: absolute;
   z-index: 3;
 }
@@ -46,7 +49,10 @@
 }
 
 .popup-item-update {
-  width: 50%;
+  background-color: rgba(2, 2, 32, 0.525);
+  backdrop-filter: blur(30px);
+  background-image: none;
+  width: 30% !important;
   position: absolute;
   z-index: 3;
 }
