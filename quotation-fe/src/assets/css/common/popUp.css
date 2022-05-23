@@ -28,7 +28,11 @@
   z-index: 2;
 }
 
-
+.parentDiv {
+  filter: blur(1px);
+  opacity: 0.9;
+  pointer-events: none;
+}
 
 .popup-suggestions {
   background-color: rgba(2, 2, 32, 0.525);

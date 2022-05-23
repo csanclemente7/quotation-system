@@ -1082,6 +1082,7 @@ export default {
         totalDiscount: "0",
         totalIva: "0",
         total: "0",
+        home: null,
       },
 
       quotationUpdate: {
@@ -1187,6 +1188,8 @@ export default {
 
     // pop ups
     openPopUp: function (popUp) {
+      this.home = document.querySelector(".home");
+      this.home.classList.add("parentDiv");
       this.popUps[popUp] = true;
     },
 
@@ -1362,6 +1365,7 @@ export default {
 
     closePopUp: function (popUp) {
       this.popUps[popUp] = false;
+      this.home.classList.remove("parentDiv");
     },
 
     createItemQuotation: function () {
