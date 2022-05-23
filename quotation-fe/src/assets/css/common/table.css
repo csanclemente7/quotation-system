@@ -16,6 +16,11 @@ table.custom-responsiva {
   cursor: pointer;
 }
 
+.delete-custom {
+  background: var(--popup-background);
+  border: none !important;
+}
+
 .custom-responsiva th {
   background: rgb(51, 51, 51) !important;
   color: white !important;
@@ -25,7 +30,7 @@ table.custom-responsiva {
 .custom-responsiva td,
 .custom-responsiva th {
   padding: 6px !important;
-  border: 1px solid #ccc !important;
+  border: 1px solid #ccc ;
   text-align: center !important;
   font-weight: bold !important;
 }

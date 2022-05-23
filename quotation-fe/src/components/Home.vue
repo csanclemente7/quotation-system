@@ -676,7 +676,7 @@
               ${{ priceToString(item.price) }}
             </td>
             <!-- delete button -->
-            <div class="input-container delete">
+            <td class="delete-custom">
               <button
                 class="delete-button"
                 type="button"
@@ -686,7 +686,7 @@
                 <!-- delete icon -->
                 <li class="fa fa-trash"></li>
               </button>
-            </div>
+            </td>
           </tr>
         </tbody>
       </table>
