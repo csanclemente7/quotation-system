@@ -1809,7 +1809,7 @@ export default {
             col2: `\n$ ${this.priceToString(quotationResults.total)}`,
             col3: "",
             style: {
-              fontSize: 10, //optional, default 12
+              fontSize: 12, //optional, default 12
             },
           },
 
@@ -1823,7 +1823,7 @@ export default {
         pageEnable: true,
         pageLabel: "Page ",
       };
-      pdfBlob.setProps(this.props, jsPDFInvoiceTemplate);
+      /* pdfBlob.setProps(this.props, jsPDFInvoiceTemplate); */
     },
 
     setItemsQuotationManually: function (type) {
