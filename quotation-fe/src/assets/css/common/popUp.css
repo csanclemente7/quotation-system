@@ -34,7 +34,7 @@
   background-color: rgba(2, 2, 32, 0.525);
   backdrop-filter: blur(30px);
   background-image: none;
-  width: 35% !important;
+  width: 20% !important;
   position: absolute;
   z-index: 3;
 }
