@@ -16,10 +16,10 @@
   justify-content: center;
   align-items: center;
   position: inherit;
-  background-image: url(../../img/im_back.jpeg), linear-gradient(to bottom, rgba(2, 2, 32, 0.525) 0%, rgba(2, 2, 32, 0.525) 50%);
+  background-image: url(../../img/im_back.jpeg);
   background-position: center;
   background-repeat: no-repeat;
-  border: 0px solid #ffffffbc;
+  border: 0.1px solid #ffffff09;
   width: 80%;
   height: auto;
   padding: 0 0 10px 0;
@@ -28,7 +28,11 @@
   z-index: 2;
 }
 
-
+.parentDiv {
+  filter: blur(1px);
+  opacity: 0.9;
+  pointer-events: none;
+}
 
 .popup-suggestions {
   width: 50%;
