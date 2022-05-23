@@ -81,6 +81,14 @@
     width: 40px;
   }
 
+  .popup {
+    width: 80%;
+  }
+
+  .popup-clientes {
+    width: 80%;
+  }
+
   .popup .popup_title {
     font-size: 25px;
   }
@@ -95,6 +103,9 @@
   .popup .popup_title {
     font-size: 50px;
   }
+  .popup-clientes {
+    width: 50%;
+  }
 }
 
 /*Para escritorio*/
@@ -106,6 +117,9 @@
   .popup .popup_title {
     font-size: 50px;
   }
+  .popup-clientes {
+    width: 50%;
+  }
 }
 
 /* para pantallas grandes */
@@ -116,5 +130,8 @@
 
   .popup .popup_title {
     font-size: 50px;
+  }
+  .popup-clientes {
+    width: 50%;
   }
 }

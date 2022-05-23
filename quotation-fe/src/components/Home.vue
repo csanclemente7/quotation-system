@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <!-- loader -->
+    <div class="dot-elastic"></div>
     <div class="home-data">
       <h1 class="home__subtitle">
         <img src="../assets/img/logo.png" alt="" />&nbsp; App Cotizaciones
@@ -41,7 +43,7 @@
     </div>
   </div>
   <!-- LOADER -->
-  <div class="lds-spinner" v-if="startLoader">
+  <div class="lds-spinner" v-if="startLoader || !totalInitialDataResults === 3">
     <div></div>
     <div></div>
     <div></div>
@@ -134,7 +136,7 @@
           <!--- Iva -->
           <div class="input-container iva">
             <input
-              type="text"
+              type="number"
               name="iva"
               id="iva"
               class="input"
@@ -150,7 +152,7 @@
           <!--- Descuento -->
           <div class="input-container descuento">
             <input
-              type="text"
+              type="number"
               name="descuento"
               id="descuento"
               class="input"
@@ -161,6 +163,19 @@
             />
             <label class="input-label" for="descuento">% Descuento</label>
             <span class="input-message-error">Este campo no es valido</span>
+          </div>
+
+          <!-- button set items -->
+          <div class="input-container add-items-manually">
+            <button
+              class="button"
+              type="button"
+              aria-label="submit form"
+              v-on:click="setItemsQuotationManually('quotation')"
+            >
+              <i class="fas fa-plus"></i>
+              &nbsp;Agregar Items
+            </button>
           </div>
         </div>
         <div
@@ -196,7 +211,7 @@
           </div>
           <div class="input-container price">
             <input
-              type="text"
+              type="number"
               name="price"
               id="price"
               class="input"
@@ -213,7 +228,7 @@
 
           <div class="input-container quantity">
             <input
-              type="text"
+              type="number"
               name="quantity"
               id="quantity"
               class="input"
@@ -291,7 +306,14 @@
         </div>
 
         <div class="input-container">
-          <button class="button" type="submit">Generar Cotización</button>
+          <button class="button" type="submit">
+            <i class="fas fa-download"></i>
+            &nbsp;Generar Cotización
+          </button>
+          <div class="lds-ripple" v-if="downloadExecute">
+            <div></div>
+            <div></div>
+          </div>
         </div>
       </form>
     </div>
@@ -399,6 +421,19 @@
             />
             <label class="input-label" for="descuento">% Descuento</label>
             <span class="input-message-error">Este campo no es valido</span>
+          </div>
+
+          <!-- button set items -->
+          <div class="input-container add-items-manually">
+            <button
+              class="button"
+              type="button"
+              aria-label="submit form"
+              v-on:click="setItemsQuotationManually('quotationUpdate')"
+            >
+              <i class="fas fa-plus"></i>
+              &nbsp;Agregar Items
+            </button>
           </div>
         </div>
         <div
@@ -530,7 +565,10 @@
         </div>
 
         <div class="input-container">
-          <button class="button" type="submit">Actualizar Cotización</button>
+          <button class="button" type="submit">
+            <i class="fas fa-download"></i>
+            &nbsp;Actualizar Cotización
+          </button>
         </div>
 
         <div class="input-container">
@@ -546,7 +584,7 @@
       </form>
     </div>
 
-    <!--- pop up create item -->
+    <!--- POP UP CREATE ITEM -->
     <div class="popup" v-if="popUps.item">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('item')">
@@ -762,7 +800,7 @@
       </div>
     </div>
 
-    <!--- pop up suggestions update -->
+    <!--- POP UP SUGGESTIONS UPDATE QUOTATION -->
     <div class="popup popup-suggestions" v-if="popUps.suggestionsUpdate">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('suggestionsUpdate')">
@@ -819,7 +857,7 @@
       </div>
     </div>
 
-    <!--- pop up clientes -->
+    <!--- POP UP CLIENTES -->
     <div class="popup popup-clientes" v-if="popUps.clientes">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('clientes')">
@@ -851,7 +889,9 @@
           v-on:input="filterClients(suggestion)"
           autocomplete="off"
         />
-        <label class="input-label" for="suggestion"> Buscar Cliente </label>
+        <label class="input-label" for="suggestion">
+          Buscar Cliente Existente</label
+        >
         <span class="input-message-error">Este campo no es valido</span>
 
         <div
@@ -861,7 +901,14 @@
         >
           <li
             v-on:click="
-              setClientSuggestion(client.id, client.name, client.phone)
+              setClientSuggestion(
+                client.id,
+                client.name,
+                client.phone,
+                client.email,
+                client.address,
+                client.city
+              )
             "
             class="suggestion-item"
           >
@@ -875,7 +922,88 @@
             </div>
           </li>
         </div>
+        <div class="link-container" v-on:click="newClient = !newClient">
+          <i class="fas fa-plus" v-if="!newClient">&nbsp;</i>
+          <i class="fas fa-minus" v-if="newClient">&nbsp;</i>
+          <a> Agregar Nuevo Cliente </a>
+        </div>
       </div>
+
+      <form
+        class="client-form"
+        v-if="newClient"
+        v-on:submit.prevent="processCreateClient"
+      >
+        <div class="client-form-title">
+          <h2>Agregar Nuevo Cliente</h2>
+        </div>
+        <div class="input-container client-name">
+          <input
+            type="text"
+            name="name"
+            id="name"
+            class="input"
+            v-model="client.name"
+            autocomplete="off"
+          />
+          <label class="input-label" for="name">Nombre</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <div class="input-container client-city">
+          <input
+            type="text"
+            name="city"
+            id="city"
+            class="input"
+            v-model="client.city"
+            autocomplete="off"
+          />
+          <label class="input-label" for="phone">Ciudad</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <div class="input-container client-address">
+          <input
+            type="text"
+            name="address"
+            id="address"
+            class="input"
+            v-model="client.address"
+            autocomplete="off"
+          />
+          <label class="input-label" for="email">Dirección</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <div class="input-container client-email">
+          <input
+            type="text"
+            name="email"
+            id="email"
+            class="input"
+            v-model="client.email"
+            autocomplete="off"
+          />
+          <label class="input-label" for="address">Email</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <div class="input-container client-phone">
+          <input
+            type="text"
+            name="phone"
+            id="phone"
+            class="input"
+            v-model="client.phone"
+            autocomplete="off"
+          />
+          <label class="input-label" for="phone">Teléfono</label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+
+        <div class="button-container">
+          <button class="button button-add-client" type="submit">
+            Agregar
+          </button>
+        </div>
+      </form>
     </div>
   </section>
 </template>
@@ -886,11 +1014,23 @@ import { itemServices } from "../service/item-service";
 import { quotationServices } from "../service/quotation-service";
 import { clientServices } from "../service/client-service";
 import { itemQuotationServices } from "../service/item-quotation-service";
+import jsPDFInvoiceTemplate, {
+  OutputType,
+  jsPDF,
+} from "jspdf-invoice-template";
 
 export default {
   name: "Home",
   data: function () {
     return {
+      companyData: {
+        companyName: "Macris Refrigeración & Aire s.a.s",
+        companyAddress: "Calle 3 Nro. 6-20",
+        companyPhone: "(+57) 099-988-988",
+        companyEmail: "info@macrisrefrigeracion.com",
+        companyWebsite: "www.macrisrefrigeracion.com",
+      },
+
       email: localStorage.getItem("email") || "none",
       is_admin: false,
       name: "",
@@ -903,6 +1043,11 @@ export default {
       suggestionUpdate: "",
       indexSuggestion: 0,
       indexSuggestionUpdate: 0,
+      newClient: false,
+      downloadExecuted: false,
+      totalInitialDataResults: 0,
+      props: {},
+      pdfObject: {},
 
       errors: {
         error_createQuotation: false,
@@ -923,6 +1068,9 @@ export default {
         client: "",
         client_name: "",
         client_phone: "",
+        client_city: "",
+        client_address: "",
+        client_email: "",
         iva: "19",
         discount: "0",
         subtotal: "0",
@@ -936,6 +1084,9 @@ export default {
         client: "",
         client_name: "",
         client_phone: "",
+        client_city: "",
+        client_address: "",
+        client_email: "",
         iva: "19",
         discount: "0",
         subtotal: "0",
@@ -959,6 +1110,14 @@ export default {
       },
 
       clients: [],
+
+      client: {
+        name: "",
+        city: "",
+        address: "",
+        email: "",
+        phone: "",
+      },
 
       item: {
         id: "",
@@ -1028,12 +1187,10 @@ export default {
 
     openPopUpItemUpdate: function (popUp, item) {
       this.itemToUpdate = item;
-      console.log(this.itemToUpdate);
       this.popUps[popUp] = true;
     },
     openPopUpUpdateQuotation: function (popUp, quotation) {
       this.idQuotationToUpdate = quotation.id;
-      console.log(this.idQuotationToUpdate);
       this.popUps[popUp] = true;
       this.quotationUpdate = quotation;
       let itemQuotationUpdate = {
@@ -1057,7 +1214,6 @@ export default {
           total: item.total,
         });
       });
-      console.log(this.itemsQuotationUpdate);
 
       this.getResultsUpdate();
     },
@@ -1140,10 +1296,13 @@ export default {
       this.setTotalItemQuotationUpdate;
     },
 
-    setClientSuggestion: function (id, name, phone) {
+    setClientSuggestion: function (id, name, phone, email, address, city) {
       this.quotation.client = id;
       this.quotation.client_name = name;
       this.quotation.client_phone = phone;
+      this.quotation.client_email = email;
+      this.quotation.client_address = address;
+      this.quotation.client_city = city;
 
       this.popUps.clientes = false;
       this.suggestions = [];
@@ -1159,22 +1318,26 @@ export default {
     },
 
     setTotalItemQuotation: function () {
-      let price = this.itemsQuotation[this.indexSuggestion].price;
-      let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
-      this.itemsQuotation[this.indexSuggestion].total = quantity * price;
-      if (price != undefined && quantity != undefined) {
-        this.getResults();
+      if (this.indexSuggestion != undefined) {
+        let price = this.itemsQuotation[this.indexSuggestion].price;
+        let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
+        this.itemsQuotation[this.indexSuggestion].total = price * quantity;
+        if (price != undefined && quantity != undefined) {
+          this.getResults();
+        }
       }
     },
 
     setTotalItemQuotationUpdate: function () {
-      let price = this.itemsQuotationUpdate[this.indexSuggestionUpdate].price;
-      let quantity =
-        this.itemsQuotationUpdate[this.indexSuggestionUpdate].quantity;
-      this.itemsQuotationUpdate[this.indexSuggestionUpdate].total =
-        quantity * price;
+      if (this.indexSuggestionUpdate != undefined) {
+        let price = this.itemsQuotationUpdate[this.indexSuggestionUpdate].price;
+        let quantity =
+          this.itemsQuotationUpdate[this.indexSuggestionUpdate].quantity;
+        this.itemsQuotationUpdate[this.indexSuggestionUpdate].total =
+          price * quantity;
 
-      this.getResultsUpdate();
+        this.getResultsUpdate();
+      }
     },
 
     editItemName: function (e) {
@@ -1250,9 +1413,11 @@ export default {
     },
 
     processCreateItem: function () {
+      this.startLoader = true;
       itemServices.createItem(this.item).then((result) => {
         itemServices.getItemsList().then((result) => {
           this.items = result;
+          this.startLoader = false;
         });
         console.log(this.items);
         this.item = {
@@ -1272,6 +1437,7 @@ export default {
         this.closePopUp("itemUpdate");
         itemServices.getItemsList().then((result) => {
           this.items = result;
+          this.startLoader = false;
         });
       });
     },
@@ -1303,11 +1469,17 @@ export default {
 
     // methods for the form
     processCreateQuotation: function () {
+      this.startLoader = true;
       quotationServices.createQuotation(this.quotation).then((result) => {
+        this.ejecutarDescarga();
         this.errors.error_createQuotation = false;
         this.quotation = {
           client: "",
           client_name: "",
+          client_phone: "",
+          client_city: "",
+          client_address: "",
+          client_email: "",
           client_phone: "",
           iva: "19",
           discount: "0",
@@ -1337,18 +1509,15 @@ export default {
         this.closePopUp("quotation");
         quotationServices.getQuotationsList().then((result) => {
           this.quotations = result;
+          this.startLoader = false;
         });
       });
     },
 
-    processCreateItemsQuotation: function () {
-      this.itemsQuotation.forEach((itemQuotation) => {
-        console.log(itemQuotation);
-      });
-    },
-
     processUpdateQuotation: function () {
+      this.startLoader = true;
       quotationServices.updateQuotation(this.quotationUpdate).then((result) => {
+        this.ejecutarDescarga();
         this.errors.error_createQuotation = false;
         this.quotationUpdate = {
           client: "",
@@ -1388,12 +1557,14 @@ export default {
         setTimeout(() => {
           quotationServices.getQuotationsList().then((result) => {
             this.quotations = result;
+            this.startLoader = false;
           });
         }, 100);
       });
     },
 
     processDeleteQuotation: function (id) {
+      this.startLoader = true;
       swal({
         title: "¿Estás seguro?",
         text: "Una vez eliminado, no podrás recuperar este registro",
@@ -1408,9 +1579,28 @@ export default {
             quotationServices.getQuotationsList().then((result) => {
               this.quotations = result;
               console.log(result);
+              this.startLoader = false;
             });
           });
         }
+      });
+    },
+
+    processCreateClient: function () {
+      this.startLoader = true;
+      clientServices.createClient(this.client).then((result) => {
+        clientServices.getClientsList().then((result) => {
+          this.clients = result;
+        });
+        this.client = {
+          name: "",
+          phone: "",
+        };
+        this.newClient = false;
+        this.quotation.client = result.id;
+        this.quotation.client_name = result.name;
+        this.closePopUp("clientes");
+        this.startLoader = false;
       });
     },
 
@@ -1426,7 +1616,7 @@ export default {
 
       for (let i = 0; i < this.itemsQuotation.length; i++) {
         let itemQuotation = this.itemsQuotation[i];
-        subtotal += itemQuotation.total * itemQuotation.quantity;
+        subtotal += itemQuotation.total;
       }
 
       totalDiscount = subtotal * (discount / 100);
@@ -1440,7 +1630,7 @@ export default {
       this.quotationResults.totalIva = totalIva;
       this.quotationResults.total = total;
 
-      console.log(this.quotationResults);
+      this.setProps("quotation");
     },
 
     // generar totales Actualizados
@@ -1455,7 +1645,7 @@ export default {
 
       for (let i = 0; i < this.itemsQuotationUpdate.length; i++) {
         let itemQuotation = this.itemsQuotationUpdate[i];
-        subtotal += itemQuotation.total * itemQuotation.quantity;
+        subtotal += itemQuotation.total;
       }
 
       totalDiscount = subtotal * (discount / 100);
@@ -1469,7 +1659,226 @@ export default {
       this.quotationUpdateResults.totalIva = totalIva;
       this.quotationUpdateResults.total = total;
 
-      console.log(this.quotationUpdateResults);
+      this.setProps("quotationUpdate");
+    },
+
+    processUpdateItem: function () {
+      this.startLoader = true;
+      itemServices.updateItem(this.itemToUpdate).then((result) => {
+        this.errors.error_createItem = false;
+        this.itemToUpdate = {
+          name: "",
+          price: "",
+        };
+        this.closePopUp("itemUpdate");
+        itemServices.getItemsList().then((result) => {
+          this.items = result;
+          this.startLoader = false;
+        });
+      });
+    },
+
+    // PDF DOWNLOADER
+
+    generatePdf: function () {
+      this.pdfObject = jsPDFInvoiceTemplate(this.props);
+
+      console.log("Object created", this.pdfObject);
+    },
+
+    ejecutarDescarga: function () {
+      this.generatePdf();
+      this.downloadExecute = true;
+    },
+
+    setProps: function (typeQuotation) {
+      let pdfData = [];
+      let quotation = {};
+      let quotationResults = {};
+      if (typeQuotation === "quotation") {
+        pdfData = this.itemsQuotation;
+        quotation = this.quotation;
+        quotationResults = this.quotationResults;
+      } else if (typeQuotation === "quotationUpdate") {
+        pdfData = this.itemsQuotationUpdate;
+        quotation = this.quotationUpdate;
+        quotationResults = this.quotationUpdateResults;
+      }
+      // date aaaa-mm-dd
+      let dateToday = new Date();
+      let date =
+        dateToday.getFullYear() +
+        "-" +
+        (dateToday.getMonth() + 1) +
+        "-" +
+        dateToday.getDate();
+      this.props = {
+        outputType: OutputType.Save,
+        returnJsPDFDocObject: true,
+        fileName: `cotización-${quotation.client_name}-${this.dateToString(
+          date
+        )}`,
+        orientationLandscape: false,
+        compress: true,
+        logo: {
+          src: "https://i.ibb.co/z6qmdxq/logo.png",
+          width: 53.33, //aspect ratio = width/height
+          height: 26.66,
+          margin: {
+            top: 0, //negative or positive num, from the current position
+            left: 20, //negative or positive num, from the current position
+          },
+        },
+        business: {
+          name: this.companyData.companyName,
+          address: this.companyData.companyAddress,
+          phone: this.companyData.companyPhone,
+          email: this.companyData.companyEmail,
+          website: this.companyData.companyWebsite,
+          /* email_1: "info@example.al", */
+        },
+        contact: {
+          label: "Invoice issued for:",
+          name: quotation.client_name,
+          address: `Direccion: ${quotation.client_address}`,
+          phone: `Teléfono: (+57) ${quotation.client_phone}`,
+          email: `Email: ${quotation.client_email}`,
+          otherInfo: "",
+        },
+        invoice: {
+          label: "Cotización #: ",
+          num: quotation.id,
+          invDate: `Fecha ${this.dateToString(date)}`,
+          /* invGenDate: "Invoice Date: 02/02/2021 10:17", */
+          headerBorder: false,
+          tableBodyBorder: false,
+          header: [
+            {
+              title: "Item",
+              style: {
+                width: 80,
+              },
+            },
+            {
+              title: "Precio",
+              style: {
+                width: 40,
+              },
+            },
+            {
+              title: "Cantidad",
+              style: {
+                width: 40,
+              },
+            },
+            {
+              title: "Total",
+              style: {
+                width: 40,
+              },
+            },
+          ],
+          table: Array.from(
+            Array(pdfData.length),
+            (quotation = pdfData, index) => [
+              /*         index + 1, */
+              `${quotation[index].name}`,
+              `$ ${this.priceToString(quotation[index].price)}`,
+              `${quotation[index].quantity}`,
+              `$ ${this.priceToString(quotation[index].total)}`,
+            ]
+          ),
+          invTotalLabel: "Subtotal:",
+          invTotal: `$ ${this.priceToString(quotationResults.subtotal)}`,
+          invCurrency: "",
+          row1: {
+            col1: `Descuento (${quotation.discount}%) :\nIva (${quotation.iva}%) :`,
+            col2: `$ ${this.priceToString(
+              quotationResults.totalDiscount
+            )}\n$ ${this.priceToString(quotationResults.totalIva)}`,
+            col3: "",
+            style: {
+              fontSize: 10, //optional, default 12
+            },
+          },
+          row2: {
+            col1: "\nTotal:",
+            col2: `\n$ ${this.priceToString(quotationResults.total)}`,
+            col3: "",
+            style: {
+              fontSize: 10, //optional, default 12
+            },
+          },
+
+          invDescLabel: "Invoice Note",
+          invDesc:
+            "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary.",
+        },
+        footer: {
+          text: "The invoice is created on a computer and is valid without the signature and stamp.",
+        },
+        pageEnable: true,
+        pageLabel: "Page ",
+      };
+    },
+    setItemsQuotationManually: function (type) {
+      swal("¿ Cuantos items desea agregar ?", {
+        content: "input",
+        buttons: ["Cancelar", "Aceptar"],
+      }).then((value) => {
+        console.log("value", value);
+        if (isNaN(value)) {
+          swal("No se puede agregar un valor no numerico", "", "error");
+
+          return;
+        } else if (value > 50) {
+          swal("No se puede agregar mas de 50 items", "", "error");
+          return;
+        } else if (value < 1 && value !== "" && value !== null) {
+          swal("No se puede agregar menos de 1 item", "", "error");
+          return;
+        } else if (value == null) {
+          return;
+        } else {
+          if (type === "quotation") {
+            for (let i = 0; i < parseInt(value); i++) {
+              this.createItemQuotation();
+            }
+          } else if (type === "quotationUpdate") {
+            for (let i = 0; i < parseInt(value); i++) {
+              this.createItemQuotationUpdate();
+            }
+          }
+        }
+      });
+    },
+    // convert date AAAA-MM-DD to DD/MM/AAAA
+    dateToString: function (date) {
+      date = date.toString();
+      if (date != null && date != undefined) {
+        let dateArray = date.split("-").reverse();
+        dateArray[1] =
+          dateArray[1].length == 1 ? "0" + dateArray[1] : dateArray[1];
+        dateArray[2] =
+          dateArray[2].length == 1 ? "0" + dateArray[2] : dateArray[2];
+        return dateArray.join("/");
+      }
+    },
+    getInitialData: function () {
+      itemServices.getItemsList().then((result) => {
+        this.items = result;
+        this.totalInitialDataResults += 1;
+      });
+
+      quotationServices.getQuotationsList().then((result) => {
+        this.quotations = result;
+        this.totalInitialDataResults += 1;
+      });
+
+      clientServices.getClientsList().then((result) => {
+        this.clients = result;
+        this.totalInitialDataResults += 1;
+      });
     },
   },
 
@@ -1478,17 +1887,8 @@ export default {
     this.name = localStorage.getItem("name") || "";
     this.is_admin = JSON.parse(localStorage.getItem("isAdmin")) || false;
     this.createItemQuotation();
-    itemServices.getItemsList().then((result) => {
-      this.items = result;
-    });
 
-    quotationServices.getQuotationsList().then((result) => {
-      this.quotations = result;
-    });
-
-    clientServices.getClientsList().then((result) => {
-      this.clients = result;
-    });
+    this.getInitialData();
 
     for (let i = 0; i < 1; i++) {
       this.createItemQuotation();
@@ -1540,11 +1940,14 @@ export default {
     width: 80px;
   }
 }
+
 @import "../assets/css/common/popUp.css";
 @import "../assets/css/common/inputs.css";
 @import "../assets/css/common/button.css";
+@import "../assets/css/common/links.css";
 @import "../assets/css/common/suggestion.css";
 @import "../assets/css/base/base.css";
 @import "../assets/css/common/table.css";
 @import "../assets/css/common/tableResults.css";
+@import "../assets/css/common/lds-ripple.css";
 </style>
