@@ -35,7 +35,10 @@
 }
 
 .popup-suggestions {
-  width: 50%;
+  background-color: rgba(2, 2, 32, 0.525);
+  backdrop-filter: blur(30px);
+  background-image: none;
+  width: 35% !important;
   position: absolute;
   z-index: 3;
 }
@@ -50,7 +53,10 @@
 }
 
 .popup-item-update {
-  width: 50%;
+  background-color: rgba(2, 2, 32, 0.525);
+  backdrop-filter: blur(30px);
+  background-image: none;
+  width: 30% !important;
   position: absolute;
   z-index: 3;
 }
