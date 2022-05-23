@@ -41,9 +41,20 @@ const updateItem = (item) =>
     },
   });
 
+// Delete item
+const deleteItem = (itemId) =>
+  axios
+    .delete(`/item/${getUser()}/${itemId}/delete`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    })
+    .then((response) => response.data);
+
 // export functions
 export const itemServices = {
   getItemsList,
   createItem,
   updateItem,
+  deleteItem,
 };

@@ -652,6 +652,7 @@
             <label class="input-label" for="price">Precio</label>
             <span class="input-message-error">Este campo no es valido</span>
           </div>
+
           <div class="input-container">
             <button class="button" type="submit">Agregar</button>
           </div>
@@ -667,21 +668,82 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="item in items"
-            :key="item"
-            id="table_row"
-            v-on:click="openPopUpItemUpdate('itemUpdate', item)"
-          >
-            <td>{{ item.name }}</td>
-            <td>${{ priceToString(item.price) }}</td>
+          <tr v-for="item in items" :key="item" id="table_row">
+            <td v-on:click="openPopUpItemUpdate('itemUpdate', item)">
+              {{ item.name }}
+            </td>
+            <td v-on:click="openPopUpItemUpdate('itemUpdate', item)">
+              ${{ priceToString(item.price) }}
+            </td>
+            <!-- delete button -->
+            <div class="input-container delete">
+              <button
+                class="delete-button"
+                type="button"
+                aria-label="submit form"
+                v-on:click="processDeleteItemUpdate(itemToUpdate, item)"
+              >
+                <!-- delete icon -->
+                <li class="fa fa-trash"></li>
+              </button>
+            </div>
           </tr>
         </tbody>
       </table>
     </div>
     <!--- finish pop up create item -->
 
-    <!--- POP UP SUGGESTIONS -->
+    <!--- pop up itemUpdate -->
+    <div class="popup popup-item-update" v-if="popUps.itemUpdate">
+      <div class="popup-close-container">
+        <div class="popup_close" v-on:click="closePopUp('itemUpdate')">
+          <svg
+            width="25"
+            height="25"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="red"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </div>
+      </div>
+      <form
+        action=""
+        class="form-container"
+        v-on:submit.prevent="processUpdateItem"
+      >
+        <div class="input-container suggestion-container">
+          <input
+            type="text"
+            name="item"
+            id="itemUpdateName"
+            class="input"
+            v-model="itemToUpdate.name"
+          />
+          <label class="input-label" for="suggestion"> Item </label>
+          <span class="input-message-error">Este campo no es valido</span>
+        </div>
+        <input
+          type="text"
+          name="price"
+          id="itemUpdatePrice"
+          class="input"
+          v-model="itemToUpdate.price"
+        />
+        <label class="input-label" for="suggestion"> Precio </label>
+        <span class="input-message-error">Este campo no es valido</span>
+        <button class="button" type="submit">Actualizar</button>
+      </form>
+    </div>
+
+    <!--- pop up suggestions -->
     <div class="popup popup-suggestions" v-if="popUps.suggestions">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('suggestions')">
@@ -941,56 +1003,6 @@
             Agregar
           </button>
         </div>
-      </form>
-    </div>
-
-    <!--- POP UP UPDATE ITEM -->
-    <div class="popup popup-item-update" v-if="popUps.itemUpdate">
-      <div class="popup-close-container">
-        <div class="popup_close" v-on:click="closePopUp('itemUpdate')">
-          <svg
-            width="25"
-            height="25"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            stroke="red"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-            />
-          </svg>
-        </div>
-      </div>
-      <form
-        action=""
-        class="form-container"
-        v-on:submit.prevent="processUpdateItem"
-      >
-        <div class="input-container suggestion-container">
-          <input
-            type="text"
-            name="item"
-            id="itemUpdateName"
-            class="input"
-            v-model="itemToUpdate.name"
-          />
-          <label class="input-label" for="suggestion"> Item </label>
-          <span class="input-message-error">Este campo no es valido</span>
-        </div>
-        <input
-          type="text"
-          name="price"
-          id="itemUpdatePrice"
-          class="input"
-          v-model="itemToUpdate.price"
-        />
-        <label class="input-label" for="suggestion"> Precio </label>
-        <span class="input-message-error">Este campo no es valido</span>
-        <button class="button" type="submit">Actualizar</button>
       </form>
     </div>
   </section>
@@ -1410,6 +1422,7 @@ export default {
           this.items = result;
           this.startLoader = false;
         });
+        console.log(this.items);
         this.item = {
           name: "",
           price: "",
@@ -1417,15 +1430,45 @@ export default {
       });
     },
 
-    processDeleteItem: function (id) {
-      this.startLoader = true;
-      itemServices.deleteItem(id).then((result) => {
+    processUpdateItem: function () {
+      itemServices.updateItem(this.itemToUpdate).then((result) => {
+        this.errors.error_createItem = false;
+        this.itemToUpdate = {
+          name: "",
+          price: "",
+        };
+        this.closePopUp("itemUpdate");
         itemServices.getItemsList().then((result) => {
           this.items = result;
           this.startLoader = false;
         });
       });
     },
+    //probando
+    /* processDeleteItem: function (index) {
+      this.items.splice(index, 1);
+      this.getResults();
+    }, */
+
+    processDeleteItemUpdate: function (itemToUpdate, index) {
+      swal({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, no podrás recuperar este registro",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          this.items.splice(index, 1);
+          let itemId = this.itemToUpdate.id;
+
+          itemServices.deleteItem(itemId).then((response) => {
+            console.log(response);
+          });
+        }
+      });
+    },
+    //probando
 
     // methods for the form
     processCreateQuotation: function () {
