@@ -1195,10 +1195,14 @@ export default {
 
     openPopUpItemUpdate: function (popUp, item) {
       this.itemToUpdate = item;
+      this.home = document.querySelector(".home");
+      this.home.classList.add("parentDiv");
       this.popUps[popUp] = true;
     },
     openPopUpUpdateQuotation: function (popUp, quotation) {
       this.idQuotationToUpdate = quotation.id;
+      this.home = document.querySelector(".home");
+      this.home.classList.add("parentDiv");
       this.popUps[popUp] = true;
       this.quotationUpdate = quotation;
       let itemQuotationUpdate = {

@@ -30,6 +30,7 @@
 
 .parentDiv {
   filter: blur(1px);
+  background-color: rgba(0, 0, 0, 0.59);
   opacity: 0.9;
   pointer-events: none;
 }
