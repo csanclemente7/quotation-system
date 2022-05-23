@@ -1019,6 +1019,8 @@ import jsPDFInvoiceTemplate, {
   jsPDF,
 } from "jspdf-invoice-template";
 
+import { pdfBlob } from "../service/pdf-blob";
+
 export default {
   name: "Home",
   data: function () {
@@ -1048,6 +1050,7 @@ export default {
       totalInitialDataResults: 0,
       props: {},
       pdfObject: {},
+      pdfObjectBlob: {},
 
       errors: {
         error_createQuotation: false,
@@ -1806,7 +1809,7 @@ export default {
             col2: `\n$ ${this.priceToString(quotationResults.total)}`,
             col3: "",
             style: {
-              fontSize: 10, //optional, default 12
+              fontSize: 12, //optional, default 12
             },
           },
 
@@ -1820,7 +1823,9 @@ export default {
         pageEnable: true,
         pageLabel: "Page ",
       };
+      /* pdfBlob.setProps(this.props, jsPDFInvoiceTemplate); */
     },
+
     setItemsQuotationManually: function (type) {
       swal("¿ Cuantos items desea agregar ?", {
         content: "input",
