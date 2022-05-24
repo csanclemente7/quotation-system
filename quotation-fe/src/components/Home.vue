@@ -626,7 +626,10 @@
       </h1>
 
       <!--- Form -->
-      <form class="item-create-form" v-on:submit.prevent="processCreateItem">
+      <form
+        class="formulario item-create-form"
+        v-on:submit.prevent="processCreateItem"
+      >
         <div class="header-form">
           <div class="input-container name">
             <input
@@ -636,6 +639,8 @@
               class="input"
               v-model="item.name"
               maxlength="70"
+              autocomplete="off"
+              required
             />
             <label class="input-label" for="price">Item</label>
             <span class="input-message-error">Este campo no es valido</span>
@@ -648,6 +653,8 @@
               class="input"
               v-model="item.price"
               maxlength="30"
+              autocomplete="off"
+              required
             />
             <label class="input-label" for="price">Precio</label>
             <span class="input-message-error">Este campo no es valido</span>
@@ -726,6 +733,8 @@
             id="itemUpdateName"
             class="input"
             v-model="itemToUpdate.name"
+            autocomplete="off"
+            required
           />
           <label class="input-label" for="suggestion"> Item </label>
           <span class="input-message-error">Este campo no es valido</span>
@@ -737,6 +746,8 @@
             id="itemUpdatePrice"
             class="input"
             v-model="itemToUpdate.price"
+            autocomplete="off"
+            required
           />
           <label class="input-label" for="suggestion"> Precio </label>
           <span class="input-message-error">Este campo no es valido</span>
