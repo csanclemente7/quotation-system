@@ -4,7 +4,7 @@
     <div class="dot-elastic"></div>
     <div class="home-data">
       <h1 class="home__subtitle">
-        <img src="../assets/img/logo.png" alt="" />&nbsp; App Cotizaciones
+        <img src="../assets/img/logo.png" alt="" />&nbsp; Cotizaciones
       </h1>
       <div class="input-container">
         <button v-on:click="openPopUp('quotation')" class="button blue">
@@ -69,7 +69,7 @@
             height="25"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
-            stroke="red"
+            stroke="var(--link-red-light)"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="1.5"
@@ -593,7 +593,7 @@
             height="25"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
-            stroke="red"
+            stroke="var(--link-red-light)"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="1.5"
@@ -709,7 +709,7 @@
             height="25"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
-            stroke="red"
+            stroke="var(--link-red-light)"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="1.5"
@@ -765,7 +765,7 @@
             height="25"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
-            stroke="red"
+            stroke="var(--link-red-light)"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="1.5"
@@ -822,7 +822,7 @@
             height="25"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
-            stroke="red"
+            stroke="var(--link-red-light)"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="1.5"
@@ -879,7 +879,7 @@
             height="25"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
-            stroke="red"
+            stroke="var(--link-red-light)"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="1.5"
@@ -1040,9 +1040,9 @@ export default {
     return {
       companyData: {
         companyName: "Macris Refrigeración & Aire s.a.s",
-        companyAddress: "Calle 3 Nro. 6-20",
-        companyPhone: "(+57) 099-988-988",
-        companyEmail: "info@macrisrefrigeracion.com",
+        companyAddress: "Calle 10 # 6-45 Buga Valle del Cauca",
+        companyPhone: "(+57) 316 772 1984",
+        companyEmail: "w.sanclemente@hotmail.com",
         companyWebsite: "www.macrisrefrigeracion.com",
       },
 
@@ -1762,7 +1762,7 @@ export default {
           /* email_1: "info@example.al", */
         },
         contact: {
-          label: "Invoice issued for:",
+          label: "Dirigido a:",
           name: quotation.client_name,
           address: `Direccion: ${quotation.client_address}`,
           phone: `Teléfono: (+57) ${quotation.client_phone}`,
@@ -1778,7 +1778,7 @@ export default {
           tableBodyBorder: false,
           header: [
             {
-              title: "Item",
+              title: "Producto o Servicio",
               style: {
                 width: 80,
               },
@@ -1834,15 +1834,15 @@ export default {
             },
           },
 
-          invDescLabel: "Invoice Note",
+          invDescLabel: "Términos y condiciones",
           invDesc:
-            "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary.",
+            "1. Todos los productos y servicios cuentan con garantía. \n2. Valido por 15 días a partir de la fecha de la cotización.",
         },
         footer: {
-          text: "The invoice is created on a computer and is valid without the signature and stamp.",
+          text: "Si usted tiene alguna pregunta sobre esta cotización, por favor, póngase en contacto con nosotros\nCelular: 3167721984 | E-mail: w.sanclemente@hotmail.com	\nGracias por hacer negocios con nosotros!",
         },
         pageEnable: true,
-        pageLabel: "Page ",
+        pageLabel: "Página",
       };
       /* pdfBlob.setProps(this.props, jsPDFInvoiceTemplate); */
     },

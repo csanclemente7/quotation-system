@@ -3,16 +3,16 @@
   --color-primary-light: #01afbc;
   --color-primary-dark: #0060a1;
 
-  --color-secondary: #262626;
-  --color-secondary-dark: rgba(0, 0, 0, 0.226);
+  --color-secondary: #171e27;
+  --color-secondary-dark: #121922;
 
   --text: #7e7e7e;
   --text-light: #dadada;
   --text-dark: #2b2b2b;
   --white: #fff;
 
-  --color-tertiary: #2a7ae4;
-  --color-tertiary-light: #5d96e1;
+  --color-tertiary: #48c3af;
+  --color-tertiary-light: #b5f4e9;
 
   --popup-background: #1a1a1a;
 
@@ -31,6 +31,10 @@
   --disabled-color: #dadada;
 
   --light-border-color: #dadada41;
+
+  --th-header-table: #1a1c1f;
+  --dark-row-table: rgb(132, 134, 136);
+  --light-row-table: #f5f5f5;
 
   /* colors */
 }
