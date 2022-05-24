@@ -16,6 +16,7 @@ table.custom-responsiva {
   cursor: pointer;
 }
 
+
 .delete-custom {
   background: var(--popup-background);
   border: none !important;
