@@ -184,7 +184,7 @@ export default {
 }
 body {
   font-family: "Source Sans Pro", sans-serif;
-  background-color: #262626;
+  background-color: var(--color-secondary);
   color: white;
   font-weight: 300;
   margin: 0 0 0 0;
@@ -229,7 +229,7 @@ body :-ms-input-placeholder {
   align-items: center;
   align-items: center;
   position: inherit !important;
-  background-color: rgba(0, 0, 0, 0.226);
+  background-color: var(--color-secondary-dark);
   z-index: 2;
 }
 .header nav {
@@ -242,7 +242,7 @@ body :-ms-input-placeholder {
 }
 .header nav button {
   color: #e5e7e9;
-  background: #262626;
+  background: var(--secondary-color);
   border-radius: 5px;
   padding: 10px 20px;
   margin: 0 10px;
@@ -261,7 +261,7 @@ body :-ms-input-placeholder {
 
 .main-component {
   margin: 0%;
-  background: #262626;
+  background: var(--color-secondary);
   height: 100vh;
 }
 .footer {
@@ -306,11 +306,6 @@ body :-ms-input-placeholder {
 .atras_container {
   padding: 10px;
   text-align: center;
-}
-
-.atras_container a {
-  color: #ffffff;
-  text-decoration: none;
 }
 
 @import "./assets/css/common/reqStatus.css";
