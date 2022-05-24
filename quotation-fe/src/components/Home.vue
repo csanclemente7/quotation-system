@@ -668,7 +668,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" :key="item" id="table_row">
+          <tr v-for="item in items" :key="item" id="table_row delete-custom">
             <td v-on:click="openPopUpItemUpdate('itemUpdate', item)">
               {{ item.name }}
             </td>
@@ -676,7 +676,7 @@
               ${{ priceToString(item.price) }}
             </td>
             <!-- delete button -->
-            <td class="delete-custom">
+            <td>
               <button
                 class="delete-button"
                 type="button"
