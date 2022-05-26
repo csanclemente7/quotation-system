@@ -19,6 +19,7 @@
   background-image: url(../../img/im_back.jpeg);
   background-position: center;
   background-repeat: no-repeat;
+  background-size: cover;
   border: 0.1px solid #ffffff09;
   width: 80%;
   height: auto;
@@ -26,12 +27,6 @@
   border-radius: 0.5rem;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   z-index: 2;
-}
-
-.parentDiv {
-  filter: blur(1px);
-  opacity: 0.9;
-  pointer-events: none;
 }
 
 .popup-suggestions {
