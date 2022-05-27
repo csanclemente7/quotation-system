@@ -53,7 +53,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="quotation in quotations"
+            v-for="quotation in paginatedData"
             :key="quotation"
             id="table_row"
             v-on:click="openPopUpUpdateQuotation('updateQuotation', quotation)"
@@ -65,6 +65,32 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="pagination-container">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item">
+            <a class="page-link" v-on:click="getPreviousPage()">Anterior</a>
+          </li>
+          <li
+            v-for="page in pagination.totalPages(quotations.length)"
+            :key="page"
+            v-on:click="getDataPage(page, quotations)"
+            class="page-item"
+          >
+            <a class="page-link" v-if="page != actualPage">{{ page }}</a>
+            <div class="page-item active" aria-current="page">
+              <span class="page-link" v-if="page === actualPage">{{
+                actualPage
+              }}</span>
+            </div>
+          </li>
+
+          <li class="page-item">
+            <a class="page-link" v-on:click="getNextPage()">Siguiente</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
   <!-- LOADER -->
@@ -1058,11 +1084,15 @@ import jsPDFInvoiceTemplate, {
 } from "jspdf-invoice-template";
 
 import { pdfBlob } from "../service/pdf-blob";
+import { pagination } from "../pagination";
 
 export default {
   name: "Home",
   data: function () {
     return {
+      pagination: pagination,
+      paginatedData: [],
+      actualPage: 1,
       companyData: {
         companyName: "Macris Refrigeración & Aire s.a.s",
         companyAddress: "Calle 10 # 6-45 Buga Valle del Cauca",
@@ -1232,7 +1262,7 @@ export default {
         : [];
 
       if (this.filterSearch != "") {
-        this.quotations = this.quotationsToFilter.filter((quotation) => {
+        this.paginatedData = this.quotationsToFilter.filter((quotation) => {
           return (
             quotation.id.toString().includes(this.filterSearch) ||
             quotation.date.toLowerCase().includes(this.filterSearch) ||
@@ -1242,7 +1272,12 @@ export default {
           );
         });
       } else {
-        this.quotations = this.quotationsToFilter;
+        this.paginatedData = this.quotationsToFilter;
+        this.actualPage = 1;
+        this.paginatedData = pagination.getDataPage(
+          this.actualPage,
+          this.quotations
+        );
       }
     },
 
@@ -1576,6 +1611,10 @@ export default {
                 this.quotations = result;
                 this.startLoader = false;
                 this.filterSearch = "";
+                this.paginatedData = pagination.getDataPage(
+                  this.actualPage,
+                  this.quotations
+                );
               });
               this.errors.error_createQuotation = false;
             });
@@ -1625,6 +1664,10 @@ export default {
                     this.quotations = result;
                     this.startLoader = false;
                     this.filterSearch = "";
+                    this.paginatedData = pagination.getDataPage(
+                      this.actualPage,
+                      this.quotations
+                    );
                   });
                 }, 100);
                 this.errors.error_createQuotation = false;
@@ -1653,6 +1696,10 @@ export default {
               console.log(result);
               this.startLoader = false;
               this.filterSearch = "";
+              this.paginatedData = pagination.getDataPage(
+                this.actualPage,
+                this.quotations
+              );
             });
             this.closePopUp("updateQuotation");
           });
@@ -1949,12 +1996,47 @@ export default {
       quotationServices.getQuotationsList().then((result) => {
         this.quotations = result;
         this.totalInitialDataResults += 1;
+        this.getDataPage(this.actualPage, this.quotations);
       });
 
       clientServices.getClientsList().then((result) => {
         this.clients = result;
         this.totalInitialDataResults += 1;
       });
+    },
+
+    // PAGINATION FUNCTIONS
+
+    // trae los datos paginados
+    getDataPage: function (page, quotations) {
+      this.filterSearch = ""; // borra el filtro
+      this.actualPage = page;
+      this.paginatedData = pagination.getDataPage(page, quotations);
+    },
+
+    // trae los datos de la página anterior
+    getPreviousPage: function () {
+      this.filterSearch = ""; // borra el filtro
+      this.actualPage = pagination.getPreviousPage(this.actualPage);
+
+      this.paginatedData = pagination.getDataPage(
+        this.actualPage,
+        this.quotations
+      );
+    },
+
+    // trae los datos de la página siguiente
+    getNextPage: function () {
+      this.filterSearch = ""; // borra el filtro
+      this.actualPage = pagination.getNextPage(
+        this.actualPage,
+        pagination.totalPages(this.quotations.length)
+      );
+
+      this.paginatedData = pagination.getDataPage(
+        this.actualPage,
+        this.quotations
+      );
     },
   },
 
@@ -1973,6 +2055,14 @@ export default {
 };
 </script>
 <style>
+table .active {
+  background-color: #007bbd;
+  color: #ffffff;
+}
+.pagination-container {
+  margin-top: 10px;
+  cursor: pointer;
+}
 .home {
   display: flex;
   flex-direction: column;
