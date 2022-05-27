@@ -11,15 +11,16 @@
 }
 
 .popup {
+  background-color: #040d12;
+  background-image: url(../../img/im_back.jpeg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: inherit;
-  background-image: url(../../img/im_back.jpeg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   border: 0.1px solid #ffffff09;
   width: 80%;
   height: auto;
@@ -27,6 +28,7 @@
   border-radius: 0.5rem;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   z-index: 2;
+  margin-bottom: 5%;
 }
 
 .popup-suggestions {

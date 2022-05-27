@@ -10,9 +10,34 @@
         <button v-on:click="openPopUp('quotation')" class="button blue">
           Nueva Cotización
         </button>
+      </div>
+      <div class="grid-container-menu">
+        <div class="input-container grid-menu-search">
+          <!-- SECTION SEARCH FILTER -->
+          <form>
+            <input
+              type="search"
+              placeholder="Buscar..."
+              id="input_search"
+              v-model="filterSearch"
+              v-on:input="filterBySearchInput"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              aria-label="submit form"
+              v-on:click="filterBySearchInput"
+            >
+              <li class="fas fa-search"></li>
+            </button>
+          </form>
+        </div>
 
-        <div class="input-container">
+        <div class="input-container grid-menu-insumos">
           <button v-on:click="openPopUp('item')" class="button">Insumos</button>
+        </div>
+        <div class="input-container grid-menu-clientes">
+          <button class="button">Clientes</button>
         </div>
       </div>
 
@@ -700,7 +725,7 @@
     </div>
     <!--- finish pop up create item -->
 
-    <!--- pop up itemUpdate -->
+    <!--- POP UP UPDATE ITEM -->
     <div class="popup popup-item-update" v-if="popUps.itemUpdate">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('itemUpdate')">
@@ -756,7 +781,7 @@
       </form>
     </div>
 
-    <!--- pop up suggestions -->
+    <!--- POP UP SUGGESTIONS -->
     <div class="popup popup-suggestions" v-if="popUps.suggestions">
       <div class="popup-close-container">
         <div class="popup_close" v-on:click="closePopUp('suggestions')">
@@ -1064,6 +1089,8 @@ export default {
       props: {},
       pdfObject: {},
       pdfObjectBlob: {},
+      filterSearch: "",
+      quotationsToFilter: [],
 
       errors: {
         error_createQuotation: false,
@@ -1195,6 +1222,28 @@ export default {
         .catch(() => {
           this.$emit("logOut");
         });
+    },
+
+    // filter methods
+    filterBySearchInput: function () {
+      this.filterSearch = this.filterSearch.toLowerCase();
+      this.quotationsToFilter = localStorage.getItem("quotations")
+        ? JSON.parse(localStorage.getItem("quotations"))
+        : [];
+
+      if (this.filterSearch != "") {
+        this.quotations = this.quotationsToFilter.filter((quotation) => {
+          return (
+            quotation.id.toString().includes(this.filterSearch) ||
+            quotation.date.toLowerCase().includes(this.filterSearch) ||
+            quotation.client_name.toLowerCase().includes(this.filterSearch) ||
+            quotation.total.toString().includes(this.filterSearch) ||
+            this.priceToString(quotation.total).includes(this.filterSearch)
+          );
+        });
+      } else {
+        this.quotations = this.quotationsToFilter;
+      }
     },
 
     // pop ups
@@ -1442,12 +1491,11 @@ export default {
         itemServices.getItemsList().then((result) => {
           this.items = result;
           this.startLoader = false;
+          this.item = {
+            name: "",
+            price: "",
+          };
         });
-        console.log(this.items);
-        this.item = {
-          name: "",
-          price: "",
-        };
       });
     },
 
@@ -1462,14 +1510,13 @@ export default {
         itemServices.getItemsList().then((result) => {
           this.items = result;
           this.startLoader = false;
+          this.item = {
+            name: "",
+            price: "",
+          };
         });
       });
     },
-    //probando
-    /* processDeleteItem: function (index) {
-      this.items.splice(index, 1);
-      this.getResults();
-    }, */
 
     processDeleteItemUpdate: function (itemToUpdate, index) {
       swal({
@@ -1525,16 +1572,17 @@ export default {
               for (let i = 0; i < 2; i++) {
                 this.createItemQuotation();
               }
+              quotationServices.getQuotationsList().then((result) => {
+                this.quotations = result;
+                this.startLoader = false;
+                this.filterSearch = "";
+              });
               this.errors.error_createQuotation = false;
             });
         }
 
         this.errors.error_createQuotation = false;
         this.closePopUp("quotation");
-        quotationServices.getQuotationsList().then((result) => {
-          this.quotations = result;
-          this.startLoader = false;
-        });
       });
     },
 
@@ -1572,18 +1620,19 @@ export default {
               .updateItemQuotation(itemQuotation)
               .then((result) => {
                 console.log("Item quotation updated");
+                setTimeout(() => {
+                  quotationServices.getQuotationsList().then((result) => {
+                    this.quotations = result;
+                    this.startLoader = false;
+                    this.filterSearch = "";
+                  });
+                }, 100);
                 this.errors.error_createQuotation = false;
               });
           }
         }
         this.errors.error_createQuotation = false;
         this.closePopUp("updateQuotation");
-        setTimeout(() => {
-          quotationServices.getQuotationsList().then((result) => {
-            this.quotations = result;
-            this.startLoader = false;
-          });
-        }, 100);
       });
     },
 
@@ -1599,12 +1648,13 @@ export default {
         if (willDelete) {
           // si el usuario acepta eliminar el registro
           quotationServices.deleteQuotation(id).then((result) => {
-            this.closePopUp("updateQuotation");
             quotationServices.getQuotationsList().then((result) => {
               this.quotations = result;
               console.log(result);
               this.startLoader = false;
+              this.filterSearch = "";
             });
+            this.closePopUp("updateQuotation");
           });
         }
       });
@@ -1931,6 +1981,7 @@ export default {
   position: absolute;
   width: 100%;
   z-index: 2;
+  padding-bottom: 20px;
 }
 
 .home-data {
@@ -1968,6 +2019,7 @@ export default {
 }
 
 @import "../assets/css/common/popUp.css";
+@import "../assets/css/common/grid-menu.css";
 @import "../assets/css/common/inputs.css";
 @import "../assets/css/common/button.css";
 @import "../assets/css/common/links.css";

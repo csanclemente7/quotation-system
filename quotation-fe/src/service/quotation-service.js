@@ -21,7 +21,10 @@ const getQuotationsList = () =>
         Authorization: `Bearer ${getToken()}`,
       },
     })
-    .then((response) => response.data.sort((a, b) => b.id - a.id));
+    .then((response) => {
+      localStorage.setItem("quotations", JSON.stringify(response.data));
+      return response.data.sort((a, b) => b.id - a.id);
+    });
 
 // create quotation
 const createQuotation = (quotation) =>
