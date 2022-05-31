@@ -33,20 +33,20 @@
 
 .popup-suggestions {
   background-color: rgba(2, 2, 32, 0.525);
-  backdrop-filter: blur(30px);
-  background-image: none;
-  width: 20% !important;
+  width: 20%;
   position: absolute;
   z-index: 3;
+  border: 0.1px solid #ddddddb5;
+  filter: brightness(1);
 }
 
 .popup-clientes {
   background-color: rgba(2, 2, 32, 0.525);
-  backdrop-filter: blur(30px);
-  background-image: none;
-  width: 20% !important;
+  width: 20%;
   position: absolute;
   z-index: 3;
+  border: 0.1px solid #ddddddb5;
+  filter: brightness(1.1);
 }
 
 .popup-item-update {
@@ -100,7 +100,11 @@
   }
 
   .popup-clientes {
-    width: 80%;
+    width: 70%;
+  }
+
+  .popup-suggestions {
+    width: 70%;
   }
 
   .popup .popup_title {
