@@ -618,7 +618,7 @@
         <div class="input-container">
           <button class="button" type="submit">
             <i class="fas fa-download"></i>
-            &nbsp;Actualizar Cotización
+            &nbsp;Descargar Cotización
           </button>
         </div>
 
@@ -1009,6 +1009,7 @@
             class="input"
             v-model="client.name"
             autocomplete="off"
+            required
           />
           <label class="input-label" for="name">Nombre</label>
           <span class="input-message-error">Este campo no es valido</span>
@@ -1021,6 +1022,7 @@
             class="input"
             v-model="client.city"
             autocomplete="off"
+            required
           />
           <label class="input-label" for="phone">Ciudad</label>
           <span class="input-message-error">Este campo no es valido</span>
@@ -1045,6 +1047,7 @@
             class="input"
             v-model="client.email"
             autocomplete="off"
+            required
           />
           <label class="input-label" for="address">Email</label>
           <span class="input-message-error">Este campo no es valido</span>
@@ -1095,7 +1098,7 @@ export default {
       actualPage: 1,
       companyData: {
         companyName: "Macris Refrigeración & Aire s.a.s",
-        companyAddress: "Calle 10 # 6-45 Buga Valle del Cauca",
+        companyAddress: "Carrera 10 # 6-45 Buga Valle del Cauca",
         companyPhone: "(+57) 316 772 1984",
         companyEmail: "w.sanclemente@hotmail.com",
         companyWebsite: "www.macrisrefrigeracion.com",
