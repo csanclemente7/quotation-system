@@ -1141,6 +1141,7 @@ export default {
       },
 
       quotation: {
+        id: "",
         client: "",
         client_name: "",
         client_phone: "",
@@ -1580,6 +1581,9 @@ export default {
     processCreateQuotation: function () {
       this.startLoader = true;
       quotationServices.createQuotation(this.quotation).then((result) => {
+        let quotationId = result.id;
+        this.quotation.id = quotationId;
+        this.setProps("quotation");
         this.ejecutarDescarga();
         this.errors.error_createQuotation = false;
         this.quotation = {
@@ -1597,7 +1601,6 @@ export default {
           totalIva: "0",
           total: "0",
         };
-        let quotationId = result.id;
 
         for (let i = 0; i < this.itemsQuotation.length; i++) {
           let itemQuotation = this.itemsQuotation[i];
@@ -1723,6 +1726,11 @@ export default {
         this.newClient = false;
         this.quotation.client = result.id;
         this.quotation.client_name = result.name;
+        this.quotation.client_phone = result.phone;
+        this.quotation.client_city = result.city;
+        this.quotation.client_address = result.address;
+        this.quotation.client_email = result.email;
+        console.log(this.quotation);
         this.closePopUp("clientes");
         this.startLoader = false;
       });
