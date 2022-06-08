@@ -1470,6 +1470,11 @@ export default {
     closePopUp: function (popUp) {
       this.popUps[popUp] = false;
       this.home.classList.remove("parentDiv");
+
+      if (popUp === "quotation") {
+        this.closePopUp("clientes");
+        this.closePopUp("suggestions");
+      }
     },
 
     createItemQuotation: function () {

@@ -222,7 +222,7 @@ body :-ms-input-placeholder {
   margin: 0%;
   padding: 0;
   width: 100%;
-  height: 5vh;
+  height: 7vh;
   min-height: 30px;
   color: #030f1b;
   justify-content: center;
@@ -237,6 +237,7 @@ body :-ms-input-placeholder {
   width: 100%;
   display: flex;
   justify-content: right;
+  padding-right: 5%;
   align-items: center;
   font-size: 15px;
 }
