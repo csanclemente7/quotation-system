@@ -1566,6 +1566,7 @@ export default {
     //Problema a resolver
 
     processDeleteItemUpdate: function (items, index) {
+      this.startLoader = true;
       swal({
         title: "¿Estás seguro?",
         text: "Una vez eliminado, no podrás recuperar este registro",
@@ -1579,6 +1580,10 @@ export default {
 
           itemServices.deleteItem(itemId).then((response) => {
             console.log(response);
+            itemServices.getItemsList().then((result) => {
+              this.items = result;
+              this.startLoader = false;
+            });
           });
         }
       });
