@@ -222,8 +222,8 @@ body :-ms-input-placeholder {
   margin: 0%;
   padding: 0;
   width: 100%;
-  height: 10vh;
-  min-height: 50px;
+  height: 5vh;
+  min-height: 30px;
   color: #030f1b;
   justify-content: center;
   align-items: center;
@@ -236,16 +236,16 @@ body :-ms-input-placeholder {
   height: 100%;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: right;
   align-items: center;
-  font-size: 20px;
+  font-size: 15px;
 }
 .header nav button {
   color: #e5e7e9;
   background: var(--secondary-color);
   border-radius: 5px;
-  padding: 10px 20px;
-  margin: 0 10px;
+  padding: 2px 8px;
+  margin: 0 5px;
   cursor: pointer;
   font-weight: 600;
   border: none;
@@ -261,7 +261,6 @@ body :-ms-input-placeholder {
 
 .main-component {
   margin: 0%;
-  background: var(--color-secondary);
   height: 100vh;
 }
 .footer {

@@ -4,13 +4,16 @@
     <div class="dot-elastic"></div>
     <div class="home-data">
       <h1 class="home__subtitle">
-        <img src="../assets/img/logo.png" alt="" />&nbsp; Cotizaciones
+        <img src="../assets/img/logo.png" alt="" />&nbsp;| Cotizaciones
       </h1>
-      <div class="input-container">
+      <div class="button-container">
         <button v-on:click="openPopUp('quotation')" class="button blue">
           Nueva Cotización
         </button>
+
+        <button v-on:click="openPopUp('item')" class="button">Insumos</button>
       </div>
+
       <div class="grid-container-menu">
         <div class="input-container grid-menu-search">
           <!-- SECTION SEARCH FILTER -->
@@ -33,9 +36,6 @@
           </form>
         </div>
 
-        <div class="input-container grid-menu-insumos">
-          <button v-on:click="openPopUp('item')" class="button">Insumos</button>
-        </div>
         <div class="input-container grid-menu-clientes">
           <button class="button">Clientes</button>
         </div>
@@ -718,7 +718,7 @@
       </form>
 
       <!-- TABLE -->
-      <table class="custom-responsiva">
+      <table class="custom-responsiva-two">
         <thead>
           <tr>
             <th>Item</th>
@@ -726,6 +726,7 @@
           </tr>
         </thead>
         <tbody>
+          <!--- problema a resolver -->
           <tr v-for="item in items" :key="item" id="table_row delete-custom">
             <td v-on:click="openPopUpItemUpdate('itemUpdate', item)">
               {{ item.name }}
@@ -739,7 +740,7 @@
                 class="delete-button"
                 type="button"
                 aria-label="submit form"
-                v-on:click="processDeleteItemUpdate(itemToUpdate, item)"
+                v-on:click="processDeleteItemUpdate(items, item)"
               >
                 <!-- delete icon -->
                 <li class="fa fa-trash"></li>
@@ -1557,7 +1558,9 @@ export default {
       });
     },
 
-    processDeleteItemUpdate: function (itemToUpdate, index) {
+    //Problema a resolver
+
+    processDeleteItemUpdate: function (items, index) {
       swal({
         title: "¿Estás seguro?",
         text: "Una vez eliminado, no podrás recuperar este registro",
@@ -1567,7 +1570,7 @@ export default {
       }).then((willDelete) => {
         if (willDelete) {
           this.items.splice(index, 1);
-          let itemId = this.itemToUpdate.id;
+          let itemId = index.id;
 
           itemServices.deleteItem(itemId).then((response) => {
             console.log(response);
@@ -2106,7 +2109,7 @@ table .active {
 }
 
 .home h1 {
-  font-size: 50px;
+  font-size: 35px;
   color: var(--text);
 }
 

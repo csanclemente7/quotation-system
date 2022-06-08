@@ -21,6 +21,7 @@ table.custom-responsiva {
   background: var(--popup-background);
   border: none !important;
   cursor: inherit !important;
+  align-items: center;
 }
 
 .custom-responsiva th {
@@ -36,6 +37,28 @@ table.custom-responsiva {
   text-align: center !important;
   font-weight: bold !important;
 }
+
+table.custom-responsiva-two {
+  width: 40% !important;
+}
+
+.custom-responsiva-two th {
+  background: var(--th-header-table);
+  color: white !important;
+  font-weight: bold !important;
+  padding: 6px !important;
+  border: 1px solid #ccc;
+  text-align: center !important;
+  font-weight: bold !important;
+}
+
+.custom-responsiva-two td{
+  cursor: pointer;
+  text-align: center;
+  border: 0.5px solid #ccc;
+}
+
+
 
 .debe li {
   color: var(--warning-color);

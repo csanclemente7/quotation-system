@@ -1,6 +1,5 @@
 .grid-container-menu {
   display: grid;
-  grid-template-columns: auto 30% 30%;
   grid-gap: 10px;
   justify-content: center;
   align-items: center;

@@ -1,5 +1,5 @@
 .popups_container {
-  padding-top: 5%;
+  padding-top: 10%;
   height: auto;
   width: 100%;
   position: relative;
@@ -26,9 +26,13 @@
   height: auto;
   padding: 0 0 10px 0;
   border-radius: 0.5rem;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 0px 2000px rgba(255, 255, 255, 0.5);
   z-index: 2;
   margin-bottom: 5%;
+}
+
+.parentDiv {
+  pointer-events: none;
 }
 
 .popup-suggestions {
@@ -38,15 +42,19 @@
   z-index: 3;
   border: 0.1px solid #ddddddb5;
   filter: brightness(1);
+  box-shadow: none;
 }
 
 .popup-clientes {
   background-color: rgba(2, 2, 32, 0.525);
+  backdrop-filter: blur(30px);
+  background-image: none;
   width: 20%;
   position: absolute;
   z-index: 3;
   border: 0.1px solid #ddddddb5;
   filter: brightness(1.1);
+  box-shadow: none;
 }
 
 .popup-item-update {
@@ -56,19 +64,20 @@
   width: 30% !important;
   position: absolute;
   z-index: 3;
+  box-shadow: none;
 }
 
 .popup img {
-  margin-top: 20px;
   width: 80px;
   margin-bottom: 5%;
+  max-width: 20px;
 }
 
 .popup .popup_title {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 50px;
+  font-size: 20px !important;
   color: var(--text);
 }
 
