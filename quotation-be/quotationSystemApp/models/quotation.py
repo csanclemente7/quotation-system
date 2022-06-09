@@ -13,7 +13,7 @@ class Quotation(models.Model):
     totalDiscount = models.FloatField('totalDiscount', default=0)
     totalIva = models.FloatField('totalIva', default=0)
     total = models.FloatField('total', default=0)
-    observation = models.TextField('observation', max_length=500)
+    observation = models.TextField('observation', max_length=500, blank=True, null=True)
 
     def __str__(self):
         return str(self.id) + ' ' + ' ' + str(self.client) + ' ' + str(self.dateTime) + ' ' + str(self.iva) + ' ' + str(self.discount) + ' ' + str(self.subtotal) + ' ' + str(self.totalDiscount) + ' ' + str(self.totalIva) + ' ' + str(self.total) + ' ' + str(self.observation)
