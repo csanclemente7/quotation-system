@@ -1965,13 +1965,15 @@ export default {
             ]
           ),
           invTotalLabel: "Subtotal:",
-          invTotal: `$ ${this.priceToString(quotationResults.subtotal)}`,
+          invTotal: `$ ${this.priceToString(
+            quotationResults.subtotal.toFixed()
+          )}`,
           invCurrency: "",
           row1: {
             col1: `Descuento (${quotation.discount}%) :\nIva (${quotation.iva}%) :`,
             col2: `$ ${this.priceToString(
-              quotationResults.totalDiscount
-            )}\n$ ${this.priceToString(quotationResults.totalIva)}`,
+              quotationResults.totalDiscount.toFixed()
+            )}\n$ ${this.priceToString(quotationResults.totalIva.toFixed())}`,
             col3: "",
             style: {
               fontSize: 10, //optional, default 12
@@ -1979,7 +1981,7 @@ export default {
           },
           row2: {
             col1: "\nTotal:",
-            col2: `\n$ ${this.priceToString(quotationResults.total)}`,
+            col2: `\n$ ${this.priceToString(quotationResults.total.toFixed())}`,
             col3: "",
             style: {
               fontSize: 12, //optional, default 12
