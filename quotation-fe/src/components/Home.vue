@@ -1619,6 +1619,7 @@ export default {
 
     // methods for the form
     processCreateQuotation: function () {
+      console.log(this.quotation);
       this.startLoader = true;
       quotationServices.createQuotation(this.quotation).then((result) => {
         let quotationId = result.id;
@@ -1640,7 +1641,7 @@ export default {
           totalDiscount: "0",
           totalIva: "0",
           total: "0",
-          observations: "",
+          observation: "",
         };
 
         for (let i = 0; i < this.itemsQuotation.length; i++) {
