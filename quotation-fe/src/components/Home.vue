@@ -628,6 +628,19 @@
           </table>
         </div>
 
+        <p>Observaciones (opcional)</p>
+        <div class="text-area-container">
+          <textarea
+            class="autoExpand"
+            rows="2"
+            data-min-rows="2"
+            v-model="quotation.observation"
+            placeholder="Observaciones"
+            v-on:input="onExpandableTextareaInput"
+          ></textarea>
+          <label class="create-registro__label" for="name"></label>
+        </div>
+
         <div class="input-container">
           <button class="button" type="submit">
             <i class="fas fa-download"></i>
@@ -1627,6 +1640,7 @@ export default {
           totalDiscount: "0",
           totalIva: "0",
           total: "0",
+          observations: "",
         };
 
         for (let i = 0; i < this.itemsQuotation.length; i++) {
