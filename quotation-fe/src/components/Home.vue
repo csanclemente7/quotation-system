@@ -199,7 +199,7 @@
             <label class="input-label" for="iva">% Iva</label>
             <span class="input-message-error">Este campo no es valido</span>
           </div>
-
+          <!--- revisando poder desaparecer el iva cuando éste se encuentre en cero -->
           <!--- Descuento -->
           <div class="input-container descuento">
             <input
@@ -354,6 +354,19 @@
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <p>Observaciones (opcional)</p>
+        <div class="text-area-container">
+          <textarea
+            class="autoExpand"
+            rows="2"
+            data-min-rows="2"
+            v-model="quotation.observation"
+            placeholder="Observaciones"
+            v-on:input="onExpandableTextareaInput"
+          ></textarea>
+          <label class="create-registro__label" for="name"></label>
         </div>
 
         <div class="input-container">
@@ -1156,6 +1169,7 @@ export default {
         totalIva: "0",
         total: "0",
         home: null,
+        observation: "",
       },
 
       quotationUpdate: {
@@ -1955,9 +1969,9 @@ export default {
             },
           },
 
-          invDescLabel: "Términos y condiciones",
-          invDesc:
-            "1. Todos los productos y servicios cuentan con garantía. \n2. Valido por 15 días a partir de la fecha de la cotización.",
+          invDescLabel:
+            "1. Todos los productos y servicios cuentan con garantía. \n2. Valido por 15 días a partir de la fecha de la cotización.\n",
+          invDesc: `\n \n${this.quotation.observation}`,
         },
         footer: {
           text: "Si usted tiene alguna pregunta sobre esta cotización, por favor, póngase en contacto con nosotros\nCelular: 3167721984 | E-mail: w.sanclemente@hotmail.com	\nGracias por hacer negocios con nosotros!",

@@ -1,5 +1,5 @@
 .popups_container {
-  padding-top: 10%;
+  padding-top: 6%;
   height: auto;
   width: 100%;
   position: relative;
@@ -37,7 +37,9 @@
 
 .popup-suggestions {
   background-color: rgba(2, 2, 32, 0.525);
-  width: 20%;
+  backdrop-filter: blur(30px);
+  background-image: none;
+  width: 40% !important;
   position: absolute;
   z-index: 3;
   border: 0.1px solid #ddddddb5;

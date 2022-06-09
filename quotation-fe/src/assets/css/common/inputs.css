@@ -97,6 +97,10 @@
   flex-wrap: wrap;
 }
 
+textarea {
+  width: 30rem;
+}
+
 /* .name {
   display: flex;
   flex-direction: column;

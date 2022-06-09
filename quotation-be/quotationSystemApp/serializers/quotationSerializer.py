@@ -27,5 +27,6 @@ class QuotationSerializer(serializers.ModelSerializer):
             'totalDiscount': quotation.totalDiscount,
             'totalIva': quotation.totalIva,
             'total': quotation.total,
-            'quotationItems': itemsQuotation.values()
+            'quotationItems': itemsQuotation.values(),
+            'observation': quotation.observation
         }
