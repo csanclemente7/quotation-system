@@ -634,7 +634,7 @@
             class="autoExpand"
             rows="2"
             data-min-rows="2"
-            v-model="quotation.observation"
+            v-model="quotationUpdate.observation"
             placeholder="Observaciones"
             v-on:input="onExpandableTextareaInput"
           ></textarea>
@@ -1199,6 +1199,7 @@ export default {
         totalDiscount: "0",
         totalIva: "0",
         total: "0",
+        observation: "",
       },
 
       quotationResults: {
@@ -1688,6 +1689,7 @@ export default {
           totalDiscount: "0",
           totalIva: "0",
           total: "0",
+          observation: "",
         };
         let quotationId = result.id;
         for (let i = 0; i < this.itemsQuotationUpdate.length; i++) {
@@ -1986,7 +1988,7 @@ export default {
 
           invDescLabel:
             "1. Todos los productos y servicios cuentan con garantía. \n2. Valido por 15 días a partir de la fecha de la cotización.\n",
-          invDesc: `\n \n${this.quotation.observation}`,
+          invDesc: `\n \n${quotation.observation}`,
         },
         footer: {
           text: "Si usted tiene alguna pregunta sobre esta cotización, por favor, póngase en contacto con nosotros\nCelular: 3167721984 | E-mail: w.sanclemente@hotmail.com	\nGracias por hacer negocios con nosotros!",
