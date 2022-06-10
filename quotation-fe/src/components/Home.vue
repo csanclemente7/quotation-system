@@ -1554,7 +1554,11 @@ export default {
     },
     priceToString: function (price) {
       if (price != null && price != undefined) {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return parseFloat(price)
+          .toFixed()
+          .toString()
+
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
       }
     },
 
@@ -1891,24 +1895,20 @@ export default {
       if (discountExist && !ivaExist) {
         discountTitle = `Descuento (${quotation.discount}%) :`;
         discountText = ` $ ${this.priceToString(
-          quotationResults.totalDiscount.toFixed()
+          quotationResults.totalDiscount
         )}`;
       }
       if (ivaExist && !discountExist) {
         ivaTitle = `Iva (${quotation.iva}%) :`;
-        ivaText = `$ ${this.priceToString(
-          quotationResults.totalIva.toFixed()
-        )}`;
+        ivaText = `$ ${this.priceToString(quotationResults.totalIva)}`;
       }
       if (ivaExist && discountExist) {
         discountTitle = `Descuento (${quotation.discount}%) :`;
         discountText = ` $ ${this.priceToString(
-          quotationResults.totalDiscount.toFixed()
+          quotationResults.totalDiscount
         )}`;
         ivaTitle = `\nIva (${quotation.iva}%) :`;
-        ivaText = `\n$ ${this.priceToString(
-          quotationResults.totalIva.toFixed()
-        )}`;
+        ivaText = `\n$ ${this.priceToString(quotationResults.totalIva)}`;
       }
 
       // date aaaa-mm-dd
@@ -1996,9 +1996,7 @@ export default {
             ]
           ),
           invTotalLabel: "Subtotal:",
-          invTotal: `$ ${this.priceToString(
-            quotationResults.subtotal.toFixed()
-          )}`,
+          invTotal: `$ ${this.priceToString(quotationResults.subtotal)}`,
           invCurrency: "",
           row1: {
             /* col1: `Descuento (${quotation.discount}%) :\nIva (${quotation.iva}%) :`, */
@@ -2014,7 +2012,7 @@ export default {
           },
           row2: {
             col1: "\nTotal:",
-            col2: `\n$ ${this.priceToString(quotationResults.total.toFixed())}`,
+            col2: `\n$ ${this.priceToString(quotationResults.total)}`,
             col3: "",
             style: {
               fontSize: 12, //optional, default 12
