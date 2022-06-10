@@ -1620,7 +1620,6 @@ export default {
 
     // methods for the form
     processCreateQuotation: function () {
-      console.log(this.quotation);
       this.startLoader = true;
       quotationServices.createQuotation(this.quotation).then((result) => {
         let quotationId = result.id;
@@ -1743,7 +1742,6 @@ export default {
           quotationServices.deleteQuotation(id).then((result) => {
             quotationServices.getQuotationsList().then((result) => {
               this.quotations = result;
-              console.log(result);
               this.startLoader = false;
               this.filterSearch = "";
               this.paginatedData = pagination.getDataPage(
@@ -1774,7 +1772,6 @@ export default {
         this.quotation.client_city = result.city;
         this.quotation.client_address = result.address;
         this.quotation.client_email = result.email;
-        console.log(this.quotation);
         this.closePopUp("clientes");
         this.startLoader = false;
       });
@@ -1880,6 +1877,40 @@ export default {
         quotation = this.quotationUpdate;
         quotationResults = this.quotationUpdateResults;
       }
+
+      let ivaExist = quotation.iva > 0;
+      let discountExist = quotation.discount > 0;
+
+      console.log("ivaExist", ivaExist);
+      console.log("discountExist", discountExist);
+
+      let ivaTitle = "";
+      let ivaText = "";
+      let discountTitle = "";
+      let discountText = "";
+      if (discountExist && !ivaExist) {
+        discountTitle = `Descuento (${quotation.discount}%) :`;
+        discountText = ` $ ${this.priceToString(
+          quotationResults.totalDiscount.toFixed()
+        )}`;
+      }
+      if (ivaExist && !discountExist) {
+        ivaTitle = `Iva (${quotation.iva}%) :`;
+        ivaText = `$ ${this.priceToString(
+          quotationResults.totalIva.toFixed()
+        )}`;
+      }
+      if (ivaExist && discountExist) {
+        discountTitle = `Descuento (${quotation.discount}%) :`;
+        discountText = ` $ ${this.priceToString(
+          quotationResults.totalDiscount.toFixed()
+        )}`;
+        ivaTitle = `\nIva (${quotation.iva}%) :`;
+        ivaText = `\n$ ${this.priceToString(
+          quotationResults.totalIva.toFixed()
+        )}`;
+      }
+
       // date aaaa-mm-dd
       let dateToday = new Date();
       let date =
@@ -1970,10 +2001,12 @@ export default {
           )}`,
           invCurrency: "",
           row1: {
-            col1: `Descuento (${quotation.discount}%) :\nIva (${quotation.iva}%) :`,
-            col2: `$ ${this.priceToString(
+            /* col1: `Descuento (${quotation.discount}%) :\nIva (${quotation.iva}%) :`, */
+            col1: `${discountTitle}${ivaTitle}`,
+            /*             col2: `$ ${this.priceToString(
               quotationResults.totalDiscount.toFixed()
-            )}\n$ ${this.priceToString(quotationResults.totalIva.toFixed())}`,
+            )}\n$ ${this.priceToString(quotationResults.totalIva.toFixed())}`, */
+            col2: `${discountText}${ivaText}`,
             col3: "",
             style: {
               fontSize: 10, //optional, default 12
@@ -2006,7 +2039,6 @@ export default {
         content: "input",
         buttons: ["Cancelar", "Aceptar"],
       }).then((value) => {
-        console.log("value", value);
         if (isNaN(value)) {
           swal("No se puede agregar un valor no numerico", "", "error");
 
