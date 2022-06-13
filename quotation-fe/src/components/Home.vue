@@ -1617,6 +1617,8 @@ export default {
               this.startLoader = false;
             });
           });
+        } else {
+          this.startLoader = false;
         }
       });
     },
