@@ -1670,7 +1670,13 @@ export default {
                   this.quotations
                 );
               });
-              this.errors.error_createQuotation = false;
+              (this.quotationResults = {
+                subtotal: "0",
+                totalDiscount: "0",
+                totalIva: "0",
+                total: "0",
+              }),
+                (this.errors.error_createQuotation = false);
             });
         }
 
