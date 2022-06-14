@@ -1932,7 +1932,7 @@ export default {
         returnJsPDFDocObject: true,
         fileName: `cotización-${quotation.client_name}-${this.dateToString(
           date
-        )}`,
+        )}.pdf`,
         orientationLandscape: false,
         compress: true,
         logo: {
