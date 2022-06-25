@@ -1177,7 +1177,7 @@ export default {
       indexSuggestion: 0,
       indexSuggestionUpdate: 0,
       newClient: false,
-      downloadExecuted: false,
+      downloadExecute: false,
       totalInitialDataResults: 0,
       props: {},
       pdfObject: {},

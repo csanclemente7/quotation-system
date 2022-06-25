@@ -7,7 +7,7 @@ class ItemsQuotation(models.Model):
     quotation = models.ForeignKey(Quotation, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     price = models.FloatField('price', default=0)
-    name = models.CharField(max_length=50, default='')
+    name = models.CharField(max_length=500, default='')
     quantity = models.IntegerField('quantity', default=0)
     total = models.FloatField('total', default=0)
 

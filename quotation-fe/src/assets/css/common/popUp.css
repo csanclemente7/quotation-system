@@ -113,10 +113,14 @@
 
   .popup-clientes {
     width: 70%;
+    height: auto;
+    top: 10vh;
   }
 
   .popup-suggestions {
     width: 70%;
+    height: auto;
+    top: 10vh;
   }
 
   .popup .popup_title {
