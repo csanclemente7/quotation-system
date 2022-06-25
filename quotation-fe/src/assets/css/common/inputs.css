@@ -373,4 +373,8 @@ textarea {
   .client-phone {
     width: 100%;
   }
+
+  textarea {
+    width: 14rem;
+  }
 }

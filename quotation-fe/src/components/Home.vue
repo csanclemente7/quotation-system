@@ -753,7 +753,11 @@
         </thead>
         <tbody>
           <!--- problema a resolver -->
-          <tr v-for="item in items" :key="item" id="table_row delete-custom">
+          <tr
+            v-for="item in paginatedData"
+            :key="item"
+            id="table_row delete-custom"
+          >
             <td v-on:click="openPopUpItemUpdate('itemUpdate', item)">
               {{ item.name }}
             </td>
@@ -775,7 +779,36 @@
           </tr>
         </tbody>
       </table>
+
+      <!--- arreglando paginador de pop up -->
+      <div class="pagination-container">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item">
+              <a class="page-link" v-on:click="getPreviousPage()">Anterior</a>
+            </li>
+            <li
+              v-for="page in pagination.totalPages(items.length)"
+              :key="page"
+              v-on:click="getDataPage(page, items)"
+              class="page-item"
+            >
+              <a class="page-link" v-if="page != actualPage">{{ page }}</a>
+              <div class="page-item active" aria-current="page">
+                <span class="page-link" v-if="page === actualPage">{{
+                  actualPage
+                }}</span>
+              </div>
+            </li>
+
+            <li class="page-item">
+              <a class="page-link" v-on:click="getNextPage()">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
+
     <!--- finish pop up create item -->
 
     <!--- POP UP UPDATE ITEM -->
@@ -2198,6 +2231,7 @@ table .active {
   .home-data h1 {
     font-size: 30px;
   }
+
   .home-data img {
     width: 80px;
   }
