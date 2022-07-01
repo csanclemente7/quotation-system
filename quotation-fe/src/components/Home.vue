@@ -66,7 +66,7 @@
         </tbody>
       </table>
     </div>
-    <div class="pagination-container">
+    <div class="pagination-container" v-if="!startLoader">
       <nav aria-label="Page navigation example">
         <ul class="pagination">
           <li class="page-item">
@@ -754,7 +754,7 @@
         <tbody>
           <!--- problema a resolver -->
           <tr
-            v-for="item in paginatedData"
+            v-for="item in paginatedDataItems"
             :key="item"
             id="table_row delete-custom"
           >
@@ -785,24 +785,26 @@
         <nav aria-label="Page navigation example">
           <ul class="pagination">
             <li class="page-item">
-              <a class="page-link" v-on:click="getPreviousPage()">Anterior</a>
+              <a class="page-link" v-on:click="getPreviousPageItems()"
+                >Anterior</a
+              >
             </li>
             <li
-              v-for="page in pagination.totalPages(items.length)"
+              v-for="page in paginationItems.totalPages(items.length)"
               :key="page"
-              v-on:click="getDataPage(page, items)"
+              v-on:click="getDataPageItems(page, items)"
               class="page-item"
             >
-              <a class="page-link" v-if="page != actualPage">{{ page }}</a>
+              <a class="page-link" v-if="page != actualPageItems">{{ page }}</a>
               <div class="page-item active" aria-current="page">
-                <span class="page-link" v-if="page === actualPage">{{
-                  actualPage
+                <span class="page-link" v-if="page === actualPageItems">{{
+                  actualPageItems
                 }}</span>
               </div>
             </li>
 
             <li class="page-item">
-              <a class="page-link" v-on:click="getNextPage()">Siguiente</a>
+              <a class="page-link" v-on:click="getNextPageItems()">Siguiente</a>
             </li>
           </ul>
         </nav>
@@ -1148,14 +1150,18 @@ import jsPDFInvoiceTemplate, {
 
 import { pdfBlob } from "../service/pdf-blob";
 import { pagination } from "../pagination";
+import { paginationItems } from "../paginationItems";
 
 export default {
   name: "Home",
   data: function () {
     return {
       pagination: pagination,
+      paginationItems: paginationItems,
       paginatedData: [],
+      paginatedDataItems: [],
       actualPage: 1,
+      actualPageItems: 1,
       companyData: {
         companyName: "Macris Refrigeración & Aire s.a.s",
         companyAddress: "Carrera 10 # 6-45 Buga Valle del Cauca",
@@ -1601,6 +1607,10 @@ export default {
         itemServices.getItemsList().then((result) => {
           this.items = result;
           this.startLoader = false;
+          this.paginatedDataItems = paginationItems.getDataPage(
+            this.actualPageItems,
+            this.items
+          );
           this.item = {
             name: "",
             price: "",
@@ -1620,6 +1630,10 @@ export default {
         itemServices.getItemsList().then((result) => {
           this.items = result;
           this.startLoader = false;
+          this.paginatedDataItems = paginationItems.getDataPage(
+            this.actualPageItems,
+            this.items
+          );
           this.item = {
             name: "",
             price: "",
@@ -1648,6 +1662,10 @@ export default {
             itemServices.getItemsList().then((result) => {
               this.items = result;
               this.startLoader = false;
+              this.paginatedDataItems = paginationItems.getDataPage(
+                this.actualPageItems,
+                this.items
+              );
             });
           });
         } else {
@@ -1892,6 +1910,10 @@ export default {
         itemServices.getItemsList().then((result) => {
           this.items = result;
           this.startLoader = false;
+          this.paginatedDataItems = paginationItems.getDataPage(
+            this.actualPageItems,
+            this.items
+          );
         });
       });
     },
@@ -2119,6 +2141,10 @@ export default {
       itemServices.getItemsList().then((result) => {
         this.items = result;
         this.totalInitialDataResults += 1;
+        this.paginatedDataItems = paginationItems.getDataPage(
+          this.actualPageItems,
+          this.items
+        );
       });
 
       quotationServices.getQuotationsList().then((result) => {
@@ -2164,6 +2190,40 @@ export default {
       this.paginatedData = pagination.getDataPage(
         this.actualPage,
         this.quotations
+      );
+    },
+
+    // trae los datos paginados de items
+    getDataPageItems: function (page, items) {
+      this.filterSearch = ""; // borra el filtro
+      this.actualPageItems = page;
+      this.paginatedDataItems = paginationItems.getDataPage(page, items);
+    },
+
+    // trae los datos de la página anterior
+    getPreviousPageItems: function () {
+      this.filterSearch = ""; // borra el filtro
+      this.actualPageItems = paginationItems.getPreviousPage(
+        this.actualPageItems
+      );
+
+      this.paginatedDataItems = paginationItems.getDataPage(
+        this.actualPageItems,
+        this.items
+      );
+    },
+
+    // trae los datos de la página siguiente
+    getNextPageItems: function () {
+      this.filterSearch = ""; // borra el filtro
+      this.actualPageItems = paginationItems.getNextPage(
+        this.actualPageItems,
+        paginationItems.totalPages(this.items.length)
+      );
+
+      this.paginatedDataItems = paginationItems.getDataPage(
+        this.actualPageItems,
+        this.items
       );
     },
   },
