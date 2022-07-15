@@ -258,11 +258,16 @@ textarea {
   min-height: 3rem;
 }
 
+.autoExpand {
+  font-size: 1.3rem;
+}
+
 .textarea-container {
   position: relative;
   margin-top: 2rem;
   margin-bottom: 1rem;
   font-weight: bold;
+  width: 60%;
 }
 
 .textarea::placeholder {
@@ -376,5 +381,17 @@ textarea {
 
   textarea {
     width: 14rem;
+  }
+
+  .textarea-container {
+    position: relative;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    width: 90%;
+  }
+
+  .autoExpand {
+    font-size: 1.1rem;
   }
 }

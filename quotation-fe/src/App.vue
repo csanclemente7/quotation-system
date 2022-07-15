@@ -260,6 +260,17 @@ body :-ms-input-placeholder {
   height: 100vh;
 }
 
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 82%;
+}
+
+.pagination {
+  flex-wrap: wrap;
+}
+
 .main-component {
   margin: 0%;
   height: 100vh;

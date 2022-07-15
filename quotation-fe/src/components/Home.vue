@@ -11,7 +11,15 @@
           Nueva Cotización
         </button>
 
-        <button v-on:click="openPopUp('item')" class="button">Insumos</button>
+        <button v-on:click="openPopUp('item')" class="button button-secondary">
+          Insumos
+        </button>
+        <button
+          v-on:click="openPopUp('tableclientes')"
+          class="button button-secondary"
+        >
+          Clientes
+        </button>
       </div>
 
       <div class="grid-container-menu">
@@ -357,9 +365,9 @@
         </div>
 
         <p>Observaciones (opcional)</p>
-        <div class="text-area-container">
+        <div class="textarea-container">
           <textarea
-            class="autoExpand"
+            class="autoExpand textarea"
             rows="2"
             data-min-rows="2"
             v-model="quotation.observation"
@@ -629,9 +637,9 @@
         </div>
 
         <p>Observaciones (opcional)</p>
-        <div class="text-area-container">
+        <div class="textarea-container">
           <textarea
-            class="autoExpand"
+            class="autoExpand textarea"
             rows="2"
             data-min-rows="2"
             v-model="quotationUpdate.observation"
@@ -867,6 +875,109 @@
         </div>
         <button class="button" type="submit">Actualizar</button>
       </form>
+    </div>
+
+    <!--- POP UP TABLE CLIENTES -->
+    <div class="popup popup-table-clientes" v-if="popUps.tableclientes">
+      <div class="popup-close-container">
+        <div class="popup_close" v-on:click="closePopUp('tableclientes')">
+          <svg
+            width="25"
+            height="25"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="var(--link-red-light)"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </div>
+      </div>
+      <h1 class="popup_title">
+        <li class="fas fa-users"></li>
+        &nbsp; Clientes
+      </h1>
+
+      <!-- buscador clientes -->
+      <div class="wrap_clientes">
+        <div class="search_clientes">
+          <input
+            type="text"
+            class="searchTerm_clientes"
+            placeholder="Buscar..."
+            v-model="inputSearchClientes"
+            v-on:input="filterBySearchClientes"
+          />
+          <button type="submit" class="searchButton_clientes">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- TABLE CLIENTES -->
+      <table class="custom-responsiva clientes-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Ciudad</th>
+            <th>Direccion</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="client in paginatedDataClientes"
+            :key="client"
+            id="table_row"
+          >
+            <td>{{ client.name }}</td>
+            <td>{{ client.city }}</td>
+            <td>{{ client.address }}</td>
+            <td>{{ client.email }}</td>
+            <td>{{ client.phone }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- PAGINATION CLIENTES -->
+      <div class="pagination-container" v-if="!startLoader">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item">
+              <a class="page-link" v-on:click="getPreviousPageClientes()"
+                >Anterior</a
+              >
+            </li>
+            <li
+              v-for="page in paginationClientes.totalPages(clients.length)"
+              :key="page"
+              v-on:click="getDataPageClientes(page, clients)"
+              class="page-item"
+            >
+              <a class="page-link" v-if="page != actualPageClientes">{{
+                page
+              }}</a>
+              <div class="page-item active" aria-current="page">
+                <span class="page-link" v-if="page === actualPageClientes">{{
+                  actualPageClientes
+                }}</span>
+              </div>
+            </li>
+
+            <li class="page-item">
+              <a class="page-link" v-on:click="getNextPageClientes()"
+                >Siguiente</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
 
     <!--- POP UP SUGGESTIONS -->
@@ -1150,6 +1261,7 @@ import jsPDFInvoiceTemplate, {
 
 import { pdfBlob } from "../service/pdf-blob";
 import { pagination } from "../pagination";
+import { paginationClientes } from "../paginationClientes";
 import { paginationItems } from "../paginationItems";
 
 export default {
@@ -1158,10 +1270,13 @@ export default {
     return {
       pagination: pagination,
       paginationItems: paginationItems,
+      paginationClientes: paginationClientes,
       paginatedData: [],
       paginatedDataItems: [],
+      paginatedDataClientes: [],
       actualPage: 1,
       actualPageItems: 1,
+      actualPageClientes: 1,
       companyData: {
         companyName: "Macris Refrigeración & Aire s.a.s",
         companyAddress: "Carrera 10 # 6-45 Buga Valle del Cauca",
@@ -1190,6 +1305,7 @@ export default {
       pdfObjectBlob: {},
       filterSearch: "",
       quotationsToFilter: [],
+      inputSearchClientes: "",
 
       errors: {
         error_createQuotation: false,
@@ -1204,6 +1320,7 @@ export default {
         item: false,
         itemUpdate: false,
         updateQuotation: false,
+        tableclientes: false,
       },
 
       quotation: {
@@ -1352,12 +1469,74 @@ export default {
         );
       }
     },
+    //filtro Clientes
+    filterBySearchClientes: function () {
+      this.searchClientesInput = document.querySelector(
+        "#input_search_clientes"
+      );
+      let searchInputValue = this.inputSearchClientes.toLowerCase().trim();
+
+      let clientes = JSON.parse(localStorage.getItem("clientes"));
+      if (
+        clientes.filter((cliente) => {
+          return (
+            cliente.name.toLowerCase().includes(searchInputValue) ||
+            cliente.city.toLowerCase().includes(searchInputValue) ||
+            cliente.address.toLowerCase().includes(searchInputValue) ||
+            cliente.email.toLowerCase().includes(searchInputValue) ||
+            cliente.phone.toLowerCase().includes(searchInputValue)
+          );
+        }).length > 0
+      ) {
+        this.clients = clientes.filter((cliente) => {
+          return (
+            cliente.name.toLowerCase().includes(searchInputValue) ||
+            cliente.city.toLowerCase().includes(searchInputValue) ||
+            cliente.address.toLowerCase().includes(searchInputValue) ||
+            cliente.email.toLowerCase().includes(searchInputValue) ||
+            cliente.phone.toLowerCase().includes(searchInputValue)
+          );
+        });
+        this.paginatedDataClientes = paginationClientes.getDataPage(
+          this.actualPageClientes,
+          this.clients
+        );
+      }
+      if (searchInputValue == "") {
+        this.clientes = JSON.parse(localStorage.getItem("clientes"));
+        this.paginatedDataClientes = paginationClientes.getDataPage(
+          this.actualPageClientes,
+          this.clients
+        );
+      }
+    },
 
     // pop ups
     openPopUp: function (popUp) {
       this.home = document.querySelector(".home");
       this.home.classList.add("parentDiv");
       this.popUps[popUp] = true;
+    },
+
+    onExpandableTextareaInput: function ({ target: elm }) {
+      // make sure the input event originated from a textarea and it's desired to be auto-expandable
+      if (!elm.classList.contains("autoExpand") || !elm.nodeName == "TEXTAREA")
+        return;
+
+      var minRows = elm.getAttribute("data-min-rows") | 0,
+        rows;
+      !elm._baseScrollHeight && this.getScrollHeight(elm);
+
+      elm.rows = minRows;
+      rows = Math.ceil((elm.scrollHeight - elm._baseScrollHeight) / 16);
+      elm.rows = minRows + rows;
+    },
+
+    getScrollHeight: function (elm) {
+      var savedValue = elm.value;
+      elm.value = "";
+      elm._baseScrollHeight = elm.scrollHeight;
+      elm.value = savedValue;
     },
 
     openPopUpItemUpdate: function (popUp, item) {
@@ -1814,6 +1993,8 @@ export default {
             });
             this.closePopUp("updateQuotation");
           });
+        } else {
+          this.startLoader = false;
         }
       });
     },
@@ -1823,6 +2004,10 @@ export default {
       clientServices.createClient(this.client).then((result) => {
         clientServices.getClientsList().then((result) => {
           this.clients = result;
+          this.paginatedDataClientes = paginationClientes.getDataPage(
+            this.actualPageClientes,
+            this.clients
+          );
         });
         this.client = {
           name: "",
@@ -2155,6 +2340,11 @@ export default {
 
       clientServices.getClientsList().then((result) => {
         this.clients = result;
+        localStorage.setItem("clientes", JSON.stringify(this.clients));
+        this.paginatedDataClientes = paginationClientes.getDataPage(
+          this.actualPageClientes,
+          this.clients
+        );
         this.totalInitialDataResults += 1;
       });
     },
@@ -2193,7 +2383,8 @@ export default {
       );
     },
 
-    // trae los datos paginados de items
+    // PAGINATION ITEMS
+    // trae los datos paginados
     getDataPageItems: function (page, items) {
       this.filterSearch = ""; // borra el filtro
       this.actualPageItems = page;
@@ -2224,6 +2415,43 @@ export default {
       this.paginatedDataItems = paginationItems.getDataPage(
         this.actualPageItems,
         this.items
+      );
+    },
+    // PAGINATION CLIENTES
+    // trae los datos paginados
+    getDataPageClientes: function (page, clients) {
+      this.filterSearch = ""; // borra el filtro
+      this.actualPageClientes = page;
+      this.paginatedDataClientes = paginationClientes.getDataPage(
+        page,
+        this.clients
+      );
+    },
+
+    // trae los datos de la página anterior
+    getPreviousPageClientes: function () {
+      this.filterSearch = ""; // borra el filtro
+      this.actualPageClientes = paginationClientes.getPreviousPage(
+        this.actualPageClientes
+      );
+
+      this.paginatedDataClientes = paginationClientes.getDataPage(
+        this.actualPageClientes,
+        this.clients
+      );
+    },
+
+    // trae los datos de la página siguiente
+    getNextPageClientes: function () {
+      this.filterSearch = ""; // borra el filtro
+      this.actualPageClientes = paginationClientes.getNextPage(
+        this.actualPageClientes,
+        paginationClientes.totalPages(this.clients.length)
+      );
+
+      this.paginatedDataClientes = paginationClientes.getDataPage(
+        this.actualPageClientes,
+        this.clients
       );
     },
   },
@@ -2287,6 +2515,11 @@ table .active {
   color: var(--text);
 }
 
+.fa-users {
+  color: var(--color-primary-dark);
+  font-size: 2.1rem;
+}
+
 @media screen and (max-width: 768px) {
   .home-data h1 {
     font-size: 30px;
@@ -2302,6 +2535,7 @@ table .active {
 @import "../assets/css/common/inputs.css";
 @import "../assets/css/common/button.css";
 @import "../assets/css/common/links.css";
+@import "../assets/css/common/searchbar.css";
 @import "../assets/css/common/suggestion.css";
 @import "../assets/css/base/base.css";
 @import "../assets/css/common/table.css";

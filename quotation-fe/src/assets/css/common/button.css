@@ -16,8 +16,6 @@
   align-self: center;
   text-align: center;
   cursor: pointer;
-  margin-left: 1rem;
-  margin-right: 1rem;
 }
 
 .button-container {
@@ -25,6 +23,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  gap: 18px;
 }
 
 .button-add-client {
@@ -55,6 +54,10 @@
   color: var(--text-light);
 }
 
+.button-secondary {
+  width: 30% !important;
+  max-width: 8rem;
+}
 
 .delete-button {
   background-color: var(--popup-background);
@@ -116,5 +119,14 @@
     width: 100%;
     max-width: 90%;
   }
-  
+
+  .button-secondary {
+    width: 30% !important;
+    max-width: 6rem;
+  }
+
+  .button-container {
+    width: 100%;
+    gap: 10px;
+  }
 }

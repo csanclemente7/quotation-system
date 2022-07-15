@@ -31,7 +31,6 @@
   margin-bottom: 5%;
 }
 
-
 .parentDiv {
   pointer-events: none;
 }
@@ -126,6 +125,10 @@
   .popup .popup_title {
     font-size: 25px;
   }
+
+  .popup-table-clientes {
+    width: 95%;
+  }
 }
 
 /* Para tablets*/
@@ -139,6 +142,10 @@
   }
   .popup-clientes {
     width: 50%;
+  }
+
+  .popup-table-clientes {
+    width: 90%;
   }
 }
 
@@ -154,6 +161,9 @@
   .popup-clientes {
     width: 50%;
   }
+  .popup-table-clientes {
+    width: 90%;
+  }
 }
 
 /* para pantallas grandes */
@@ -167,5 +177,8 @@
   }
   .popup-clientes {
     width: 50%;
+  }
+  .popup-table-clientes {
+    width: 90%;
   }
 }
