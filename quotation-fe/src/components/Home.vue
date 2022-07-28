@@ -270,7 +270,7 @@
           </div>
           <div class="input-container price">
             <input
-              type="number"
+              type="text"
               name="price"
               id="price"
               class="input"
@@ -1301,8 +1301,10 @@ export default {
       downloadExecute: false,
       totalInitialDataResults: 0,
       props: {},
+      propsCuentaCobro: {},
       pdfObject: {},
       pdfObjectBlob: {},
+      pdfObjectCuentaCobro: {},
       filterSearch: "",
       quotationsToFilter: [],
       inputSearchClientes: "",
@@ -1567,9 +1569,9 @@ export default {
           quotation: quotation.id,
           item: item.item_id,
           name: item.name,
-          price: item.price,
+          price: this.priceToString(item.price),
           quantity: item.quantity,
-          total: item.total,
+          total: this.priceToString(item.total),
         });
       });
 
@@ -1633,7 +1635,8 @@ export default {
     setItemSuggestion: function (id, name, price) {
       this.itemsQuotation[this.indexSuggestion].item = id;
       this.itemsQuotation[this.indexSuggestion].name = name;
-      this.itemsQuotation[this.indexSuggestion].price = price;
+      this.itemsQuotation[this.indexSuggestion].price =
+        this.priceToString(price);
 
       this.popUps.suggestions = false;
       this.suggestions = [];
@@ -1645,7 +1648,9 @@ export default {
     setItemSuggestionUpdate: function (id, name, price) {
       this.itemsQuotationUpdate[this.indexSuggestionUpdate].item = id;
       this.itemsQuotationUpdate[this.indexSuggestionUpdate].name = name;
-      this.itemsQuotationUpdate[this.indexSuggestionUpdate].price = price;
+      //this.itemsQuotationUpdate[this.indexSuggestionUpdate].price = price;
+      this.itemsQuotationUpdate[this.indexSuggestionUpdate].price =
+        this.priceToString(parseFloat(price.toString().replaceAll(".", "")));
 
       this.popUps.suggestionsUpdate = false;
       this.suggestions = [];
@@ -1677,9 +1682,13 @@ export default {
 
     setTotalItemQuotation: function () {
       if (this.indexSuggestion != undefined) {
-        let price = this.itemsQuotation[this.indexSuggestion].price;
+        let price = this.itemsQuotation[this.indexSuggestion].price
+          .toString()
+          .replaceAll(".", "");
         let quantity = this.itemsQuotation[this.indexSuggestion].quantity;
-        this.itemsQuotation[this.indexSuggestion].total = price * quantity;
+        this.itemsQuotation[this.indexSuggestion].total = this.priceToString(
+          price * quantity
+        );
         if (price != undefined && quantity != undefined) {
           this.getResults();
         }
@@ -1688,11 +1697,13 @@ export default {
 
     setTotalItemQuotationUpdate: function () {
       if (this.indexSuggestionUpdate != undefined) {
-        let price = this.itemsQuotationUpdate[this.indexSuggestionUpdate].price;
+        let price = this.itemsQuotationUpdate[this.indexSuggestionUpdate].price
+          .toString()
+          .replaceAll(".", "");
         let quantity =
           this.itemsQuotationUpdate[this.indexSuggestionUpdate].quantity;
         this.itemsQuotationUpdate[this.indexSuggestionUpdate].total =
-          price * quantity;
+          this.priceToString(price * quantity);
 
         this.getResultsUpdate();
       }
@@ -1775,7 +1786,6 @@ export default {
         return parseFloat(price)
           .toFixed()
           .toString()
-
           .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
       }
     },
@@ -1861,6 +1871,7 @@ export default {
         let quotationId = result.id;
         this.quotation.id = quotationId;
         this.setProps("quotation");
+        this.setPropsCuentaCobro("quotation");
         this.ejecutarDescarga();
         this.errors.error_createQuotation = false;
         this.quotation = {
@@ -1883,6 +1894,12 @@ export default {
         for (let i = 0; i < this.itemsQuotation.length; i++) {
           let itemQuotation = this.itemsQuotation[i];
           itemQuotation.quotation = quotationId;
+          itemQuotation.price = itemQuotation.price
+            .toString()
+            .replaceAll(".", "");
+          itemQuotation.total = itemQuotation.total
+            .toString()
+            .replaceAll(".", "");
           itemQuotationServices
             .createItemQuotation(itemQuotation)
             .then((result) => {
@@ -1937,6 +1954,12 @@ export default {
           if (this.itemsQuotationUpdate[i].id === undefined) {
             let itemQuotation = this.itemsQuotationUpdate[i];
             itemQuotation.quotation = quotationId;
+            itemQuotation.price = itemQuotation.price
+              .toString()
+              .replaceAll(".", "");
+            itemQuotation.total = itemQuotation.total
+              .toString()
+              .replaceAll(".", "");
             itemQuotationServices
               .createItemQuotation(itemQuotation)
               .then((result) => {
@@ -1946,6 +1969,12 @@ export default {
           } else {
             let itemQuotation = this.itemsQuotationUpdate[i];
             itemQuotation.quotation = quotationId;
+            itemQuotation.price = itemQuotation.price
+              .toString()
+              .replaceAll(".", "");
+            itemQuotation.total = itemQuotation.total
+              .toString()
+              .replaceAll(".", "");
             itemQuotationServices
               .updateItemQuotation(itemQuotation)
               .then((result) => {
@@ -1965,6 +1994,7 @@ export default {
               });
           }
         }
+        this.startLoader = false;
         this.errors.error_createQuotation = false;
         this.closePopUp("updateQuotation");
       });
@@ -2037,7 +2067,11 @@ export default {
 
       for (let i = 0; i < this.itemsQuotation.length; i++) {
         let itemQuotation = this.itemsQuotation[i];
-        subtotal += itemQuotation.total;
+        if (itemQuotation.total != 0) {
+          subtotal += parseFloat(
+            itemQuotation.total.toString().replaceAll(".", "")
+          );
+        }
       }
 
       totalDiscount = subtotal * (discount / 100);
@@ -2045,13 +2079,15 @@ export default {
       totalIva = (subtotal - totalDiscount) * (iva / 100);
 
       total = subtotal - totalDiscount + totalIva;
-
       this.quotationResults.subtotal = subtotal;
       this.quotationResults.totalDiscount = totalDiscount;
       this.quotationResults.totalIva = totalIva;
-      this.quotationResults.total = total;
+      this.quotationResults.total = parseFloat(
+        parseFloat(total).toFixed().toString().replaceAll(".", "")
+      );
 
       this.setProps("quotation");
+      this.setPropsCuentaCobro("quotation");
     },
 
     // generar totales Actualizados
@@ -2063,10 +2099,13 @@ export default {
 
       let iva = this.quotationUpdate.iva;
       let discount = this.quotationUpdate.discount;
-
       for (let i = 0; i < this.itemsQuotationUpdate.length; i++) {
         let itemQuotation = this.itemsQuotationUpdate[i];
-        subtotal += itemQuotation.total;
+        if (itemQuotation.total != 0) {
+          subtotal += parseFloat(
+            itemQuotation.total.toString().replaceAll(".", "")
+          );
+        }
       }
 
       totalDiscount = subtotal * (discount / 100);
@@ -2078,9 +2117,12 @@ export default {
       this.quotationUpdateResults.subtotal = subtotal;
       this.quotationUpdateResults.totalDiscount = totalDiscount;
       this.quotationUpdateResults.totalIva = totalIva;
-      this.quotationUpdateResults.total = total;
+      this.quotationUpdateResults.total = parseFloat(
+        parseFloat(total).toFixed().toString().replaceAll(".", "")
+      );
 
       this.setProps("quotationUpdate");
+      this.setPropsCuentaCobro("quotationUpdate");
     },
 
     processUpdateItem: function () {
@@ -2238,9 +2280,193 @@ export default {
             (quotation = pdfData, index) => [
               /*         index + 1, */
               `${quotation[index].name}`,
-              `$ ${this.priceToString(quotation[index].price)}`,
+              `$ ${this.priceToString(
+                quotation[index].price.toString().replaceAll(".", "")
+              )}`,
               `${quotation[index].quantity}`,
-              `$ ${this.priceToString(quotation[index].total)}`,
+              `$ ${this.priceToString(
+                quotation[index].total.toString().replaceAll(".", "")
+              )}`,
+            ]
+          ),
+          invTotalLabel: "Subtotal:",
+          invTotal: `$ ${this.priceToString(quotationResults.subtotal)}`,
+          invCurrency: "",
+          row1: {
+            /* col1: `Descuento (${quotation.discount}%) :\nIva (${quotation.iva}%) :`, */
+            col1: `${discountTitle}${ivaTitle}`,
+            /*             col2: `$ ${this.priceToString(
+              quotationResults.totalDiscount.toFixed()
+            )}\n$ ${this.priceToString(quotationResults.totalIva.toFixed())}`, */
+            col2: `${discountText}${ivaText}`,
+            col3: "",
+            style: {
+              fontSize: 10, //optional, default 12
+            },
+          },
+          row2: {
+            col1: "\nTotal:",
+            col2: `\n$ ${this.priceToString(quotationResults.total)}`,
+            col3: "",
+            style: {
+              fontSize: 12, //optional, default 12
+            },
+          },
+
+          invDescLabel:
+            "1. Todos los productos y servicios cuentan con garantía. \n2. Valido por 15 días a partir de la fecha de la cotización.\n",
+          invDesc: `\n \n${quotation.observation}`,
+        },
+        footer: {
+          text: "Si usted tiene alguna pregunta sobre esta cotización, por favor, póngase en contacto con nosotros\nCelular: 3167721984 | E-mail: w.sanclemente@hotmail.com	\nGracias por hacer negocios con nosotros!",
+        },
+        pageEnable: true,
+        pageLabel: "Página",
+      };
+      /* pdfBlob.setProps(this.props, jsPDFInvoiceTemplate); */
+    },
+
+    generatePdfCuentaCobro: function () {
+      this.pdfObjectCuentaCobro = jsPDFInvoiceTemplate(this.propsCuentaCobro);
+
+      console.log("Object created", this.pdfObjectCuentaCobro);
+    },
+
+    ejecutarDescargaCuentaCobro: function () {
+      this.generatePdfCuentaCobro();
+      this.downloadExecute = true;
+    },
+
+    // SET PROPS CUENTA DE COBRO
+    setPropsCuentaCobro: function (typeQuotation) {
+      let pdfData = [];
+      let quotation = {};
+      let quotationResults = {};
+      if (typeQuotation === "quotation") {
+        pdfData = this.itemsQuotation;
+        quotation = this.quotation;
+        quotationResults = this.quotationResults;
+      } else if (typeQuotation === "quotationUpdate") {
+        pdfData = this.itemsQuotationUpdate;
+        quotation = this.quotationUpdate;
+        quotationResults = this.quotationUpdateResults;
+      }
+
+      let ivaExist = quotation.iva > 0;
+      let discountExist = quotation.discount > 0;
+
+      console.log("ivaExist", ivaExist);
+      console.log("discountExist", discountExist);
+
+      let ivaTitle = "";
+      let ivaText = "";
+      let discountTitle = "";
+      let discountText = "";
+      if (discountExist && !ivaExist) {
+        discountTitle = `Descuento (${quotation.discount}%) :`;
+        discountText = ` $ ${this.priceToString(
+          quotationResults.totalDiscount
+        )}`;
+      }
+      if (ivaExist && !discountExist) {
+        ivaTitle = `Iva (${quotation.iva}%) :`;
+        ivaText = `$ ${this.priceToString(quotationResults.totalIva)}`;
+      }
+      if (ivaExist && discountExist) {
+        discountTitle = `Descuento (${quotation.discount}%) :`;
+        discountText = ` $ ${this.priceToString(
+          quotationResults.totalDiscount
+        )}`;
+        ivaTitle = `\nIva (${quotation.iva}%) :`;
+        ivaText = `\n$ ${this.priceToString(quotationResults.totalIva)}`;
+      }
+
+      // date aaaa-mm-dd
+      let dateToday = new Date();
+      let date =
+        dateToday.getFullYear() +
+        "-" +
+        (dateToday.getMonth() + 1) +
+        "-" +
+        dateToday.getDate();
+      this.propsCuentaCobro = {
+        outputType: OutputType.Save,
+        returnJsPDFDocObject: true,
+        fileName: `Cuenta de Cobro-${quotation.client_name}-${this.dateToString(
+          date
+        )}.pdf`,
+        orientationLandscape: false,
+        compress: true,
+        logo: {
+          src: "https://i.ibb.co/z6qmdxq/logo.png",
+          width: 53.33, //aspect ratio = width/height
+          height: 26.66,
+          margin: {
+            top: 0, //negative or positive num, from the current position
+            left: 20, //negative or positive num, from the current position
+          },
+        },
+        business: {
+          name: this.companyData.companyName,
+          address: this.companyData.companyAddress,
+          phone: this.companyData.companyPhone,
+          email: this.companyData.companyEmail,
+          website: this.companyData.companyWebsite,
+          /* email_1: "info@example.al", */
+        },
+        contact: {
+          label: "Dirigido a:",
+          name: quotation.client_name,
+          address: `Direccion: ${quotation.client_address}`,
+          phone: `Teléfono: (+57) ${quotation.client_phone}`,
+          email: `Email: ${quotation.client_email}`,
+          otherInfo: "",
+        },
+        invoice: {
+          label: "Cuenta de cobro #: ",
+          num: quotation.id,
+          invDate: `Fecha ${this.dateToString(date)}`,
+          /* invGenDate: "Invoice Date: 02/02/2021 10:17", */
+          headerBorder: false,
+          tableBodyBorder: false,
+          header: [
+            {
+              title: "Producto o Servicio",
+              style: {
+                width: 80,
+              },
+            },
+            {
+              title: "Precio",
+              style: {
+                width: 40,
+              },
+            },
+            {
+              title: "Cantidad",
+              style: {
+                width: 40,
+              },
+            },
+            {
+              title: "Total",
+              style: {
+                width: 40,
+              },
+            },
+          ],
+          table: Array.from(
+            Array(pdfData.length),
+            (quotation = pdfData, index) => [
+              /*         index + 1, */
+              `${quotation[index].name}`,
+              `$ ${this.priceToString(
+                quotation[index].price.toString().replaceAll(".", "")
+              )}`,
+              `${quotation[index].quantity}`,
+              `$ ${this.priceToString(
+                quotation[index].total.toString().replaceAll(".", "")
+              )}`,
             ]
           ),
           invTotalLabel: "Subtotal:",
