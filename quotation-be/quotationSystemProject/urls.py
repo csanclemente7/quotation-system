@@ -54,4 +54,11 @@ urlpatterns = [
     path('itemsQuotation/<int:user>/list', views.ItemsQuotationListView.as_view()),
     path('itemsQuotation/<int:user>/<int:pk>/list', views.ItemsQuotationByQuotationListView.as_view()),
 
+    # URL billing Statement
+
+    path('billingStatement/<int:user>', views.BillingStatementCreateView.as_view()), #ok
+    path('billingStatement/<int:user>/<int:pk>/delete', views.BillingStatementDeleteView.as_view()),
+    path('billingStatement/<int:user>/list', views.BillingStatementListView.as_view()),
+    path('billingStatement/<int:user>/<int:pk>', views.BillingStatementDetailView.as_view()), #ok
+
 ]

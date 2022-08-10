@@ -26,3 +26,7 @@ from .itemsQuotationViews import ItemsQuotationUpdateView
 from .itemsQuotationViews import ItemsQuotationDeleteView
 from .itemsQuotationViews import ItemsQuotationListView
 from .itemsQuotationViews import ItemsQuotationByQuotationListView
+
+# BillingStatement views
+
+from .billingStatementViews import BillingStatementCreateView, BillingStatementListView, BillingStatementDeleteView, BillingStatementDetailView

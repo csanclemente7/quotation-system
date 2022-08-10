@@ -2,6 +2,7 @@ import json
 from rest_framework import serializers
 from quotationSystemApp.models.quotation import Quotation, Item
 from quotationSystemApp.models.itemsQuotation import ItemsQuotation
+from quotationSystemApp.models.billingStatement import BillingStatement
 
 
 class QuotationSerializer(serializers.ModelSerializer):
@@ -11,6 +12,7 @@ class QuotationSerializer(serializers.ModelSerializer):
     def to_representation(self, obj):
         quotation = Quotation.objects.get(id=obj.id)
         itemsQuotation = ItemsQuotation.objects.filter(quotation_id=quotation.id)
+        billingStatementId = BillingStatement.objects.filter(quotation_id=quotation.id)
         return {
             'id': quotation.id,
             'client': quotation.client.id,
@@ -28,5 +30,6 @@ class QuotationSerializer(serializers.ModelSerializer):
             'totalIva': quotation.totalIva,
             'total': quotation.total,
             'quotationItems': itemsQuotation.values(),
-            'observation': quotation.observation
+            'observation': quotation.observation,
+            'billingStatementId': billingStatementId
         }
