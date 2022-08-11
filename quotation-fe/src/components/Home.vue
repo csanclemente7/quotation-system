@@ -1254,6 +1254,7 @@ import { itemServices } from "../service/item-service";
 import { quotationServices } from "../service/quotation-service";
 import { clientServices } from "../service/client-service";
 import { itemQuotationServices } from "../service/item-quotation-service";
+import { billingStatementServices } from "../service/billing-statement-service";
 import jsPDFInvoiceTemplate, {
   OutputType,
   jsPDF,
@@ -1870,6 +1871,7 @@ export default {
       quotationServices.createQuotation(this.quotation).then((result) => {
         let quotationId = result.id;
         this.quotation.id = quotationId;
+        this.processCreateBillingStatement();
         this.setProps("quotation");
         this.setPropsCuentaCobro("quotation");
         this.ejecutarDescarga();
@@ -2053,6 +2055,15 @@ export default {
         this.closePopUp("clientes");
         this.startLoader = false;
       });
+    },
+
+    processCreateBillingStatement: function () {
+      this.startLoader = true;
+      let quotationId = { quotation: this.quotation.id };
+      billingStatementServices
+
+        .createBillingStatement(quotationId)
+        .then((result) => {});
     },
 
     // generar totales
