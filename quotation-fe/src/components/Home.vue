@@ -658,6 +658,17 @@
 
         <div class="input-container">
           <button
+            class="button cuenta-cobro-button"
+            type="button"
+            v-on:click="ejecutarDescargaCuentaCobro"
+          >
+            <i class="fas fa-file-download"></i>
+            Descargar <br />
+            Cuenta de Cobro
+          </button>
+        </div>
+        <div class="input-container">
+          <button
             class="button delete-button"
             type="button"
             v-on:click="processDeleteQuotation(idQuotationToUpdate)"
@@ -1410,6 +1421,8 @@ export default {
       idQuotationToUpdate: "",
 
       itemsQuotationUpdate: [],
+
+      cuentaCobroId: "",
     };
   },
 
@@ -1871,9 +1884,7 @@ export default {
       quotationServices.createQuotation(this.quotation).then((result) => {
         let quotationId = result.id;
         this.quotation.id = quotationId;
-        this.processCreateBillingStatement();
         this.setProps("quotation");
-        this.setPropsCuentaCobro("quotation");
         this.ejecutarDescarga();
         this.errors.error_createQuotation = false;
         this.quotation = {
@@ -2057,13 +2068,15 @@ export default {
       });
     },
 
-    processCreateBillingStatement: function () {
+    processCreateBillingStatement: function (quotation) {
       this.startLoader = true;
-      let quotationId = { quotation: this.quotation.id };
+      let quotationId = { quotation: quotation.id };
       billingStatementServices
 
         .createBillingStatement(quotationId)
-        .then((result) => {});
+        .then((result) => {
+          this.startLoader = false;
+        });
     },
 
     // generar totales
@@ -2098,7 +2111,6 @@ export default {
       );
 
       this.setProps("quotation");
-      this.setPropsCuentaCobro("quotation");
     },
 
     // generar totales Actualizados
@@ -2344,7 +2356,38 @@ export default {
     },
 
     ejecutarDescargaCuentaCobro: function () {
-      this.generatePdfCuentaCobro();
+      this.startLoader = true;
+
+      let quotationId = { quotation: this.quotationUpdate.id };
+      if (
+        this.quotations.filter((element) => {
+          return element.id === quotationId.quotation;
+        })[0].billingStatementId === "N/A"
+      ) {
+        billingStatementServices
+
+          .createBillingStatement(quotationId)
+          .then((result) => {
+            this.startLoader = false;
+            this.cuentaCobroId = result.id;
+            this.setPropsCuentaCobro("quotationUpdate");
+            this.generatePdfCuentaCobro();
+            quotationServices.getQuotationsList().then((result) => {
+              this.quotations = result;
+              this.totalInitialDataResults += 1;
+              this.getDataPage(this.actualPage, this.quotations);
+            });
+          });
+      } else {
+        let cuentaCobroIdFiltered = this.quotations.filter((element) => {
+          return element.id === quotationId.quotation;
+        })[0].billingStatementId;
+        this.cuentaCobroId = cuentaCobroIdFiltered;
+        this.setPropsCuentaCobro("quotationUpdate");
+        this.generatePdfCuentaCobro();
+        this.startLoader = false;
+      }
+
       this.downloadExecute = true;
     },
 
@@ -2409,20 +2452,22 @@ export default {
         orientationLandscape: false,
         compress: true,
         logo: {
-          src: "https://i.ibb.co/z6qmdxq/logo.png",
-          width: 53.33, //aspect ratio = width/height
-          height: 26.66,
+          src: `https://i.ibb.co/pX3djmC/firma-Jair.png`,
+          width: 80.33, //aspect ratio = width/height
+          height: 36.66,
           margin: {
-            top: 0, //negative or positive num, from the current position
-            left: 20, //negative or positive num, from the current position
+            top: 170, //negative or positive num, from the current position
+            left: 0, //negative or positive num, from the current position
           },
         },
         business: {
-          name: this.companyData.companyName,
-          address: this.companyData.companyAddress,
-          phone: this.companyData.companyPhone,
-          email: this.companyData.companyEmail,
-          website: this.companyData.companyWebsite,
+          name: ` \n\n\nCuenta de cobro #: ${this.cuentaCobroId} \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t`,
+          address: `Guadalajara de Buga, ${this.convertDateToLocal(
+            this.dateToString(date)
+          )} \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t`,
+          /* phone: `${this.companyData.companyPhone} \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t`, */
+          /*           email: ` ${this.companyData.companyEmail} \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t`,
+          website: ` ${this.companyData.companyWebsite} \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t`, */
           /* email_1: "info@example.al", */
         },
         contact: {
@@ -2434,9 +2479,9 @@ export default {
           otherInfo: "",
         },
         invoice: {
-          label: "Cuenta de cobro #: ",
-          num: quotation.id,
-          invDate: `Fecha ${this.dateToString(date)}`,
+          label: "Debe a: \t\t\t\t\t\t\t\t\t\n",
+          num: `JAIR SANCLEMENTE AGUDELO`,
+          invDate: `\n\n C.C. 14.889.299\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t`,
           /* invGenDate: "Invoice Date: 02/02/2021 10:17", */
           headerBorder: false,
           tableBodyBorder: false,
@@ -2509,12 +2554,50 @@ export default {
           invDesc: `\n \n${quotation.observation}`,
         },
         footer: {
-          text: "Si usted tiene alguna pregunta sobre esta cotización, por favor, póngase en contacto con nosotros\nCelular: 3167721984 | E-mail: w.sanclemente@hotmail.com	\nGracias por hacer negocios con nosotros!",
+          text: "Si usted tiene alguna pregunta sobre esta cuenta de cobro, por favor, póngase en contacto con nosotros\nCelular: 3167721984 | E-mail: w.sanclemente@hotmail.com	\nGracias por hacer negocios con nosotros!",
         },
         pageEnable: true,
         pageLabel: "Página",
       };
       /* pdfBlob.setProps(this.props, jsPDFInvoiceTemplate); */
+    },
+
+    convertDateToLocal: function (date) {
+      if (date != null || date != undefined) {
+        // convert AAAA-MM-DD to DD/MM/AAAA
+        let date_array = date.split("/");
+        let day = date_array[0];
+        let month = date_array[1];
+        if (month == "01") {
+          month = "enero";
+        } else if (month == "02") {
+          month = "febrero";
+        } else if (month == "03") {
+          month = "marzo";
+        } else if (month == "04") {
+          month = "abril";
+        } else if (month == "05") {
+          month = "mayo";
+        } else if (month == "06") {
+          month = "junio";
+        } else if (month == "07") {
+          month = "julio";
+        } else if (month == "08") {
+          month = "agosto";
+        } else if (month == "09") {
+          month = "septiembre";
+        } else if (month == "10") {
+          month = "octubre";
+        } else if (month == "11") {
+          month = "noviembre";
+        } else if (month == "12") {
+          month = "diciembre";
+        }
+
+        let year = date_array[2];
+        let new_date = day + " de " + month + " de " + year;
+        return new_date;
+      }
     },
 
     setItemsQuotationManually: function (type) {
@@ -2755,6 +2838,10 @@ table .active {
 .fa-users {
   color: var(--color-primary-dark);
   font-size: 2.1rem;
+}
+
+.fa-file-download {
+  color: #ffffff;
 }
 
 @media screen and (max-width: 768px) {

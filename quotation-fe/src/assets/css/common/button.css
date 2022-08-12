@@ -67,6 +67,12 @@
   display: flex;
   gap: 0.5rem;
 }
+.cuenta-cobro-button {
+  color: var(--text-light);
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+}
 
 .delete-button span {
   color: var(--link-red-light);

@@ -13,7 +13,7 @@ const getUser = () => {
   return jwt_decode(getToken()).user_id.toString();
 };
 
-// get list of clients
+// get list of cuentas de cobro
 const getBillingStatementsList = () =>
   axios
     .get(`/billingStatement/${getUser()}`, {
@@ -23,7 +23,17 @@ const getBillingStatementsList = () =>
     })
     .then((response) => response.data);
 
-// create client
+// get list of of cuentas de cobro
+const getBillingStatementDetail = (billingStatementId) =>
+  axios
+    .get(`/billingStatement/${getUser()}/${billingStatementId}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    })
+    .then((response) => response.data);
+
+// create  cuentas de cobro
 const createBillingStatement = (quotationId) =>
   axios
     .post(`/billingStatement/${getUser()}`, quotationId, {
@@ -37,4 +47,5 @@ const createBillingStatement = (quotationId) =>
 export const billingStatementServices = {
   getBillingStatementsList,
   createBillingStatement,
+  getBillingStatementDetail,
 };
