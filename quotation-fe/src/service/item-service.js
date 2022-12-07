@@ -2,7 +2,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 
 // url base
-axios.defaults.baseURL = "https://quotation-system-be.herokuapp.com";
+axios.defaults.baseURL = "http://127.0.0.1:8000";
 
 // getToken
 const getToken = () => {

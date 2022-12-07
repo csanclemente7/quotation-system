@@ -134,7 +134,7 @@ export default {
       let userId = jwt_decode(token).user_id.toString();
 
       axios
-        .get(`https://quotation-system-be.herokuapp.com/user/${userId}`, {
+        .get(`http://127.0.0.1:8000/user/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -154,7 +154,7 @@ export default {
       this.startLoader = true;
       return axios
         .post(
-          "https://quotation-system-be.herokuapp.com/refresh",
+          "http://127.0.0.1:8000/refresh",
           { refresh: localStorage.getItem("token_refresh") },
           { headers: {} }
         )

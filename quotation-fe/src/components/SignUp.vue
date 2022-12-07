@@ -150,7 +150,7 @@ export default {
     processSignUp: function () {
       this.startLoader = true;
       axios
-        .post("https://quotation-system-be.herokuapp.com/register", this.user, {
+        .post("http://127.0.0.1:8000/register", this.user, {
           headers: {},
         })
         .then((result) => {
@@ -199,15 +199,11 @@ export default {
       let token = localStorage.getItem("token_access");
       let userId = jwt_decode(token).user_id.toString();
       axios
-        .post(
-          `https://quotation-system-be.herokuapp.com/cajaMenor/${userId}`,
-          this.cajaMenor,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+        .post(`http://127.0.0.1:8000/cajaMenor/${userId}`, this.cajaMenor, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           this.startLoader = false;
         })
@@ -232,7 +228,7 @@ export default {
     verifyToken: function () {
       return axios
         .post(
-          "https://quotation-system-be.herokuapp.com/refresh",
+          "http://127.0.0.1:8000/refresh",
           { refresh: localStorage.getItem("token_refresh") },
           { headers: {} }
         )
