@@ -12,7 +12,13 @@ class QuotationSerializer(serializers.ModelSerializer):
     def to_representation(self, obj):
         quotation = Quotation.objects.get(id=obj.id)
         itemsQuotation = ItemsQuotation.objects.filter(quotation_id=quotation.id)
-        billingStatementId = BillingStatement.objects.filter(quotation_id=quotation.id)
+        billingStatement = (BillingStatement.objects.filter(quotation_id=quotation.id))
+
+        if(billingStatement.count() > 0):
+            billingStatementId = billingStatement.values()[0]['id']
+        else:
+            billingStatementId = "N/A"
+        
         return {
             'id': quotation.id,
             'client': quotation.client.id,
