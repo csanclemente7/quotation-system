@@ -18,6 +18,10 @@ class QuotationSerializer(serializers.ModelSerializer):
             billingStatementId = billingStatement.values()[0]['id']
         else:
             billingStatementId = "N/A"
+        if(billingStatement.count() > 0):
+            billingStatementId = billingStatement.values()[0]['id']
+        else:
+            billingStatementId = "N/A"
         
         return {
             'id': quotation.id,

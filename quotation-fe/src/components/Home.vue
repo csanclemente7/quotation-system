@@ -667,6 +667,18 @@
             Cuenta de Cobro
           </button>
         </div>
+
+        <div class="input-container">
+          <button
+            class="button cuenta-cobro-button"
+            type="button"
+            v-on:click="ejecutarDescargaCuentaCobro"
+          >
+            <i class="fas fa-file-download"></i>
+            Descargar <br />
+            Cuenta de Cobro
+          </button>
+        </div>
         <div class="input-container">
           <button
             class="button delete-button"
@@ -1419,6 +1431,8 @@ export default {
       itemsQuotation: [],
 
       idQuotationToUpdate: "",
+
+      cuentaCobroId: "",
 
       itemsQuotationUpdate: [],
 
